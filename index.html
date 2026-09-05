@@ -145,6 +145,7 @@ button.secondary{
 <div id="micNotice" class="notice" style="display:none">האזנה למיקרופון פעילה — המערכת מזהה אוטומטית מתי סיימתם לדבר.</div>
 <div class="feed" id="feed"></div>
 <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">מוכן</span></div>
+<div id="liveTranscript" style="font-family:'Courier Prime',monospace;font-size:13px;color:var(--pencil);min-height:18px;margin-bottom:10px;"></div>
 <div class="controls">
 <button class="primary" id="actionBtn">התחל</button>
 </div>
@@ -289,7 +290,7 @@ let SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recog = null;
 let micAvailable = !!SR;
 
-function buildRecognizer(onFinal, onFail, expectedLine){
+function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
   if(!micAvailable) return null;
   const r = new SR();
   r.lang = 'he-IL';
@@ -325,6 +326,9 @@ function buildRecognizer(onFinal, onFail, expectedLine){
       }
     }
     resetSilenceTimer();
+    if(typeof onInterim === 'function'){
+      onInterim((finalTranscript + ' ' + interim).trim());
+    }
   };
   r.onerror = (e) => {
     if(silenceTimer) clearTimeout(silenceTimer);
@@ -417,10 +421,14 @@ function advance(){
         (said) => {
           cursor++;
           setStatus('שמעתי: "' + said + '" — ממשיך…', false);
+          document.getElementById('liveTranscript').textContent = '';
           setTimeout(advance, 700);
         },
         fallbackToButton,
-        line.text
+        line.text,
+        (interim) => {
+          document.getElementById('liveTranscript').textContent = interim ? '» ' + interim : '';
+        }
       );
       try{ recog.start(); }catch(e){ fallbackToButton('start-failed'); }
     } else {
