@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html dir="rtl" lang="he">
 <head>
@@ -290,7 +289,7 @@ let SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 let recog = null;
 let micAvailable = !!SR;
 
-function buildRecognizer(onFinal, onFail){
+function buildRecognizer(onFinal, onFail, expectedLine){
   if(!micAvailable) return null;
   const r = new SR();
   r.lang = 'he-IL';
@@ -299,7 +298,12 @@ function buildRecognizer(onFinal, onFail){
   let finalTranscript = '';
   let silenceTimer = null;
   let stopped = false;
-  const SILENCE_MS = 1400; // wait this long after last speech before deciding the user is done
+
+  // Shorter lines rarely have natural mid-sentence pauses, so we can be quicker to decide
+  // the person is done. Longer lines are more likely to have a breath in the middle, so we
+  // give them more room before cutting in.
+  const wordCount = (expectedLine || '').trim().split(/\s+/).filter(Boolean).length;
+  const SILENCE_MS = wordCount <= 6 ? 900 : wordCount <= 14 ? 1400 : 1900;
 
   function resetSilenceTimer(){
     if(silenceTimer) clearTimeout(silenceTimer);
@@ -320,7 +324,7 @@ function buildRecognizer(onFinal, onFail){
         interim += e.results[i][0].transcript;
       }
     }
-    resetSilenceTimer(); // any speech (final or interim) pushes the deadline out
+    resetSilenceTimer();
   };
   r.onerror = (e) => {
     if(silenceTimer) clearTimeout(silenceTimer);
@@ -413,9 +417,10 @@ function advance(){
         (said) => {
           cursor++;
           setStatus('שמעתי: "' + said + '" — ממשיך…', false);
-          setTimeout(advance, 350);
+          setTimeout(advance, 700);
         },
-        fallbackToButton
+        fallbackToButton,
+        line.text
       );
       try{ recog.start(); }catch(e){ fallbackToButton('start-failed'); }
     } else {
