@@ -302,11 +302,13 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
   function resolveFinal(text){
     if(resolved) return;
     resolved = true;
+    if(hardCeilingTimer) clearTimeout(hardCeilingTimer);
     onFinal(text);
   }
   function resolveFail(reason){
     if(resolved) return;
     resolved = true;
+    if(hardCeilingTimer) clearTimeout(hardCeilingTimer);
     onFail(reason);
   }
 
@@ -314,6 +316,13 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
   const INITIAL_GRACE_MS = 3400; // generous — allows a dramatic beat before a short line starts
   const POST_SPEECH_SILENCE_MS = wordCount <= 6 ? 2000 : wordCount <= 14 ? 2200 : 2500;
   let hasSpokenYet = false;
+
+  // Hard ceiling on total listening time for this turn, independent of content or silence
+  // detection. Continuous low-level background noise (even a quiet TV) can make the
+  // recognizer perpetually think "speech is happening," which means our silence timer
+  // never naturally fires. This guarantees the turn always resolves within a bounded time.
+  const HARD_TIME_CEILING_MS = Math.min(Math.max(wordCount * 900, 6000), 16000);
+  let hardCeilingTimer = null;
 
   function resetSilenceTimer(){
     if(silenceTimer) clearTimeout(silenceTimer);
@@ -343,18 +352,16 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
       }
       hasSpokenYet = true;
 
-      // Background noise can make the recognizer hallucinate a repeating loop of words
-      // that never stops. If what we've accumulated is wildly longer than the actual
-      // line, this is noise, not speech — cut it off rather than let it run forever.
       const combined = (finalTranscript + ' ' + interim).trim();
-      const heardWordCount = combined.split(/\s+/).filter(Boolean).length;
-      const MAX_PLAUSIBLE_WORDS = Math.max(wordCount * 7, 35);
-      if(heardWordCount > MAX_PLAUSIBLE_WORDS){
-        weDecidedStop = true;
-        if(silenceTimer) clearTimeout(silenceTimer);
-        resolveFail('noise-loop'); // resolve BEFORE aborting, so onend's late firing can't also resolve
-        if(activeSession){ try{ activeSession.abort(); }catch(err){} }
-        return;
+      const heardWords = combined.split(/\s+/).filter(Boolean);
+      const heardWordCount = heardWords.length;
+
+      // Keep only the most recent, relevant chunk of what was heard — people often
+      // repeat a line while the mic keeps listening, and that's normal rehearsal,
+      // not something to reject.
+      const RELEVANT_WINDOW = Math.max(wordCount * 2, 12);
+      if(heardWordCount > RELEVANT_WINDOW){
+        finalTranscript = heardWords.slice(-RELEVANT_WINDOW).join(' ');
       }
 
       resetSilenceTimer();
@@ -370,7 +377,7 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
       }
     };
     r.onend = () => {
-      if(resolved) return; // already handled by the noise-loop guard or an error above
+      if(resolved) return; // already handled by the hard ceiling or an error above
       if(weDecidedStop){
         if(silenceTimer) clearTimeout(silenceTimer);
         if(finalTranscript.trim().length > 0){
@@ -388,7 +395,24 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
     r.start();
   }
 
-  return { start: () => startSession(), stop: () => { weDecidedStop = true; if(activeSession){ try{activeSession.stop();}catch(e){} } }, abort: () => { weDecidedStop = true; if(activeSession){ try{activeSession.abort();}catch(e){} } } };
+  return {
+    start: () => {
+      hardCeilingTimer = setTimeout(() => {
+        weDecidedStop = true;
+        if(activeSession){ try{ activeSession.stop(); }catch(e){} }
+        // If stopping doesn't yield a result quickly, force a resolution either way.
+        setTimeout(() => {
+          if(!resolved){
+            if(finalTranscript.trim().length > 0) resolveFinal(finalTranscript.trim());
+            else resolveFail('timeout');
+          }
+        }, 400);
+      }, HARD_TIME_CEILING_MS);
+      startSession();
+    },
+    stop: () => { weDecidedStop = true; if(hardCeilingTimer) clearTimeout(hardCeilingTimer); if(activeSession){ try{activeSession.stop();}catch(e){} } },
+    abort: () => { weDecidedStop = true; if(hardCeilingTimer) clearTimeout(hardCeilingTimer); if(activeSession){ try{activeSession.abort();}catch(e){} } }
+  };
 }
 
 /* ---- Rehearsal engine ---- */
@@ -482,8 +506,8 @@ function advance(){
               fallbackToButton(reason); // no point retrying if permission itself was denied
               return;
             }
-            if(reason === 'noise-loop'){
-              setStatus('יש רעש רקע שמבלבל את זיהוי הדיבור — לחצו כשסיימתם', true);
+            if(reason === 'timeout'){
+              setStatus('לקח יותר מדי זמן — לחצו כשסיימתם', true);
               btn.style.display = 'block';
               btn.textContent = 'סיימתי לדבר';
               btn.disabled = false;
