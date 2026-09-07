@@ -311,7 +311,7 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
   }
 
   const wordCount = (expectedLine || '').trim().split(/\s+/).filter(Boolean).length;
-  const INITIAL_GRACE_MS = 4200; // generous — allows a dramatic beat before a short line starts
+  const INITIAL_GRACE_MS = 3400; // generous — allows a dramatic beat before a short line starts
   const POST_SPEECH_SILENCE_MS = wordCount <= 6 ? 2000 : wordCount <= 14 ? 2200 : 2500;
   let hasSpokenYet = false;
 
@@ -449,7 +449,7 @@ function advance(){
       setStatus('מקשיב <span class="breathing"><span></span><span></span><span></span></span>', true);
 
       let attempts = 0;
-      const MAX_ATTEMPTS = 2;
+      const MAX_ATTEMPTS = 4;
 
       const fallbackToButton = (reason) => {
         let msg = 'לא זיהיתי דיבור — לחצו כשסיימתם';
