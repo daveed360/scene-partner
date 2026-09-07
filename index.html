@@ -299,7 +299,7 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
   let activeSession = null;
 
   const wordCount = (expectedLine || '').trim().split(/\s+/).filter(Boolean).length;
-  const SILENCE_MS = wordCount <= 6 ? 1100 : wordCount <= 14 ? 1700 : 2300;
+  const SILENCE_MS = wordCount <= 6 ? 1500 : wordCount <= 14 ? 2100 : 2700;
 
   function resetSilenceTimer(){
     if(silenceTimer) clearTimeout(silenceTimer);
