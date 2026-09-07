@@ -292,58 +292,70 @@ let micAvailable = !!SR;
 
 function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
   if(!micAvailable) return null;
-  const r = new SR();
-  r.lang = 'he-IL';
-  r.continuous = true;
-  r.interimResults = true;
+
   let finalTranscript = '';
   let silenceTimer = null;
-  let stopped = false;
+  let weDecidedStop = false;
+  let activeSession = null;
 
-  // Shorter lines rarely have natural mid-sentence pauses, so we can be quicker to decide
-  // the person is done. Longer lines are more likely to have a breath in the middle, so we
-  // give them more room before cutting in.
   const wordCount = (expectedLine || '').trim().split(/\s+/).filter(Boolean).length;
-  const SILENCE_MS = wordCount <= 6 ? 900 : wordCount <= 14 ? 1400 : 1900;
+  const SILENCE_MS = wordCount <= 6 ? 1100 : wordCount <= 14 ? 1700 : 2300;
 
   function resetSilenceTimer(){
     if(silenceTimer) clearTimeout(silenceTimer);
     silenceTimer = setTimeout(() => {
-      if(!stopped){
-        stopped = true;
-        try{ r.stop(); }catch(e){}
-      }
+      weDecidedStop = true;
+      if(activeSession){ try{ activeSession.stop(); }catch(e){} }
     }, SILENCE_MS);
   }
 
-  r.onresult = (e) => {
-    let interim = '';
-    for(let i = e.resultIndex; i < e.results.length; i++){
-      if(e.results[i].isFinal){
-        finalTranscript += e.results[i][0].transcript;
-      } else {
-        interim += e.results[i][0].transcript;
+  function startSession(){
+    const r = new SR();
+    r.lang = 'he-IL';
+    r.continuous = true;
+    r.interimResults = true;
+    activeSession = r;
+
+    r.onresult = (e) => {
+      let interim = '';
+      for(let i = e.resultIndex; i < e.results.length; i++){
+        if(e.results[i].isFinal){
+          finalTranscript += e.results[i][0].transcript;
+        } else {
+          interim += e.results[i][0].transcript;
+        }
       }
-    }
-    resetSilenceTimer();
-    if(typeof onInterim === 'function'){
-      onInterim((finalTranscript + ' ' + interim).trim());
-    }
-  };
-  r.onerror = (e) => {
-    if(silenceTimer) clearTimeout(silenceTimer);
-    if(!finalTranscript.trim()) onFail(e.error);
-  };
-  r.onend = () => {
-    if(silenceTimer) clearTimeout(silenceTimer);
-    if(finalTranscript.trim().length > 0){
-      onFinal(finalTranscript.trim());
-    } else {
-      onFail('ended-without-result');
-    }
-  };
-  r.onstart = () => { resetSilenceTimer(); };
-  return r;
+      resetSilenceTimer();
+      if(typeof onInterim === 'function'){
+        onInterim((finalTranscript + ' ' + interim).trim());
+      }
+    };
+    r.onerror = (e) => {
+      // 'no-speech' errors are common between chained sessions — not a real failure.
+      if(e.error !== 'no-speech' && e.error !== 'aborted' && !finalTranscript.trim()){
+        weDecidedStop = true;
+        onFail(e.error);
+      }
+    };
+    r.onend = () => {
+      if(weDecidedStop){
+        if(silenceTimer) clearTimeout(silenceTimer);
+        if(finalTranscript.trim().length > 0){
+          onFinal(finalTranscript.trim());
+        } else {
+          onFail('ended-without-result');
+        }
+      } else {
+        // Chrome's own endpointing cut us off — the user probably isn't actually done.
+        // Seamlessly start a fresh session and keep accumulating.
+        try{ startSession(); }catch(e){ /* give up quietly if it truly can't restart */ }
+      }
+    };
+    r.onstart = () => { resetSilenceTimer(); };
+    r.start();
+  }
+
+  return { start: () => startSession(), stop: () => { weDecidedStop = true; if(activeSession){ try{activeSession.stop();}catch(e){} } }, abort: () => { weDecidedStop = true; if(activeSession){ try{activeSession.abort();}catch(e){} } } };
 }
 
 /* ---- Rehearsal engine ---- */
@@ -403,6 +415,9 @@ function advance(){
       btn.style.display = 'none';
       setStatus('מקשיב <span class="breathing"><span></span><span></span><span></span></span>', true);
 
+      let attempts = 0;
+      const MAX_ATTEMPTS = 2;
+
       const fallbackToButton = (reason) => {
         let msg = 'לא זיהיתי דיבור — לחצו כשסיימתם';
         if(reason === 'not-allowed') msg = 'אין גישה למיקרופון — צריך לאשר בהגדרות הדפדפן. בינתיים, לחצו כשסיימתם';
@@ -417,20 +432,36 @@ function advance(){
         };
       };
 
-      recog = buildRecognizer(
-        (said) => {
-          cursor++;
-          setStatus('שמעתי: "' + said + '" — ממשיך…', false);
-          document.getElementById('liveTranscript').textContent = '';
-          setTimeout(advance, 700);
-        },
-        fallbackToButton,
-        line.text,
-        (interim) => {
-          document.getElementById('liveTranscript').textContent = interim ? '» ' + interim : '';
-        }
-      );
-      try{ recog.start(); }catch(e){ fallbackToButton('start-failed'); }
+      const tryListening = () => {
+        attempts++;
+        recog = buildRecognizer(
+          (said) => {
+            cursor++;
+            setStatus('שמעתי: "' + said + '" — ממשיך…', false);
+            document.getElementById('liveTranscript').textContent = '';
+            setTimeout(advance, 400);
+          },
+          (reason) => {
+            if(reason === 'not-allowed'){
+              fallbackToButton(reason); // no point retrying if permission itself was denied
+              return;
+            }
+            if(attempts < MAX_ATTEMPTS){
+              setStatus('לא שמעתי — מנסה שוב <span class="breathing"><span></span><span></span><span></span></span>', true);
+              tryListening();
+            } else {
+              fallbackToButton(reason);
+            }
+          },
+          line.text,
+          (interim) => {
+            document.getElementById('liveTranscript').textContent = interim ? '» ' + interim : '';
+          }
+        );
+        try{ recog.start(); }catch(e){ fallbackToButton('start-failed'); }
+      };
+
+      tryListening();
     } else {
       btn.style.display = 'block';
       btn.textContent = 'סיימתי לדבר';
