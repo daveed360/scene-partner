@@ -297,6 +297,18 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
   let silenceTimer = null;
   let weDecidedStop = false;
   let activeSession = null;
+  let resolved = false; // ensures onFinal/onFail fires exactly once for this turn
+
+  function resolveFinal(text){
+    if(resolved) return;
+    resolved = true;
+    onFinal(text);
+  }
+  function resolveFail(reason){
+    if(resolved) return;
+    resolved = true;
+    onFail(reason);
+  }
 
   const wordCount = (expectedLine || '').trim().split(/\s+/).filter(Boolean).length;
   const INITIAL_GRACE_MS = 4200; // generous — allows a dramatic beat before a short line starts
@@ -320,6 +332,7 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
     activeSession = r;
 
     r.onresult = (e) => {
+      if(resolved) return;
       let interim = '';
       for(let i = e.resultIndex; i < e.results.length; i++){
         if(e.results[i].isFinal){
@@ -339,8 +352,8 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
       if(heardWordCount > MAX_PLAUSIBLE_WORDS){
         weDecidedStop = true;
         if(silenceTimer) clearTimeout(silenceTimer);
+        resolveFail('noise-loop'); // resolve BEFORE aborting, so onend's late firing can't also resolve
         if(activeSession){ try{ activeSession.abort(); }catch(err){} }
-        onFail('noise-loop');
         return;
       }
 
@@ -350,19 +363,20 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
       }
     };
     r.onerror = (e) => {
-      // 'no-speech' errors are common between chained sessions — not a real failure.
+      if(resolved) return;
       if(e.error !== 'no-speech' && e.error !== 'aborted' && !finalTranscript.trim()){
         weDecidedStop = true;
-        onFail(e.error);
+        resolveFail(e.error);
       }
     };
     r.onend = () => {
+      if(resolved) return; // already handled by the noise-loop guard or an error above
       if(weDecidedStop){
         if(silenceTimer) clearTimeout(silenceTimer);
         if(finalTranscript.trim().length > 0){
-          onFinal(finalTranscript.trim());
+          resolveFinal(finalTranscript.trim());
         } else {
-          onFail('ended-without-result');
+          resolveFail('ended-without-result');
         }
       } else {
         // Chrome's own endpointing cut us off — the user probably isn't actually done.
