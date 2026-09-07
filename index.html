@@ -348,7 +348,7 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
       // line, this is noise, not speech — cut it off rather than let it run forever.
       const combined = (finalTranscript + ' ' + interim).trim();
       const heardWordCount = combined.split(/\s+/).filter(Boolean).length;
-      const MAX_PLAUSIBLE_WORDS = Math.max(wordCount * 4, 20);
+      const MAX_PLAUSIBLE_WORDS = Math.max(wordCount * 7, 35);
       if(heardWordCount > MAX_PLAUSIBLE_WORDS){
         weDecidedStop = true;
         if(silenceTimer) clearTimeout(silenceTimer);
