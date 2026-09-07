@@ -299,14 +299,17 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
   let activeSession = null;
 
   const wordCount = (expectedLine || '').trim().split(/\s+/).filter(Boolean).length;
-  const SILENCE_MS = wordCount <= 6 ? 1500 : wordCount <= 14 ? 2100 : 2700;
+  const INITIAL_GRACE_MS = 4200; // generous — allows a dramatic beat before a short line starts
+  const POST_SPEECH_SILENCE_MS = wordCount <= 6 ? 1300 : wordCount <= 14 ? 1900 : 2500;
+  let hasSpokenYet = false;
 
   function resetSilenceTimer(){
     if(silenceTimer) clearTimeout(silenceTimer);
+    const waitTime = hasSpokenYet ? POST_SPEECH_SILENCE_MS : INITIAL_GRACE_MS;
     silenceTimer = setTimeout(() => {
       weDecidedStop = true;
       if(activeSession){ try{ activeSession.stop(); }catch(e){} }
-    }, SILENCE_MS);
+    }, waitTime);
   }
 
   function startSession(){
@@ -325,6 +328,7 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
           interim += e.results[i][0].transcript;
         }
       }
+      hasSpokenYet = true;
       resetSilenceTimer();
       if(typeof onInterim === 'function'){
         onInterim((finalTranscript + ' ' + interim).trim());
@@ -439,7 +443,7 @@ function advance(){
             cursor++;
             setStatus('שמעתי: "' + said + '" — ממשיך…', false);
             document.getElementById('liveTranscript').textContent = '';
-            setTimeout(advance, 400);
+            setTimeout(advance, 300);
           },
           (reason) => {
             if(reason === 'not-allowed'){
