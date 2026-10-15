@@ -302,12 +302,18 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 .pace{margin-top:10px}
 
 /* face to face */
-.viewtoggle{min-height:36px;padding:4px 14px;border-radius:12px;border:2px solid rgba(255,255,255,.2);border-bottom-width:4px;background:transparent;color:var(--on-stage);font-weight:700;cursor:pointer}
+.viewtoggle{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:4px 14px;border-radius:14px;border:2px solid var(--amber);border-bottom-width:4px;background:rgba(255,194,75,.14);color:#FFD98A;font-weight:800;font-size:15px;cursor:pointer}
+.viewtoggle svg{width:18px;height:18px}
+.viewtoggle.nudge{animation:nudge .9s ease-in-out 4}
+@keyframes nudge{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,194,75,.0)}50%{transform:scale(1.08);box-shadow:0 0 0 8px rgba(255,194,75,.25);background:var(--amber);color:#2A1E14}}
+@media (prefers-reduced-motion: reduce){.viewtoggle.nudge{animation:none;background:var(--amber);color:#2A1E14}}
+.face-view #micNotice:not(.bad){display:none!important}
 .viewtoggle[hidden]{display:none}
-.stage{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+.stage{flex:1;min-height:0;overflow:hidden;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;padding-top:16px!important;
   background:radial-gradient(70% 60% at 50% 35%, rgba(255,214,140,.22), transparent 70%);border-radius:22px;margin-bottom:12px;padding:10px}
 .stage[hidden]{display:none}
-.face{width:min(62vw, 280px);aspect-ratio:1;border-radius:50%;box-shadow:0 18px 50px -18px rgba(0,0,0,.6)}
+.duo{display:flex;align-items:center;justify-content:center;gap:12px;flex-shrink:0}
+.face{width:min(62vw, 34vh, 280px);aspect-ratio:1;border-radius:50%;box-shadow:0 18px 50px -18px rgba(0,0,0,.6)}
 .face .av{width:100%;height:100%}
 .face .av svg .eyes{transform-box:fill-box;transform-origin:center;animation:blink 4.2s infinite}
 @keyframes blink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
@@ -319,11 +325,20 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 @keyframes nod{0%,70%,100%{transform:none}80%{transform:translateY(3px) rotate(1deg)}}
 @media (prefers-reduced-motion: reduce){.stage .face,.face .av svg .eyes{animation:none!important}}
 .stage-who{margin-top:14px;font-weight:800;font-size:18px;color:var(--amber)}
-.stage-line{margin-top:6px;font-family:var(--serif);font-size:22px;line-height:1.5;max-width:30ch;color:var(--on-stage)}
+.stage-line{margin-top:6px;font-family:var(--serif);font-size:22px;line-height:1.5;max-width:30ch;color:var(--on-stage);overflow-y:auto;min-height:0;flex:1 1 auto;padding:0 6px}
+.stage-line.long{font-size:19px}
+.stage-line.xlong{font-size:17px}
+/* face + you, side by side, like the recording */
+.stage.has-cam .face{width:min(44vw, 28vh, 200px)}
+.camslot{display:none}
+.stage.has-cam .camslot{display:block;position:relative}
+.camslot #selfCam{position:static;display:block;width:min(34vw, 22vh, 150px);height:auto;aspect-ratio:3/4;border-radius:18px;transform:scaleX(-1);border:3px solid rgba(255,255,255,.35)}
+.camslot .rec{position:absolute;top:6px;left:6px}
 .stage-line mark{background:var(--hl);color:var(--ink);padding:0 4px;border-radius:4px}
 .stage-line .tap{display:block;font-family:var(--sans);font-size:13px;color:var(--on-stage-dim);margin-top:6px}
 #selfCam{position:absolute;top:8px;left:8px;width:92px;height:122px;object-fit:cover;border-radius:14px;transform:scaleX(-1);border:2px solid rgba(255,255,255,.35);background:#000}
-.rec{position:absolute;top:12px;left:108px;font-size:11px;font-weight:800;color:#fff;background:#E5484D;border-radius:6px;padding:2px 6px;animation:pulse 1.2s infinite}
+.stage-who{flex-shrink:0}
+.rec{position:absolute;top:12px;left:12px;z-index:4;font-size:11px;font-weight:800;color:#fff;background:#E5484D;border-radius:6px;padding:2px 6px;animation:pulse 1.2s infinite}
 .rec[hidden],#selfCam[hidden]{display:none}
 #screen-rehearse{position:relative}
 #selfCam.mini{top:auto;bottom:178px;left:10px;width:68px;height:90px;border-radius:12px;z-index:3}
@@ -419,10 +434,10 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 <div id="roleList"></div>
 <label>איך מתרגלים?</label>
 <div class="chips">
-<button type="button" class="chip" data-opt="face" aria-pressed="false"><b>מול הפרטנר</b><small>פנים במסך מלא, כמו באודישן</small></button>
-<button type="button" class="chip" data-opt="tape" aria-pressed="false"><b>צילום self-tape</b><small>מצלם אותך, שומרים בסוף</small></button>
-<button type="button" class="chip" data-opt="hide" aria-pressed="false"><b>הסתר את השורות שלי</b><small>נגיעה חושפת מילה אחרי מילה</small></button>
-<button type="button" class="chip" data-opt="cue" aria-pressed="false"><b>רק הקיו שלי</b><small>השורה שלפניך, ואתה</small></button>
+<button type="button" class="chip" data-opt="face" aria-pressed="false"><b>מול הפרטנר</b><small>במקום לקרוא תסריט, רואים את הדמות שמדברת איתך</small></button>
+<button type="button" class="chip" data-opt="tape" aria-pressed="false"><b>צילום self-tape</b><small>מצלם אותך ואת הדמות יחד. בסוף שומרים סרטון</small></button>
+<button type="button" class="chip" data-opt="hide" aria-pressed="false"><b>הסתר את השורות שלי</b><small>לתרגול זיכרון. נתקעת? נגיעה מגלה מילה</small></button>
+<button type="button" class="chip" data-opt="cue" aria-pressed="false"><b>רק המשפטים שלי</b><small>מדלגים על השאר: שומעים רק את המשפט שלפניך, ואז אתה עונה</small></button>
 </div>
 <div class="pace" role="group" aria-label="קצב הדיבור של הפרטנרים">
 <button type="button" data-rate="0.85">איטי</button><button type="button" data-rate="1">רגיל</button><button type="button" data-rate="1.15">מהיר</button>
@@ -435,7 +450,7 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 <div class="screen" id="screen-rehearse">
 <div class="topbar">
 <button class="back" id="exitBtn">יציאה</button>
-<button type="button" class="viewtoggle" id="viewBtn">תסריט</button>
+<button type="button" class="viewtoggle" id="viewBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h11M4 12h16M4 17h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17 4l3 3-3 3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="viewLbl">תסריט</span></button>
 <span class="role" id="roleLabel"></span>
 </div>
 <div class="progress"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
@@ -444,7 +459,7 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 <div class="stage" id="stage" hidden>
 <video id="selfCam" muted playsinline autoplay hidden></video>
 <span class="rec" id="recDot" hidden>REC</span>
-<div class="face" id="stageFace"></div>
+<div class="duo"><div class="face" id="stageFace"></div><div class="camslot" id="camSlot"></div></div>
 <div class="stage-who" id="stageWho"></div>
 <div class="stage-line" id="stageLine"></div>
 </div>
@@ -521,47 +536,84 @@ function figureSVG(name, ink, opts){
   const g = opts.gender || guessGender(name);
   const skin = SKINS[h % SKINS.length];
   const older = /^(אבא|אמא|סבא|סבתא)$/.test((name||'').trim());
-  const hair = older ? (h & 1 ? '#8A8A8A' : '#5A3825') : HAIRS[(h >> 3) % HAIRS.length];
-  const shirt = opts.shirt || '#FFFDF8';
+  const hair = older ? (h & 1 ? '#9A9A9A' : '#5A3825') : HAIRS[(h >>> 3) % HAIRS.length];
+  const SHIRTS = ['#F28C38','#4C9BE8','#E35D6A','#58B57B','#F2C14E','#8E6CE0','#2FA4A9'];
+  let shirt = opts.shirt || SHIRTS[(h >>> 9) % SHIRTS.length];
+  if(!opts.shirt && shirt.toLowerCase() === String(ink).toLowerCase()) shirt = SHIRTS[((h >>> 9) + 1) % SHIRTS.length];
   const id = 'f' + (figId++);
   const fStyles = ['long','bob','bun','curly'], mStyles = ['short','curly','side','buzz'];
-  const style = opts.style || (g === 'female' ? fStyles : mStyles)[(h >> 6) % 4];
+  const style = opts.style || (g === 'female' ? fStyles : mStyles)[(h >>> 6) % 4];
   const back = {
-    long:  `<path d="M24 46 Q22 22 50 20 Q78 22 76 46 L78 84 Q64 90 50 88 Q36 90 22 84 Z" fill="${hair}"/>`,
-    bob:   `<path d="M24 48 Q22 20 50 19 Q78 20 76 48 L76 62 Q70 66 64 62 L36 62 Q30 66 24 62 Z" fill="${hair}"/>`,
-    bun:   `<circle cx="50" cy="16" r="9" fill="${hair}"/>`,
+    long:  `<path d="M23 48 Q20 20 50 18 Q80 20 77 48 L79 86 Q64 92 50 90 Q36 92 21 86 Z" fill="${hair}"/>`,
+    bob:   `<path d="M23 50 Q20 18 50 17 Q80 18 77 50 L77 64 Q70 68 63 64 L37 64 Q30 68 23 64 Z" fill="${hair}"/>`,
+    bun:   `<circle cx="50" cy="15" r="9.5" fill="${hair}"/>`,
   }[style] || '';
   const front = {
-    long:  `<path d="M27 44 Q30 22 50 22 Q70 22 73 44 Q62 34 46 36 Q36 37 27 44 Z" fill="${hair}"/>`,
-    bob:   `<path d="M27 46 Q28 22 50 22 Q72 22 73 46 Q66 32 50 33 Q36 32 27 46 Z" fill="${hair}"/>`,
-    bun:   `<path d="M27 44 Q30 23 50 23 Q70 23 73 44 Q64 33 50 33 Q36 33 27 44 Z" fill="${hair}"/>`,
-    curly: `<g fill="${hair}"><circle cx="32" cy="34" r="8"/><circle cx="41" cy="26" r="9"/><circle cx="52" cy="24" r="9"/><circle cx="62" cy="27" r="9"/><circle cx="69" cy="35" r="7"/></g>`,
-    short: `<path d="M28 42 Q28 21 50 21 Q72 21 72 42 Q66 31 50 31 Q34 31 28 42 Z" fill="${hair}"/>`,
-    side:  `<path d="M28 44 Q27 20 52 20 Q73 22 72 40 Q60 28 44 33 Q34 36 28 44 Z" fill="${hair}"/>`,
-    buzz:  `<path d="M29 40 Q30 23 50 23 Q70 23 71 40 Q60 31 50 31 Q40 31 29 40 Z" fill="${hair}" opacity=".85"/>`,
+    long:  `<path d="M27 46 Q29 21 50 21 Q71 21 73 46 Q63 33 47 35 Q36 36 27 46 Z" fill="${hair}"/>`,
+    bob:   `<path d="M27 47 Q27 21 50 21 Q73 21 73 47 Q67 31 50 32 Q35 31 27 47 Z" fill="${hair}"/>`,
+    bun:   `<path d="M27 44 Q29 22 50 22 Q71 22 73 44 Q64 32 50 32 Q36 32 27 44 Z" fill="${hair}"/>`,
+    curly: `<g fill="${hair}"><circle cx="31" cy="35" r="8"/><circle cx="39" cy="26" r="9"/><circle cx="50" cy="23" r="9.5"/><circle cx="61" cy="26" r="9"/><circle cx="69" cy="35" r="8"/></g>`,
+    short: `<path d="M27.5 43 Q27 20 50 20 Q73 20 72.5 43 Q67 30 50 30 Q33 30 27.5 43 Z" fill="${hair}"/>`,
+    side:  `<path d="M27.5 45 Q26 19 52 19 Q74 21 72.5 41 Q61 27 44 32 Q33 35 27.5 45 Z" fill="${hair}"/>`,
+    buzz:  `<path d="M28.5 41 Q29 22 50 22 Q71 22 71.5 41 Q61 30 50 30 Q39 30 28.5 41 Z" fill="${hair}" opacity=".9"/>`,
   }[style];
-  const beard = (g === 'male' && older) ? `<path d="M34 54 Q36 72 50 74 Q64 72 66 54 Q60 62 50 62 Q40 62 34 54 Z" fill="${hair}"/>` : '';
-  const hat = opts.beret ? `<ellipse cx="46" cy="22" rx="22" ry="8" fill="#9E2B3A" transform="rotate(-12 46 22)"/><circle cx="40" cy="14" r="2.5" fill="#9E2B3A"/>` : '';
-  const mood = opts.mood || 'rest';
-  const mouths = {
-    rest:  `<path class="m-rest" d="M44 59 Q50 63 56 59" stroke="#5B2C22" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
-    happy: `<path d="M42 57 Q50 68 58 57 Z" fill="#7A2E24"/>`,
-  };
-  return `<svg viewBox="0 0 100 100" role="img" aria-label="${esc(name)}">
+  const beard = (g === 'male' && older) ? `<path d="M31 53 Q33 74 50 76 Q67 74 69 53 Q62 63 50 63 Q38 63 31 53 Z" fill="${hair}"/>` : '';
+  const hat = opts.beret ? `<ellipse cx="46" cy="21" rx="23" ry="8" fill="#9E2B3A" transform="rotate(-12 46 21)"/><circle cx="40" cy="13" r="2.5" fill="#9E2B3A"/>` : '';
+  const mood = opts.mood || 'smile';
+  const brow = {
+    smile:    ['M35 38 Q40.5 35.5 46 37.5', 'M54 37.5 Q59.5 35.5 65 38'],
+    neutral:  ['M35 38 Q40.5 37 46 38', 'M54 38 Q59.5 37 65 38'],
+    happy:    ['M35 36.5 Q40.5 33.5 46 36', 'M54 36 Q59.5 33.5 65 36.5'],
+    surprised:['M35 35 Q40.5 31 46 34', 'M54 34 Q59.5 31 65 35'],
+    sad:      ['M35 39 Q41 37 46 35', 'M54 35 Q59 37 65 39'],
+    angry:    ['M35 35.5 Q41 37 46 40', 'M54 40 Q59 37 65 35.5'],
+  }[mood] || ['M35 38 Q40.5 37 46 38', 'M54 38 Q59.5 37 65 38'];
+  const lip = '#6E2A22';
+  const mouthRest = {
+    smile:    `<path d="M44 59.5 Q50 64.5 56 59.5" stroke="${lip}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
+    neutral:  `<path d="M45 61 Q50 62 55 61" stroke="${lip}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
+    happy:    `<path d="M42.5 58 Q50 69 57.5 58 Z" fill="${lip}"/><path d="M45 60.5 Q50 63 55 60.5" fill="#fff" opacity=".85"/>`,
+    surprised:`<ellipse cx="50" cy="61.5" rx="3.6" ry="4.3" fill="${lip}"/>`,
+    sad:      `<path d="M44.5 63 Q50 58.5 55.5 63" stroke="${lip}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
+    angry:    `<path d="M44.5 62 Q50 59.5 55.5 62" stroke="${lip}" stroke-width="2.8" fill="none" stroke-linecap="round"/>`,
+  }[mood];
+  const mouthOpen = `<ellipse cx="50" cy="61" rx="5" ry="4" fill="${lip}"/><path d="M46 63.4 Q50 65.6 54 63.4" fill="#E9897A"/>`;
+  let mouth;
+  if(opts.mouthOnly === 'open') mouth = mouthOpen;
+  else if(opts.mouthOnly === 'rest') mouth = mouthRest;
+  else mouth = `<g class="m-rest">${mouthRest}</g><g class="m-talk">${mouthOpen}</g>`;
+  const lidY = mood === 'sad' ? 44.5 : mood === 'angry' ? 44 : 0;
+  const lids = lidY ? `<path d="M36.5 ${lidY} Q41 ${lidY-2.4} 45.5 ${lidY} L45.5 42 L36.5 42 Z M54.5 ${lidY} Q59 ${lidY-2.4} 63.5 ${lidY} L63.5 42 L54.5 42 Z" fill="${skin}"/>` : '';
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="${esc(name)}">
     <defs><clipPath id="${id}"><circle cx="50" cy="50" r="50"/></clipPath></defs>
     <g clip-path="url(#${id})">
       <rect width="100" height="100" fill="${ink}"/>
-      <circle cx="50" cy="38" r="40" fill="#fff" opacity=".10"/>
+      <circle cx="50" cy="40" r="40" fill="#fff" opacity=".12"/>
       ${back}
-      <path d="M18 104 Q20 80 50 78 Q80 80 82 104 Z" fill="${shirt}"/>
-      <path d="M42 78 L50 88 L58 78" fill="${skin}"/>
-      <rect x="43" y="64" width="14" height="16" rx="6" fill="${skin}"/>
-      <ellipse cx="50" cy="46" rx="22" ry="23" fill="${skin}"/>
+      <path d="M16 106 Q18 80 50 78 Q82 80 84 106 Z" fill="${shirt}"/>
+      <path d="M41 78.5 Q50 90 59 78.5 Z" fill="${skin}"/>
+      <path d="M41 78.5 Q50 90 59 78.5" stroke="#000" stroke-opacity=".12" stroke-width="1.5" fill="none"/>
+      <rect x="43" y="63" width="14" height="17" rx="6" fill="${skin}"/>
+      <rect x="43" y="63" width="14" height="6" rx="3" fill="#000" opacity=".08"/>
+      <ellipse cx="27.6" cy="49" rx="3.6" ry="5.2" fill="${skin}"/><ellipse cx="72.4" cy="49" rx="3.6" ry="5.2" fill="${skin}"/>
+      <ellipse cx="50" cy="46" rx="22.5" ry="23.5" fill="${skin}"/>
       ${front}${hat}${beard}
-      <g class="eyes"><ellipse cx="42" cy="47" rx="2.6" ry="3.2" fill="#22201E"/><ellipse cx="58" cy="47" rx="2.6" ry="3.2" fill="#22201E"/></g>
-      <circle cx="36" cy="55" r="3.6" fill="#E9897A" opacity=".35"/><circle cx="64" cy="55" r="3.6" fill="#E9897A" opacity=".35"/>
-      ${mood === 'happy' ? mouths.happy : mouths.rest + `<ellipse class="m-talk" cx="50" cy="60" rx="5" ry="3.6" fill="#7A2E24"/>`}
+      <g class="eyes">
+        <ellipse cx="41" cy="47" rx="4.4" ry="4.9" fill="#fff"/><ellipse cx="59" cy="47" rx="4.4" ry="4.9" fill="#fff"/>
+        <circle cx="41.4" cy="47.8" r="3" fill="#2B211C"/><circle cx="59.4" cy="47.8" r="3" fill="#2B211C"/>
+        <circle cx="42.6" cy="46.5" r="1.1" fill="#fff"/><circle cx="60.6" cy="46.5" r="1.1" fill="#fff"/>
+      </g>
+      ${lids}
+      <g stroke="${older && !beard ? '#7A7A7A' : hair}" stroke-width="2.2" fill="none" stroke-linecap="round"><path d="${brow[0]}"/><path d="${brow[1]}"/></g>
+      <path d="M50 50.5 Q48 55.5 50.8 56.2" stroke="#000" stroke-opacity=".18" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+      <circle cx="34.5" cy="55.5" r="3.8" fill="#E9897A" opacity="${mood === 'angry' ? .55 : .3}"/><circle cx="65.5" cy="55.5" r="3.8" fill="#E9897A" opacity="${mood === 'angry' ? .55 : .3}"/>
+      ${mouth}
     </g></svg>`;
+}
+// Mood for a line, from its stage direction (בכעס, בוכה, צוחק...)
+function moodOf(dir){
+  const t = emoTag(dir);
+  return {'[angry]':'angry','[sad]':'sad','[crying]':'sad','[laughs]':'happy','[excited]':'happy','[hesitant]':'neutral','[whispers]':'neutral','[sarcastic]':'smile'}[t] || 'neutral';
 }
 
 /* ---- Ready-made scenes ---- */
@@ -774,7 +826,7 @@ let myCharacter = null;
 
 /* Reads almost any pasted script: "שם: טקסט", "שם:" then text, a name alone on its own line,
    "שם - טקסט", headers and stage directions mixed in. Returns [{character, text, dir}] or null. */
-const META_KEYS = /^(סדרה|סרט|הצגה|מחזה|בימוי|במאי|במאית|תסריט|תסריטאי|תסריטאית|מחזאי|מאת|רקע|הוסיף למאגר|הוסיפה למאגר|עונה|פרק|סצנה|תמונה|מערכה|דמויות|משתתפים|הערה|הערות|מקור|תקציר|מיקום|זמן|שנה|ז׳אנר|ז'אנר|לוקיישן|INT|EXT|פנים|חוץ)(?=$|[\s.:])/i;
+const META_KEYS = /^(יוצרים|יוצר|יוצרת|יצירה|הפקה|מפיק|מפיקה|צילום|עריכה|ליהוק|שחקנים|בכיכוב|ערוץ|פלטפורמה|תרגום|עיבוד|סדרה|סרט|הצגה|מחזה|בימוי|במאי|במאית|תסריט|תסריטאי|תסריטאית|מחזאי|מאת|רקע|הוסיף למאגר|הוסיפה למאגר|עונה|פרק|סצנה|תמונה|מערכה|דמויות|משתתפים|הערה|הערות|מקור|תקציר|מיקום|זמן|שנה|ז׳אנר|ז'אנר|לוקיישן|INT|EXT|פנים|חוץ)(?=$|[\s.:])/i;
 function cleanRaw(raw){
   return String(raw)
     .replace(/\r/g, '')
@@ -817,6 +869,11 @@ function parseScript(raw){
   const speakers = new Set(Object.entries(count).filter(([k,n]) => !k.includes('\u0001') && isSpeaker(k,n)).map(([k]) => k));
   const dashSpeakers = new Set(Object.entries(count).filter(([k,n]) => k.includes('\u0001') && n >= 2).map(([k]) => k.split('\u0001')[0]));
   const aloneSpeakers = new Set(Object.entries(alone).filter(([k,n]) => n >= 2 && !META_KEYS.test(k)).map(([k]) => k));
+
+  // a label that appears only once, before any repeated speaker shows up, is a header line ("יוצרים: ...")
+  let firstRepeat = lines.findIndex(l => { const m = l.match(/^([^:]{1,24}):/); return m && (count[m[1].trim()] || 0) >= 2; });
+  if(firstRepeat < 0) firstRepeat = 0;
+  lines.forEach((l, i) => { if(i >= firstRepeat) return; const m = l.match(/^([^:]{1,24}):/); if(m && count[m[1].trim()] === 1) speakers.delete(m[1].trim()); });
 
   // 2) walk the lines
   const out = [];
@@ -1487,6 +1544,7 @@ let sceneRunning = false;
 
 function stopEverything(){
   discardRecording();
+  if(typeof stopNudge === 'function') stopNudge();
   runId++;
   sceneRunning = false;
   try{ window.speechSynthesis.cancel(); }catch(e){}
@@ -1567,10 +1625,12 @@ function setView(face){
   viewFace = face;
   document.getElementById('stage').hidden = !face;
   document.getElementById('feed').hidden = face;
-  document.getElementById('viewBtn').textContent = face ? 'תסריט' : 'פנים';
+  document.getElementById('viewLbl').textContent = face ? 'תסריט' : 'פנים';
+  document.body.classList.toggle('face-view', face);
   placeCam();
 }
 document.getElementById('viewBtn').onclick = () => {
+  stopNudge();
   setView(!viewFace);
   if(viewFace){
     const last = runLines[Math.min(cursor, runLines.length - 1)];
@@ -1579,19 +1639,38 @@ document.getElementById('viewBtn').onclick = () => {
     const feed = document.getElementById('feed'); feed.scrollTop = feed.scrollHeight;
   }
 };
-let stageChar = null;
-function setStageFace(name){
-  if(stageChar === name) return;
-  stageChar = name;
-  document.getElementById('stageFace').innerHTML = `<span class="av" style="--ink-c:${inkOf(name)}">${figureSVG(name, inkOf(name))}</span>`;
+// make the view switch noticeable: it pulses a few times when you've been waiting a while
+let nudgeTimer = null;
+function nudgeView(){ const b = document.getElementById('viewBtn'); b.classList.remove('nudge'); void b.offsetWidth; b.classList.add('nudge'); }
+function stopNudge(){ clearTimeout(nudgeTimer); document.getElementById('viewBtn').classList.remove('nudge'); }
+function scheduleNudge(ms){ clearTimeout(nudgeTimer); nudgeTimer = setTimeout(nudgeView, ms); }
+
+let stageChar = null, stageMood = null;
+const partnerMood = {};          // the last mood each character had, so the face doesn't snap back to a smile
+function setStageFace(name, mood){
+  mood = mood || partnerMood[name] || 'neutral';
+  if(stageChar === name && stageMood === mood) return;
+  stageChar = name; stageMood = mood;
+  document.getElementById('stageFace').innerHTML = `<span class="av" style="--ink-c:${inkOf(name)}">${figureSVG(name, inkOf(name), {mood})}</span>`;
+}
+function fitLine(box, text){
+  box.classList.toggle('long', text.length > 110);
+  box.classList.toggle('xlong', text.length > 220);
 }
 function stageShowPartner(line, still){
   const st = document.getElementById('stage');
-  setStageFace(line.character);
+  const mood = moodOf(line.dir);
+  partnerMood[line.character] = mood;
+  setStageFace(line.character, mood);
   st.classList.remove('listening');
   if(!still) st.classList.add('talking');
   document.getElementById('stageWho').textContent = line.character;
-  document.getElementById('stageLine').innerHTML = esc(line.text);
+  const box = document.getElementById('stageLine');
+  box.onclick = null;
+  box.innerHTML = esc(line.text) + (line.dir ? `<span class="tap">(${esc(line.dir)})</span>` : '');
+  fitLine(box, line.text);
+  box.scrollTop = 0;
+  tapeCaption = {who: line.character, text: line.text};
 }
 function stageShowMine(line){
   const st = document.getElementById('stage');
@@ -1604,42 +1683,116 @@ function stageShowMine(line){
     box.innerHTML = `<mark>${esc(words.slice(0, n).join(' '))}${n < words.length ? ' …' : ''}</mark>` + (n < words.length ? '<span class="tap">נגיעה לרמז, מילה אחרי מילה</span>' : '');
   };
   box.onclick = () => { if(n < words.length){ n++; draw(); } };
+  fitLine(box, line.text);
   draw();
+  tapeCaption = null;
 }
 
-/* ---- self-tape ---- */
+/* ---- self-tape: records you and the partner together, like a video call ---- */
 let recorder = null, recChunks = [], recMime = '', tapeFailed = false, tapeUrl = null;
+let tapeCaption = null, camVid = null, drawTimer = null;
+const faceImgs = {};
+function faceImg(name, mood, mouth){
+  const k = name + '|' + mood + '|' + mouth;
+  if(!faceImgs[k]){
+    const img = new Image();
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(figureSVG(name, inkOf(name), {mood, mouthOnly: mouth}));
+    faceImgs[k] = img;
+  }
+  return faceImgs[k];
+}
 function placeCam(){
   const cam = document.getElementById('selfCam'), dot = document.getElementById('recDot');
-  const host = viewFace ? document.getElementById('stage') : document.getElementById('screen-rehearse');
+  const host = viewFace ? document.getElementById('camSlot') : document.getElementById('screen-rehearse');
   if(cam.parentNode !== host){ host.appendChild(cam); host.appendChild(dot); }
   cam.classList.toggle('mini', !viewFace);
+  document.getElementById('stage').classList.toggle('has-cam', !!OPTS.tape);
 }
+function wrapLines(ctx, text, maxW, maxLines){
+  const words = text.split(/\s+/), lines = [];
+  let cur = '';
+  for(const w of words){
+    const t = cur ? cur + ' ' + w : w;
+    if(ctx.measureText(t).width > maxW && cur){ lines.push(cur); cur = w; } else cur = t;
+  }
+  if(cur) lines.push(cur);
+  if(lines.length > maxLines){ const keep = lines.slice(0, maxLines); keep[maxLines-1] += ' …'; return keep; }
+  return lines;
+}
+function drawFrame(ctx, W, H){
+  const top = Math.round(H * 0.42);
+  // partner half
+  const g = ctx.createRadialGradient(W/2, top*0.35, 20, W/2, top*0.4, W*0.75);
+  g.addColorStop(0, '#4E3757'); g.addColorStop(1, '#1C1524');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, top);
+  const name = stageChar || (runLines.find(l => l.character !== myCharacter) || {}).character;
+  if(name){
+    const talking = document.getElementById('stage').classList.contains('talking') || (!viewFace && tapeCaption && isPartnerTalking);
+    const mouth = talking && (Math.floor(Date.now() / 140) % 2) ? 'open' : 'rest';
+    const img = faceImg(name, partnerMood[name] || 'neutral', mouth);
+    const s = Math.round(top * 0.58);
+    if(img.complete) ctx.drawImage(img, (W - s)/2, Math.round(top*0.06), s, s);
+    ctx.direction = 'rtl'; ctx.textAlign = 'center';
+    ctx.fillStyle = '#FFC24B'; ctx.font = '700 ' + Math.round(W*0.042) + 'px Rubik, Assistant, sans-serif';
+    ctx.fillText(name, W/2, Math.round(top*0.06) + s + Math.round(W*0.06));
+    if(tapeCaption){
+      ctx.fillStyle = '#F5EEE6'; ctx.font = '500 ' + Math.round(W*0.036) + 'px "Frank Ruhl Libre", serif';
+      const lines = wrapLines(ctx, tapeCaption.text, W*0.86, 2);
+      lines.forEach((l, i) => ctx.fillText(l, W/2, Math.round(top*0.06) + s + Math.round(W*0.11) + i*Math.round(W*0.048)));
+    }
+  }
+  // you
+  ctx.fillStyle = '#000'; ctx.fillRect(0, top, W, H - top);
+  if(camVid && camVid.videoWidth){
+    const vw = camVid.videoWidth, vh = camVid.videoHeight, bw = W, bh = H - top;
+    const sc = Math.max(bw / vw, bh / vh), sw = bw / sc, sh = bh / sc;
+    ctx.drawImage(camVid, (vw - sw)/2, (vh - sh)/2, sw, sh, 0, top, bw, bh);
+  }
+  ctx.fillStyle = 'rgba(255,194,75,.9)'; ctx.fillRect(0, top - 3, W, 6);
+}
+let isPartnerTalking = false;
 function startRecording(){
   if(!OPTS.tape || !micStream || !micStream.getVideoTracks().length || !window.MediaRecorder) return;
   const cam = document.getElementById('selfCam');
   cam.srcObject = micStream; cam.hidden = false; cam.play().catch(()=>{});
-  recMime = ['video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm'].find(t => MediaRecorder.isTypeSupported(t)) || '';
+  camVid = document.createElement('video');
+  camVid.muted = true; camVid.playsInline = true; camVid.setAttribute('playsinline', '');
+  camVid.style.cssText = 'position:fixed;width:2px;height:2px;opacity:0;pointer-events:none;left:0;top:0';
+  document.body.appendChild(camVid);
+  camVid.srcObject = micStream; camVid.play().catch(()=>{});
+  const W = 720, H = 1280;
+  const canvas = document.createElement('canvas'); canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  drawTimer = setInterval(() => drawFrame(ctx, W, H), 1000/30);
+  let stream;
   try{
-    recorder = new MediaRecorder(micStream, recMime ? {mimeType: recMime} : undefined);
+    stream = new MediaStream([...canvas.captureStream(30).getVideoTracks(), ...micStream.getAudioTracks()]);
+  }catch(e){ stream = micStream; }
+  recMime = ['video/mp4;codecs=avc1,mp4a.40.2', 'video/mp4', 'video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/webm'].find(t => MediaRecorder.isTypeSupported(t)) || '';
+  try{
+    recorder = new MediaRecorder(stream, recMime ? {mimeType: recMime} : undefined);
     recChunks = [];
     recorder.ondataavailable = e => { if(e.data && e.data.size) recChunks.push(e.data); };
     recorder.start(1000);
     document.getElementById('recDot').hidden = false;
   }catch(e){ recorder = null; }
 }
+function cleanupDraw(){
+  clearInterval(drawTimer); drawTimer = null;
+  if(camVid){ try{ camVid.srcObject = null; camVid.remove(); }catch(e){} camVid = null; }
+}
 function stopRecording(){
   return new Promise(res => {
     document.getElementById('recDot').hidden = true;
     document.getElementById('selfCam').hidden = true;
-    if(!recorder || recorder.state === 'inactive'){ recorder = null; res(null); return; }
-    recorder.onstop = () => { const type = recorder.mimeType || recMime || 'video/webm'; const b = recChunks.length ? new Blob(recChunks, {type}) : null; recorder = null; res(b); };
-    try{ recorder.stop(); }catch(e){ recorder = null; res(null); }
+    if(!recorder || recorder.state === 'inactive'){ recorder = null; cleanupDraw(); res(null); return; }
+    recorder.onstop = () => { cleanupDraw(); const type = recorder.mimeType || recMime || 'video/webm'; const b = recChunks.length ? new Blob(recChunks, {type}) : null; recorder = null; res(b); };
+    try{ recorder.stop(); }catch(e){ recorder = null; cleanupDraw(); res(null); }
   });
 }
 function discardRecording(){
   if(recorder && recorder.state !== 'inactive'){ recorder.ondataavailable = null; recorder.onstop = null; try{ recorder.stop(); }catch(e){} }
-  recorder = null; recChunks = [];
+  recorder = null; recChunks = []; cleanupDraw();
   document.getElementById('recDot').hidden = true;
   document.getElementById('selfCam').hidden = true;
 }
@@ -1716,6 +1869,7 @@ async function beginScene(){
   await countdown();
   if(myRun !== runId) return;
   startRecording();
+  if(!viewFace) scheduleNudge(4000);
   sceneRunning = true;
   sceneStart = Date.now(); myTurns = 0;
   document.getElementById('minorCtl').hidden = false;
@@ -1778,7 +1932,8 @@ function advance(myRun){
 
   if(line.character === myCharacter){
     const el = addLineToFeed(line, true);
-    if(viewFace) stageShowMine(line);
+    stageShowMine(line);
+    if(!viewFace) scheduleNudge(9000);
     try{ if(navigator.vibrate) navigator.vibrate(35); }catch(e){}
     myTurns++;
     const btn = document.getElementById('actionBtn');
@@ -1813,9 +1968,11 @@ function advance(myRun){
     document.getElementById('actionBtn').style.display = 'none';
     setStatus(esc(line.character) + (guessGender(line.character) === 'female' ? ' מדברת…' : ' מדבר…'), false);
     speakDir = line.dir || '';
-    if(viewFace) stageShowPartner(line);
+    stageShowPartner(line);
+    isPartnerTalking = true;
     speak(line.text, line.character, () => {
       document.getElementById('stage').classList.remove('talking');
+      isPartnerTalking = false;
       if(myRun !== runId) return;
       el.classList.remove('speaking');
       cursor++;
