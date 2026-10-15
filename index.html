@@ -114,6 +114,16 @@ button.secondary{
 .meter{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:12px}
 #meterFill{height:100%;width:0;background:var(--pencil);transition:width .08s}
 #meterFill.talking{background:var(--sage)}
+.voicebox{margin-top:28px;border-top:1px solid var(--line);padding-top:6px}
+.voicebox summary{font-size:13px;color:var(--pencil);cursor:pointer;padding:10px 0;list-style:none}
+.voicebox summary::-webkit-details-marker{display:none}
+.voicebox input{width:100%;padding:12px;font-size:16px;border:1px solid var(--line);border-radius:4px;background:var(--card);color:var(--ink);font-family:monospace;direction:ltr}
+.voicebox .row{display:flex;gap:8px}
+.voicebox .row button{flex:1;margin-top:10px}
+.vstate{font-size:13px;margin-top:10px;line-height:1.5}
+.vstate.ok{color:var(--sage)} .vstate.bad{color:var(--red)}
+.rolecard select{font-size:14px;padding:6px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink);max-width:55%}
+.rolecard .meta{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
 .notice{
   border-right:2px solid var(--red);background:var(--card);border-radius:0 4px 4px 0;padding:9px 12px;font-size:12px;color:var(--ink);margin-bottom:16px;line-height:1.5;
 }
@@ -136,6 +146,18 @@ button.secondary{
 <button class="example" id="loadExample">טען דוגמה</button>
 <div id="inputErr" class="err" style="display:none"></div>
 <button class="primary" id="analyzeBtn">המשך לבחירת תפקיד</button>
+
+<details class="voicebox" id="voiceBox">
+<summary id="voiceSummary">⚙ קול טבעי (ElevenLabs)</summary>
+<label for="elKey" style="margin-top:4px">מפתח API של ElevenLabs</label>
+<input id="elKey" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="sk_...">
+<div class="hint">המפתח נשמר רק בדפדפן של המכשיר הזה. הוא לא נכנס לקוד ולא עולה ל-GitHub.</div>
+<div class="row">
+<button class="secondary" id="elSave">שמור ובדוק</button>
+<button class="secondary" id="elClear">מחק מפתח</button>
+</div>
+<div class="vstate" id="elState"></div>
+</details>
 </div>
 
 <!-- SCREEN 2: ROLE PICK -->
@@ -258,7 +280,17 @@ function renderRoles(){
     const count = parsedLines.filter(l=>l.character===name).length;
     const card = document.createElement('div');
     card.className = 'rolecard';
-    card.innerHTML = `<span class="name">${esc(name)}</span><span class="count">${count} שורות</span>`;
+    card.innerHTML = `<span class="meta"><span class="name">${esc(name)}</span><span class="count">${count} שורות</span></span>`;
+    if(elOn()){
+      const sel = document.createElement('select');
+      sel.setAttribute('aria-label', 'קול עבור ' + name);
+      const cur = elVoiceFor[name] || elVoices[characters.indexOf(name) % elVoices.length].voice_id;
+      elVoices.forEach(v => { const o = document.createElement('option'); o.value = v.voice_id; o.textContent = v.name; if(v.voice_id===cur) o.selected = true; sel.appendChild(o); });
+      sel.onclick = e => e.stopPropagation();
+      sel.onchange = () => { elVoiceFor[name] = sel.value; lsSet('sp_el_voices', JSON.stringify(elVoiceFor)); };
+      if(!elVoiceFor[name]) elVoiceFor[name] = cur;
+      card.appendChild(sel);
+    }
     card.onclick = () => {
       document.querySelectorAll('.rolecard').forEach(c=>c.classList.remove('chosen'));
       card.classList.add('chosen');
@@ -282,6 +314,141 @@ document.getElementById('startBtn').onclick = () => {
   setupRehearsal();
   show('rehearse');
 };
+
+/* ---- ElevenLabs (natural voice). Key lives only in this device's browser storage. ---- */
+const EL_MODELS = ['eleven_v4_turbo', 'eleven_v3'];   // Hebrew-capable; fast one first
+const EL_FALLBACK_VOICES = [
+  {voice_id:'JBFqnCBsd6RMkjVDRZzb', name:'George (גבר)'},
+  {voice_id:'21m00Tcm4TlvDq8ikWAM', name:'Rachel (אישה)'},
+  {voice_id:'pNInz6obpgDQGcFmaJgB', name:'Adam (גבר)'},
+  {voice_id:'EXAVITQu4vr4xnSDxMaL', name:'Sarah (אישה)'},
+  {voice_id:'onwK4e9ZLuTAKqWW03F9', name:'Daniel (גבר)'},
+  {voice_id:'XB0fDUnXU5powFXDhCwa', name:'Charlotte (אישה)'},
+];
+let elVoices = EL_FALLBACK_VOICES.slice();
+let elModel = EL_MODELS[0];
+function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+function lsSet(k,v){ try{ if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){} }
+function elKey(){ return (lsGet('sp_el_key')||'').trim(); }
+function elOn(){ return !!elKey(); }
+let elVoiceFor = {}; try{ elVoiceFor = JSON.parse(lsGet('sp_el_voices')||'{}'); }catch(e){}
+try{ elVoices = JSON.parse(lsGet('sp_el_voicelist')) || elVoices; }catch(e){}
+
+function elSetState(msg, ok){
+  const st = document.getElementById('elState');
+  st.textContent = msg; st.className = 'vstate ' + (ok===true?'ok':ok===false?'bad':'');
+  document.getElementById('voiceSummary').textContent = elOn() ? '⚙ קול טבעי (ElevenLabs) — פעיל ✓' : '⚙ קול טבעי (ElevenLabs)';
+}
+async function elLoadVoices(){
+  // Needs the key's "Voices: read" permission; if missing we keep the built-in list
+  try{
+    const r = await fetch('https://api.elevenlabs.io/v2/voices?page_size=100', {headers:{'xi-api-key':elKey()}});
+    if(!r.ok) return false;
+    const j = await r.json();
+    if(j.voices && j.voices.length){
+      elVoices = j.voices.map(v => ({voice_id:v.voice_id, name:v.name}));
+      lsSet('sp_el_voicelist', JSON.stringify(elVoices));
+    }
+    return true;
+  }catch(e){ return false; }
+}
+async function elFetchAudio(text, voiceId){
+  const cacheKey = 'https://tts.local/' + voiceId + '/' + encodeURIComponent(text);
+  let cache = null;
+  try{ cache = await caches.open('sp-tts-v1'); const hit = await cache.match(cacheKey); if(hit) return await hit.blob(); }catch(e){}
+  let lastErr = '';
+  for(const model of [elModel, ...EL_MODELS.filter(m=>m!==elModel)]){
+    const r = await fetch('https://api.elevenlabs.io/v1/text-to-speech/' + voiceId + '?output_format=mp3_44100_64', {
+      method:'POST',
+      headers:{'xi-api-key':elKey(), 'Content-Type':'application/json', 'Accept':'audio/mpeg'},
+      body: JSON.stringify({text, model_id:model, language_code:'he'})
+    });
+    if(r.ok){
+      elModel = model;
+      const blob = await r.blob();
+      try{ if(cache) await cache.put(cacheKey, new Response(blob.slice(), {headers:{'Content-Type':'audio/mpeg'}})); }catch(e){}
+      return blob;
+    }
+    let detail = ''; try{ detail = JSON.stringify(await r.json()); }catch(e){}
+    lastErr = r.status + ' ' + detail;
+    if(r.status === 401 || r.status === 429 || /quota/i.test(detail)) break;   // model change won't help
+  }
+  throw new Error(lastErr);
+}
+function elErrorText(err){
+  const m = String(err && err.message || err);
+  if(m.startsWith('401')) return 'המפתח לא תקין או בלי הרשאת Text to Speech';
+  if(/quota|credits/i.test(m)) return 'נגמרו הקרדיטים ב-ElevenLabs';
+  if(m.startsWith('429')) return 'יותר מדי בקשות — נסה שוב עוד רגע';
+  if(/Failed to fetch|NetworkError|Load failed/i.test(m)) return 'אין חיבור לאינטרנט';
+  return 'שגיאה: ' + m.slice(0, 120);
+}
+const elPending = {};   // prefetch: text|voice -> Promise<Blob>
+function elGet(text, voiceId){
+  const k = voiceId + '|' + text;
+  if(!elPending[k]) elPending[k] = elFetchAudio(text, voiceId).catch(e => { delete elPending[k]; throw e; });
+  return elPending[k];
+}
+function elVoiceOf(character){
+  if(elVoiceFor[character]) return elVoiceFor[character];
+  const others = characters.filter(c => c !== myCharacter);
+  const i = Math.max(0, others.indexOf(character));
+  return elVoices[i % elVoices.length].voice_id;
+}
+function elPrefetchFrom(idx){
+  if(!elOn()) return;
+  let n = 0;
+  for(let i = idx; i < parsedLines.length && n < 2; i++){
+    const l = parsedLines[i];
+    if(l.character !== myCharacter){ elGet(l.text, elVoiceOf(l.character)).catch(()=>{}); n++; }
+  }
+}
+
+const player = new Audio();
+player.preload = 'auto';
+player.setAttribute('playsinline', '');
+const SILENT_WAV = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
+function unlockPlayer(){ try{ player.src = SILENT_WAV; const p = player.play(); if(p) p.catch(()=>{}); }catch(e){} }
+
+async function elSpeak(text, character, cb, onFail){
+  let done = false, url = null;
+  const finish = () => { if(done) return; done = true; player.onended = player.onerror = null; if(url) URL.revokeObjectURL(url); cb(); };
+  try{
+    const blob = await elGet(text, elVoiceOf(character));
+    url = URL.createObjectURL(blob);
+    player.onended = finish;
+    player.onerror = () => { if(!done){ done = true; onFail(new Error('playback')); } };
+    player.src = url;
+    await player.play();
+  }catch(e){
+    if(!done){ done = true; onFail(e); }
+  }
+}
+function stopAudio(){ try{ player.pause(); player.onended = player.onerror = null; }catch(e){} }
+
+(function initVoiceBox(){
+  const inp = document.getElementById('elKey');
+  inp.value = elKey();
+  elSetState(elOn() ? 'המפתח שמור במכשיר הזה.' : 'בלי מפתח — משתמשים בקול המובנה של הטלפון.', elOn() ? true : null);
+  document.getElementById('elSave').onclick = async () => {
+    const k = inp.value.trim();
+    if(!k){ elSetState('הדבק קודם את המפתח בשדה.', false); return; }
+    lsSet('sp_el_key', k);
+    elSetState('בודק…');
+    await elLoadVoices();
+    try{
+      const blob = await elFetchAudio('שלום, אני השותף שלך לסצנה.', elVoices[0].voice_id);
+      elSetState('עובד ✓ — משמיע דוגמה', true);
+      const url = URL.createObjectURL(blob); player.src = url; player.play().catch(()=>{});
+    }catch(e){
+      elSetState(elErrorText(e), false);
+    }
+  };
+  document.getElementById('elClear').onclick = () => {
+    lsSet('sp_el_key', null); inp.value = '';
+    elSetState('המפתח נמחק מהמכשיר.', null);
+  };
+})();
 
 /* ---- Voice output ---- */
 let heVoices = [];
@@ -324,18 +491,37 @@ function unlockSpeech(){
   }catch(e){}
 }
 
-let currentUtterance = null; // global ref: Android Chrome garbage-collects utterances and never fires onend
+// Time to read the line on screen when no voice can play it
+function readingTime(text){ return Math.max(1800, text.trim().split(/\s+/).length * 420); }
+
 function speak(text, character, cb){
-  if(!('speechSynthesis' in window)){ cb(); return; }
+  if(elOn()){
+    elSpeak(text, character, cb, (err) => {
+      setStatus('ElevenLabs: ' + esc(elErrorText(err)) + ' — עובר לקול של הטלפון', true);
+      speakBrowser(text, character, cb);
+    });
+  } else speakBrowser(text, character, cb);
+}
+
+let currentUtterance = null; // global ref: Android Chrome garbage-collects utterances and never fires onend
+function speakBrowser(text, character, cb){
+  const holdForReading = (why) => {
+    setStatus(why + ' — קרא את השורה, ממשיך עוד רגע', true);
+    setTimeout(cb, readingTime(text));
+  };
+  if(!('speechSynthesis' in window)){ holdForReading('אין קול בדפדפן'); return; }
   const synth = window.speechSynthesis;
   let done = false;
   let watchdog = null;
+  const startedAt = Date.now();
   const finish = () => {
     if(done) return;
     done = true;
     if(watchdog) clearTimeout(watchdog);
     currentUtterance = null;
-    cb();
+    // Ended almost instantly = the phone didn't actually speak (e.g. no Hebrew voice installed)
+    if(Date.now() - startedAt < Math.min(900, 120 + text.length * 25)) holdForReading('הטלפון לא השמיע קול');
+    else cb();
   };
   const u = new SpeechSynthesisUtterance(text);
   const v = voiceByCharacter[character];
@@ -465,6 +651,7 @@ function stopEverything(){
   try{ window.speechSynthesis.cancel(); }catch(e){}
   if(recog){ try{ recog.abort(); }catch(e){} recog = null; }
   closeMic();
+  stopAudio();
   allowScreenOff();
   setMeter(0, false);
 }
@@ -513,6 +700,8 @@ async function beginScene(){
   btn.onclick = null;
   btn.disabled = true;
   unlockSpeech();   // must happen inside the tap
+  unlockPlayer();
+  elPrefetchFrom(0);
   keepScreenOn();
   const myRun = runId;
   if(micAvailable){
@@ -549,6 +738,7 @@ function advance(myRun){
     btn.disabled = false;
     btn.onclick = goNext;
 
+    elPrefetchFrom(cursor + 1);
     if(micStream){
       setStatus('התור שלך — דבר, וכשתסיים זה ימשיך לבד', true);
       recog = listenForLine(line.text, () => {
