@@ -1032,9 +1032,13 @@ function setupRehearsal(){
   notice.style.display = 'block';
   document.getElementById('minorCtl').hidden = true;
   paused = false;
-  notice.textContent = micAvailable
-    ? 'המיקרופון נפתח פעם אחת בתחילת הסצנה. כשתסיים משפט ותשתוק רגע — הסצנה ממשיכה לבד.'
-    : 'אין גישה למיקרופון בדפדפן הזה — בתור שלך לחץ "סיימתי — הבא".';
+  notice.textContent = (elOn()
+      ? 'קול: ElevenLabs (טבעי). '
+      : 'קול: הקול המובנה של הטלפון, כי אין מפתח ElevenLabs שמור בדפדפן הזה. ')
+    + (micAvailable
+      ? 'כשתסיים משפט ותשתוק רגע, הסצנה ממשיכה לבד.'
+      : 'בתור שלך לחץ "סיימתי — הבא".');
+  if(!elOn()) notice.classList.add('bad');
   setStatus('מוכן להתחיל', false);
 }
 
