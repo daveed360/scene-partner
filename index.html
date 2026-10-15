@@ -376,15 +376,15 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
   }
 
   const wordCount = (expectedLine || '').trim().split(/\s+/).filter(Boolean).length;
-  const INITIAL_GRACE_MS = 3400; // generous — allows a dramatic beat before a short line starts
-  const POST_SPEECH_SILENCE_MS = wordCount <= 6 ? 2000 : wordCount <= 14 ? 2200 : 2500;
+  const INITIAL_GRACE_MS = 9000; // time to breathe / take a beat before starting the line
+  const POST_SPEECH_SILENCE_MS = wordCount <= 6 ? 2200 : wordCount <= 14 ? 2500 : 2800;
   let hasSpokenYet = false;
 
   // Hard ceiling on total listening time for this turn, independent of content or silence
   // detection. Continuous low-level background noise (even a quiet TV) can make the
   // recognizer perpetually think "speech is happening," which means our silence timer
   // never naturally fires. This guarantees the turn always resolves within a bounded time.
-  const HARD_TIME_CEILING_MS = Math.min(Math.max(wordCount * 900, 6000), 16000);
+  const HARD_TIME_CEILING_MS = Math.min(INITIAL_GRACE_MS + Math.max(wordCount * 900, 4000), 30000);
   let hardCeilingTimer = null;
 
   function resetSilenceTimer(){
@@ -397,13 +397,13 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
   }
 
   let restarts = 0;
-  const MAX_RESTARTS = 10;
+  const MAX_RESTARTS = 25;
 
   function startSession(){
     const r = new SR();
     r.lang = 'he-IL';
-    // Android Chrome repeats words in continuous mode; on phones we use short sessions and chain them
-    r.continuous = !IS_MOBILE;
+    // Continuous everywhere: each new session pops the mic again on phones, so keep one open as long as possible
+    r.continuous = true;
     r.interimResults = true;
     activeSession = r;
 
@@ -649,7 +649,7 @@ function advance(myRun){
               return;
             }
             if(attempts < MAX_ATTEMPTS){
-              setStatus('לא שמעתי — מנסה שוב <span class="breathing"><span></span><span></span><span></span></span>', true);
+              // retry silently — no flicker
               tryListening();
             } else {
               fallbackToButton(reason);
