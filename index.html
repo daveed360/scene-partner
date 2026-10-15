@@ -11,8 +11,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Assistant:wght@400;500;600;700&display=swap');
 
 :root{
-  --paper:#FBFAF7;      /* photocopy-white script page */
-  --sheet:#FFFFFF;
+  --stage:#241B2E;      /* backstage velvet */
+  --stage-2:#33263F;
+  --glow:#4E3757;       /* spotlight falloff */
+  --on-stage:#F5EEE6;
+  --on-stage-dim:#BFB0C6;
+  --amber:#FFC24B;      /* stage light */
+  --paper:#FBF8F1;      /* script page */
+  --sheet:#FFFDF8;
   --ink:#1E2226;
   --pencil:#6E7177;
   --rule:#E3E1DB;
@@ -25,27 +31,28 @@
   --sans:'Assistant', system-ui, sans-serif;
 }
 *{box-sizing:border-box}
-html{background:var(--paper)}
+html{background:var(--stage)}
 body{
-  margin:0;font-family:var(--sans);background:var(--paper);color:var(--ink);
+  margin:0;font-family:var(--sans);color:var(--on-stage);
+  background:radial-gradient(120% 55% at 50% -12%, var(--glow) 0%, var(--stage-2) 38%, var(--stage) 75%) fixed, var(--stage);
   min-height:100vh;min-height:100dvh;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;
 }
 .wrap{max-width:520px;margin:0 auto;padding:calc(20px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom));}
 button{touch-action:manipulation;font-family:var(--sans)}
-:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 
 header{margin-bottom:22px}
 header h1{font-family:var(--serif);font-weight:900;font-size:38px;line-height:1.05;margin:0;letter-spacing:-.5px}
-header p{margin:8px 0 0;color:var(--pencil);font-size:16px;line-height:1.5}
+header p{margin:8px 0 0;color:var(--on-stage-dim);font-size:16px;line-height:1.5}
 .rehearsing header{display:none}
 
 .screen{display:none}
 .screen.active{display:block}
 
 h2.sec{font-family:var(--serif);font-weight:700;font-size:21px;margin:26px 0 10px}
-label{display:block;font-size:14px;color:var(--pencil);margin:18px 0 8px;font-weight:600}
-.hint{font-size:13px;color:var(--pencil);margin-top:8px;line-height:1.6}
-.err{color:var(--warn);font-size:14px;margin-top:10px}
+label{display:block;font-size:14px;color:var(--on-stage-dim);margin:18px 0 8px;font-weight:600}
+.hint{font-size:13px;color:var(--on-stage-dim);margin-top:8px;line-height:1.6}
+.err{color:#FF9B8A;font-size:14px;margin-top:10px}
 
 /* ready-made scenes: each one a script cover on the table */
 .scenes{display:flex;flex-direction:column;gap:10px}
@@ -60,6 +67,7 @@ label{display:block;font-size:14px;color:var(--pencil);margin:18px 0 8px;font-we
 .scene:active{transform:scale(.99)}
 .cast{display:flex}
 .cast .av{width:26px;height:26px;font-size:13px;margin-left:-6px;border:2px solid var(--sheet)}
+.scene .m .cnt{color:var(--pencil)}
 
 /* character stamp */
 .av{
@@ -71,22 +79,23 @@ textarea{
   width:100%;min-height:170px;padding:14px;font-family:var(--serif);font-size:17px;line-height:1.7;
   border:1px solid var(--rule);border-radius:10px;background:var(--sheet);color:var(--ink);resize:vertical;
 }
-textarea:focus{outline:2px solid var(--ink);outline-offset:-1px}
+textarea:focus{outline:2px solid var(--amber);outline-offset:-1px}
 
 button.primary{
-  width:100%;min-height:54px;padding:14px;font-size:17px;font-weight:700;background:var(--go);color:#fff;
+  width:100%;min-height:54px;padding:14px;font-size:17px;font-weight:700;background:var(--amber);color:#2A1E14;
+  box-shadow:0 6px 24px -8px rgba(255,194,75,.55);
   border:none;border-radius:12px;cursor:pointer;margin-top:20px;
 }
 button.primary:disabled{opacity:.4;cursor:default}
 button.secondary{
-  width:100%;min-height:48px;padding:12px;font-size:15px;font-weight:600;background:transparent;color:var(--ink);
-  border:1px solid var(--rule);border-radius:12px;cursor:pointer;margin-top:10px;
+  width:100%;min-height:48px;padding:12px;font-size:15px;font-weight:600;background:transparent;color:var(--on-stage);
+  border:1px solid rgba(255,255,255,.22);border-radius:12px;cursor:pointer;margin-top:10px;
 }
 
 /* role picking */
 .scene-title{font-family:var(--serif);font-weight:900;font-size:28px;margin:0 0 2px}
 .rolecard{
-  display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:64px;border:1.5px solid var(--rule);
+  color:var(--ink);display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:64px;border:1.5px solid var(--rule);
   border-radius:12px;background:var(--sheet);margin-bottom:10px;cursor:pointer;
 }
 .rolecard.chosen{border-color:var(--ink-c);box-shadow:inset 0 0 0 1px var(--ink-c);background:var(--hl-soft)}
@@ -101,21 +110,21 @@ button.secondary{
 .play{width:36px;height:36px;border-radius:50%;border:1px solid var(--rule);background:var(--paper);cursor:pointer;font-size:13px;color:var(--ink);display:grid;place-items:center}
 .play.busy{opacity:.5}
 
-.toggle{display:flex;align-items:center;gap:12px;margin:16px 0 0;padding:12px 14px;border:1px dashed var(--rule);border-radius:12px;cursor:pointer;font-size:15px;line-height:1.4}
-.toggle input{width:22px;height:22px;accent-color:var(--ink);flex-shrink:0}
-.toggle small{display:block;color:var(--pencil);font-size:13px}
+.toggle{display:flex;align-items:center;gap:12px;margin:16px 0 0;padding:12px 14px;border:1px dashed rgba(255,255,255,.25);color:var(--on-stage);border-radius:12px;cursor:pointer;font-size:15px;line-height:1.4}
+.toggle input{width:22px;height:22px;accent-color:var(--amber);flex-shrink:0}
+.toggle small{display:block;color:var(--on-stage-dim);font-size:13px}
 
 /* rehearsal */
 #screen-rehearse.active{display:flex;flex-direction:column;height:calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom));min-height:380px}
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px}
-.topbar .back{font-size:15px;color:var(--pencil);background:none;border:none;cursor:pointer;padding:8px 0}
+.topbar .back{font-size:15px;color:var(--on-stage-dim);background:none;border:none;cursor:pointer;padding:8px 0}
 .topbar .role{display:flex;align-items:center;gap:8px;font-family:var(--serif);font-weight:700;font-size:16px}
 .topbar .role .av{width:28px;height:28px;font-size:14px}
-.progress{height:3px;background:var(--rule);border-radius:2px;margin-bottom:12px;overflow:hidden}
-.progress-fill{height:100%;background:var(--ink);transition:width .3s}
-.notice{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:9px 12px;font-size:13px;color:var(--pencil);margin-bottom:10px;line-height:1.5}
+.progress{height:4px;background:rgba(255,255,255,.12);border-radius:2px;margin-bottom:12px;overflow:hidden}
+.progress-fill{height:100%;background:var(--amber);transition:width .3s}
+.notice{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:9px 12px;font-size:13px;color:var(--on-stage-dim);margin-bottom:10px;line-height:1.5}
 
-.feed{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+.feed{color:var(--ink);flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
   background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:6px 14px;margin-bottom:12px}
 .line{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--rule)}
 .line:last-child{border-bottom:none}
@@ -130,33 +139,57 @@ button.secondary{
 .line.mine.hidden .reveal{display:inline-block;font-family:var(--sans);font-size:13px;color:var(--pencil);margin-top:6px}
 .reveal{display:none}
 .line.past{opacity:.55}
+.line.mine.current{background:linear-gradient(90deg, transparent, rgba(255,194,75,.16));margin:0 -14px;padding:14px 14px;border-radius:10px}
 .line.speaking .av{box-shadow:0 0 0 0 var(--ink-c);animation:ring 1.3s ease-out infinite}
 @keyframes ring{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ink-c) 55%,transparent)}100%{box-shadow:0 0 0 12px transparent}}
 @media (prefers-reduced-motion: reduce){.line.speaking .av{animation:none;outline:3px solid var(--ink-c);outline-offset:2px}}
 
-.status{display:flex;align-items:center;gap:9px;font-size:15px;color:var(--ink);margin-bottom:10px;min-height:22px}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);flex-shrink:0}
-.dot.wait{background:var(--warn);animation:pulse 1s ease-in-out infinite}
+.notice.bad{color:#FFD1C7;border-color:rgba(255,120,100,.5)}
+.status{display:flex;align-items:center;gap:9px;font-size:15px;color:var(--on-stage);margin-bottom:10px;min-height:22px}
+.dot{width:8px;height:8px;border-radius:50%;background:#7BD3A4;flex-shrink:0}
+.dot.wait{background:var(--amber);animation:pulse 1s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.meter{height:6px;background:var(--rule);border-radius:3px;overflow:hidden;margin-bottom:12px}
-#meterFill{height:100%;width:0;background:var(--pencil);transition:width .08s}
-#meterFill.talking{background:var(--ok)}
+.meter{height:6px;background:rgba(255,255,255,.12);border-radius:3px;overflow:hidden;margin-bottom:12px}
+#meterFill{height:100%;width:0;background:var(--on-stage-dim);transition:width .08s}
+#meterFill.talking{background:#7BD3A4}
 .controls{display:flex;gap:8px}
 .controls button{flex:1;margin-top:0}
 
 .donebox{text-align:center;padding:40px 6px}
 .donebox h2{font-family:var(--serif);font-weight:900;font-size:34px;margin:0 0 8px}
-.donebox p{color:var(--pencil);font-size:16px;margin:0 0 22px}
+.donebox p{color:var(--on-stage-dim);font-size:16px;margin:0 0 22px}
+
+/* small scene controls */
+.minor{display:flex;gap:8px;margin-bottom:10px}
+.minor button{flex:1;min-height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.06);color:var(--on-stage);font-size:15px;font-weight:600;cursor:pointer}
+.minor[hidden]{display:none}
+/* partner pace */
+.pace{display:flex;gap:6px;margin-top:6px}
+.pace button{flex:1;min-height:44px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:transparent;color:var(--on-stage);font-size:15px;cursor:pointer}
+.pace button[aria-pressed="true"]{background:var(--on-stage);color:var(--stage);font-weight:700}
+/* countdown */
+.cd{position:fixed;inset:0;display:grid;place-items:center;background:rgba(20,14,26,.82);z-index:10}
+.cd[hidden]{display:none}
+.cd span{font-family:var(--serif);font-weight:900;font-size:120px;color:var(--amber);text-shadow:0 0 40px rgba(255,194,75,.5)}
+.cd span.word{font-size:72px}
+.cd span.pop{animation:pop .55s ease-out}
+@keyframes pop{0%{transform:scale(1.6);opacity:0}60%{opacity:1}100%{transform:scale(1)}}
+@media (prefers-reduced-motion: reduce){.cd span.pop{animation:none}}
+/* end of scene */
+.stats{display:flex;justify-content:center;gap:10px;margin:0 0 22px}
+.stats div{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:10px 14px;min-width:84px}
+.stats b{display:block;font-family:var(--serif);font-size:26px;color:var(--amber)}
+.stats small{color:var(--on-stage-dim);font-size:13px}
 
 /* natural voice settings */
-.voicebox{margin-top:30px;border-top:1px solid var(--rule);padding-top:4px}
-.voicebox summary{font-size:15px;color:var(--pencil);cursor:pointer;padding:12px 0;list-style:none;font-weight:600}
+.voicebox{margin-top:30px;border-top:1px solid rgba(255,255,255,.14);padding-top:4px}
+.voicebox summary{font-size:15px;color:var(--on-stage-dim);cursor:pointer;padding:12px 0;list-style:none;font-weight:600}
 .voicebox summary::-webkit-details-marker{display:none}
 .voicebox input{width:100%;padding:12px;font-size:16px;border:1px solid var(--rule);border-radius:10px;background:var(--sheet);color:var(--ink);font-family:monospace;direction:ltr}
 .voicebox .row{display:flex;gap:8px}
 .voicebox .row button{flex:1}
 .vstate{font-size:14px;margin-top:10px;line-height:1.5}
-.vstate.ok{color:var(--ok)} .vstate.bad{color:var(--warn)}
+.vstate.ok{color:#7BD3A4} .vstate.bad{color:#FF9B8A}
 </style>
 </head>
 <body>
@@ -196,6 +229,10 @@ button.secondary{
 <h2 class="scene-title" id="sceneTitle">הסצנה שלך</h2>
 <label>את מי אתה משחק?</label>
 <div id="roleList"></div>
+<label id="paceLabel">קצב הדיבור של הפרטנרים</label>
+<div class="pace" role="group" aria-labelledby="paceLabel">
+<button type="button" data-rate="0.85">איטי</button><button type="button" data-rate="1">רגיל</button><button type="button" data-rate="1.15">מהיר</button>
+</div>
 <label class="toggle"><input type="checkbox" id="hideMine"><span>הסתר את השורות שלי<small>רואים רק את המילה הראשונה. לתרגול זיכרון.</small></span></label>
 <button class="primary" id="startBtn">התחל תרגול</button>
 <button class="secondary" id="backToInput">חזרה</button>
@@ -210,6 +247,10 @@ button.secondary{
 <div class="progress"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
 <div id="micNotice" class="notice" style="display:none"></div>
 <div class="feed" id="feed"></div>
+<div class="minor" id="minorCtl" hidden>
+<button type="button" id="backLineBtn">שורה אחורה</button>
+<button type="button" id="pauseBtn">השהה</button>
+</div>
 <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">מוכן</span></div>
 <div id="liveTranscript" class="meter"><div id="meterFill"></div></div>
 <div class="controls">
@@ -221,13 +262,16 @@ button.secondary{
 <div class="screen" id="screen-done">
 <div class="donebox">
 <h2>קאט.</h2>
-<p>סיימת את הסצנה. עוד טייק?</p>
+<p id="doneLine">סיימת את הסצנה. עוד טייק?</p>
+<div class="stats"><div><b id="stTake">1</b><small>טייק</small></div><div><b id="stTime">0:00</b><small>זמן</small></div><div><b id="stLines">0</b><small>שורות שלך</small></div></div>
 <button class="primary" id="againBtn">עוד פעם מההתחלה</button>
 <button class="secondary" id="newSceneBtn">סצנה אחרת</button>
 </div>
 </div>
 
 </div>
+
+<div class="cd" id="countdown" hidden aria-live="assertive"><span id="countNum"></span></div>
 
 <script>
 const screens = {
@@ -539,6 +583,8 @@ function elErrorText(err){
   const m = String(err && err.message || err);
   if(m.startsWith('401')) return 'המפתח לא תקין או בלי הרשאת Text to Speech';
   if(/quota|credits/i.test(m)) return 'נגמרו הקרדיטים ב-ElevenLabs';
+  if(/voice_not_found|voice_not_allowed|not.*permission/i.test(m)) return 'הקול הזה לא זמין במפתח שלך';
+  if(/model/i.test(m) && m.startsWith('4')) return 'המודל העברי לא זמין בחשבון';
   if(m.startsWith('429')) return 'יותר מדי בקשות — נסה שוב עוד רגע';
   if(/Failed to fetch|NetworkError|Load failed/i.test(m)) return 'אין חיבור לאינטרנט';
   return 'שגיאה: ' + m.slice(0, 120);
@@ -593,27 +639,66 @@ player.setAttribute('playsinline', '');
 const SILENT_WAV = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
 function unlockPlayer(){ try{ player.src = SILENT_WAV; const p = player.play(); if(p) p.catch(()=>{}); }catch(e){} }
 
-async function elSpeak(text, character, cb, onFail){
-  let done = false, url = null;
-  const finish = () => { if(done) return; done = true; player.onended = player.onerror = null; if(url) URL.revokeObjectURL(url); cb(); };
-  try{
-    const blob = await elGet(text, elVoiceOf(character));
-    url = URL.createObjectURL(blob);
-    player.onended = finish;
-    player.onerror = () => { if(!done){ done = true; onFail(new Error('playback')); } };
-    player.src = url;
-    await player.play();
-  }catch(e){
-    if(!done){ done = true; onFail(e); }
+let speechRate = parseFloat(lsGet('sp_rate') || '1') || 1;
+let currentAudio = null;
+function elFallbackVoice(character){
+  const g = guessGender(character);
+  const pool = EL_FALLBACK_VOICES.filter(v => voiceGender(v) === g);
+  return (pool[0] || EL_FALLBACK_VOICES[0]).voice_id;
+}
+async function playBlob(blob, onEnd){
+  const url = URL.createObjectURL(blob);
+  const attempt = async (el) => {
+    el.onended = () => { URL.revokeObjectURL(url); onEnd(); };
+    el.src = url;
+    el.playbackRate = speechRate;
+    currentAudio = el;
+    await el.play();
+  };
+  try{ await attempt(player); }
+  catch(e){
+    // some phones refuse the shared player after the mic opens: try a fresh one once
+    player.onended = null;
+    const fresh = new Audio(); fresh.setAttribute('playsinline','');
+    await attempt(fresh);
   }
 }
-function stopAudio(){ try{ player.pause(); player.onended = player.onerror = null; }catch(e){} }
+async function elSpeak(text, character, cb, onFail){
+  let done = false;
+  const finish = () => { if(done) return; done = true; cb(); };
+  const voice = elVoiceOf(character);
+  let blob = null, firstErr = null;
+  try{ blob = await elGet(text, voice); }
+  catch(e){
+    firstErr = e;
+    const msg = String(e && e.message || e);
+    // a voice this key/model can't use: retry once with a standard voice of the same gender
+    if(!/^401|^429|quota|credits|Failed to fetch|NetworkError|Load failed/i.test(msg)){
+      const fb = elFallbackVoice(character);
+      if(fb !== voice){ try{ blob = await elGet(text, fb); elVoiceFor[character] = fb; lsSet('sp_el_voices2', JSON.stringify(elVoiceFor)); }catch(e2){} }
+    }
+  }
+  if(!blob){ noteElError(firstErr); onFail(firstErr); return; }
+  if(firstErr) noteElError(firstErr, true);
+  try{ await playBlob(blob, finish); }
+  catch(e){ noteElError(e); if(!done){ done = true; onFail(e); } }
+}
+function noteElError(err, recovered){
+  let msg = elErrorText(err);
+  if(/NotAllowed/i.test(String(err))) msg = 'הטלפון חסם השמעה אוטומטית';
+  msg = (recovered ? 'הקול שנבחר לא עבד והוחלף בקול רגיל. ' : '') + msg;
+  lsSet('sp_el_lasterr', msg);
+  const n = document.getElementById('micNotice');
+  if(n){ n.style.display = 'block'; n.textContent = 'ElevenLabs: ' + msg; n.classList.add('bad'); }
+}
+function stopAudio(){ for(const a of [player, currentAudio]){ try{ if(a){ a.pause(); a.onended = a.onerror = null; } }catch(e){} } }
 
 (function initVoiceBox(){
   const inp = document.getElementById('elKey');
   inp.value = elKey();
   if(elOn()) elLoadVoices();   // refresh voice list (with gender labels) in the background
-  elSetState(elOn() ? 'המפתח שמור במכשיר הזה.' : 'בלי מפתח — משתמשים בקול המובנה של הטלפון.', elOn() ? true : null);
+  const lastErr = lsGet('sp_el_lasterr');
+  elSetState(elOn() ? (lastErr ? 'בעיה אחרונה: ' + lastErr : 'המפתח שמור במכשיר הזה.') : 'בלי מפתח — משתמשים בקול המובנה של הטלפון.', elOn() ? !lastErr : null);
   document.getElementById('elSave').onclick = async () => {
     const k = inp.value.trim();
     if(!k){ elSetState('הדבק קודם את המפתח בשדה.', false); return; }
@@ -623,6 +708,7 @@ function stopAudio(){ try{ player.pause(); player.onended = player.onerror = nul
     try{
       const blob = await elFetchAudio('שלום, אני השותף שלך לסצנה.', elVoices[0].voice_id);
       elSetState('עובד ✓ — משמיע דוגמה', true);
+      lsSet('sp_el_lasterr', null);
       const url = URL.createObjectURL(blob); player.src = url; player.play().catch(()=>{});
     }catch(e){
       elSetState(elErrorText(e), false);
@@ -711,7 +797,7 @@ function speakBrowser(text, character, cb){
   const v = voiceByCharacter[character];
   if(v) u.voice = v;
   u.lang = 'he-IL';
-  u.rate = 0.95;
+  u.rate = 0.95 * speechRate;
   u.onend = finish;
   u.onerror = finish;
   currentUtterance = u;
@@ -851,7 +937,10 @@ function setupRehearsal(){
   document.getElementById('actionBtn').onclick = beginScene;
   document.getElementById('actionBtn').disabled = false;
   const notice = document.getElementById('micNotice');
+  notice.classList.remove('bad');
   notice.style.display = 'block';
+  document.getElementById('minorCtl').hidden = true;
+  paused = false;
   notice.textContent = micAvailable
     ? 'המיקרופון נפתח פעם אחת בתחילת הסצנה. כשתסיים משפט ותשתוק רגע — הסצנה ממשיכה לבד.'
     : 'אין גישה למיקרופון בדפדפן הזה — בתור שלך לחץ "סיימתי — הבא".';
@@ -869,14 +958,20 @@ function updateProgress(){
 }
 
 let hideMine = lsGet('sp_hide') === '1';
+document.querySelectorAll('.pace button').forEach(b => {
+  const sync = () => document.querySelectorAll('.pace button').forEach(x => x.setAttribute('aria-pressed', String(parseFloat(x.dataset.rate) === speechRate)));
+  b.onclick = () => { speechRate = parseFloat(b.dataset.rate); lsSet('sp_rate', String(speechRate)); sync(); };
+  sync();
+});
 document.getElementById('hideMine').checked = hideMine;
 
 function addLineToFeed(line, isMine){
   const feed = document.getElementById('feed');
-  feed.querySelectorAll('.line').forEach(l => l.classList.add('past'));
+  feed.querySelectorAll('.line').forEach(l => { if(+l.dataset.idx >= cursor) l.remove(); else { l.classList.add('past'); l.classList.remove('current'); } });
   const div = document.createElement('div');
   const ink = inkOf(line.character);
-  div.className = 'line ' + (isMine ? 'mine' : 'other');
+  div.className = 'line ' + (isMine ? 'mine current' : 'other');
+  div.dataset.idx = cursor;
   div.style.setProperty('--ink-c', ink);
   let txt = esc(line.text);
   if(isMine){
@@ -913,9 +1008,61 @@ async function beginScene(){
       document.getElementById('micNotice').textContent = 'אין אישור למיקרופון — בתור שלך לחץ "סיימתי — הבא". (אפשר לאשר בהגדרות האתר בדפדפן)';
     }
   }
+  await countdown();
+  if(myRun !== runId) return;
   sceneRunning = true;
+  sceneStart = Date.now(); myTurns = 0;
+  document.getElementById('minorCtl').hidden = false;
   advance(myRun);
 }
+
+function countdown(){
+  return new Promise(res => {
+    const box = document.getElementById('countdown'), num = document.getElementById('countNum');
+    const steps = ['3','2','1','אקשן!'];
+    let i = 0;
+    box.hidden = false;
+    const tick = () => {
+      if(i >= steps.length){ box.hidden = true; res(); return; }
+      num.textContent = steps[i];
+      num.className = (i === steps.length - 1 ? 'word ' : '') + 'pop';
+      void num.offsetWidth;
+      i++;
+      setTimeout(tick, i === steps.length ? 700 : 650);
+    };
+    tick();
+  });
+}
+
+/* ---- pause / one line back ---- */
+let paused = false, sceneStart = 0, myTurns = 0;
+function haltCurrent(){
+  runId++;
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+  if(recog){ try{ recog.abort(); }catch(e){} recog = null; }
+  stopAudio();
+  setMeter(0, false);
+}
+function jumpTo(idx){
+  haltCurrent();
+  paused = false;
+  document.getElementById('pauseBtn').textContent = 'השהה';
+  cursor = Math.max(0, idx);
+  sceneRunning = true;
+  advance(runId);
+}
+document.getElementById('pauseBtn').onclick = () => {
+  if(!paused){
+    haltCurrent();
+    paused = true;
+    document.getElementById('pauseBtn').textContent = 'המשך';
+    document.getElementById('actionBtn').style.display = 'none';
+    setStatus('מושהה. "המשך" מתחיל מהשורה הנוכחית', false);
+  } else {
+    jumpTo(cursor);
+  }
+};
+document.getElementById('backLineBtn').onclick = () => jumpTo(cursor - 1);
 
 function advance(myRun){
   if(myRun !== runId) return;            // scene was exited/restarted
@@ -925,10 +1072,12 @@ function advance(myRun){
 
   if(line.character === myCharacter){
     const el = addLineToFeed(line, true);
+    try{ if(navigator.vibrate) navigator.vibrate(35); }catch(e){}
+    myTurns++;
     const btn = document.getElementById('actionBtn');
 
     const goNext = () => {
-      el.classList.remove('hidden');
+      el.classList.remove('hidden', 'current');
       if(recog){ recog.abort(); recog = null; }
       setMeter(0, false);
       btn.disabled = true;
@@ -968,6 +1117,14 @@ function advance(myRun){
 
 function finishScene(){
   sceneRunning = false;
+  document.getElementById('minorCtl').hidden = true;
+  const secs = Math.round((Date.now() - sceneStart) / 1000);
+  const takeKey = 'sp_takes_' + sceneTitle;
+  const take = (parseInt(lsGet(takeKey) || '0', 10) || 0) + 1;
+  lsSet(takeKey, String(take));
+  document.getElementById('stTake').textContent = take;
+  document.getElementById('stTime').textContent = Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0');
+  document.getElementById('stLines').textContent = parsedLines.filter(l => l.character === myCharacter).length;
   closeMic();
   allowScreenOff();
   document.getElementById('progressFill').style.width = '100%';
