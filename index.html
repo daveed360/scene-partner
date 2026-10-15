@@ -330,8 +330,8 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 .stage.talking .face .brows{transform-box:view-box;animation:browtalk 2.6s ease-in-out infinite}
 @keyframes browtalk{0%,55%,100%{transform:none}65%,75%{transform:translateY(-1.3px)}}
 .stage.talking .face .m-rest{display:none}
-.stage.talking .face .m-talk{display:inline;transform-box:fill-box;transform-origin:center;animation:mx .37s ease-in-out infinite alternate}
-.stage.talking .face .m-talk-y{transform-box:fill-box;transform-origin:center;animation:my .27s ease-in-out infinite alternate}
+.stage.talking .face .m-talk{display:inline;transform-box:fill-box;transform-origin:center;animation:jitter .11s steps(2) infinite}
+@keyframes jitter{0%{transform:translate(0,0)}50%{transform:translate(.15px,.12px) rotate(.6deg)}100%{transform:translate(-.12px,0)}}
 @keyframes mx{from{transform:scaleX(.85)}to{transform:scaleX(1.08)}}
 @keyframes my{0%{transform:scaleY(.2)}35%{transform:scaleY(1)}60%{transform:scaleY(.5)}100%{transform:scaleY(.85)}}
 .stage.listening .face .fig-head{animation:listen 3.6s ease-in-out infinite}
@@ -601,17 +601,23 @@ function figureSVG(name, ink, opts){
   const lip = '#7A3328';
   const mouthRest = {
     smile:    `<path d="M44.5 59.5 Q50 64 55.5 59.5" stroke="${lip}" stroke-width="2.3" fill="none" stroke-linecap="round"/>`,
-    neutral:  `<path d="M45.5 61 Q50 62.2 54.5 61" stroke="${lip}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`,
+    neutral:  `<path d="M45.5 61.2 Q50 61.2 54.5 61.2" stroke="${lip}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`,
     happy:    `<path d="M43 58 Q50 68.5 57 58 Z" fill="${lip}"/><path d="M45.3 60.2 Q50 62.6 54.7 60.2" fill="#fff" opacity=".9"/>`,
     surprised:`<ellipse cx="50" cy="61.5" rx="3.4" ry="4" fill="${lip}"/>`,
     sad:      `<path d="M45 63 Q50 59 55 63" stroke="${lip}" stroke-width="2.3" fill="none" stroke-linecap="round"/>`,
     angry:    `<path d="M45 62 Q50 59.8 55 62" stroke="${lip}" stroke-width="2.7" fill="none" stroke-linecap="round"/>`,
   }[mood];
-  const mouthOpen = `<ellipse cx="50" cy="61" rx="4.6" ry="3.7" fill="${lip}"/><path d="M46.4 63.2 Q50 65.2 53.6 63.2" fill="#E9897A"/>`;
+  const VIS = [
+    `<path d="M45.2 59.6 Q50 58.4 54.8 59.6 Q55.4 64.6 50 65.4 Q44.6 64.6 45.2 59.6 Z" fill="${lip}"/><path d="M46.6 63.4 Q50 65.2 53.4 63.4" fill="#E9897A"/>`,   // ah
+    `<path d="M43.6 60.2 Q50 58.8 56.4 60.2 Q50 64.6 43.6 60.2 Z" fill="${lip}"/><path d="M45.4 60.2 Q50 59.4 54.6 60.2 Q50 61.4 45.4 60.2 Z" fill="#fff" opacity=".85"/>`,  // ee
+    `<ellipse cx="50" cy="61.4" rx="2.9" ry="3.3" fill="${lip}"/>`,                                                       // oo
+    `<path d="M45 61.2 Q50 60.4 55 61.2" stroke="${lip}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,         // mm
+    `<path d="M44.8 60.4 Q50 59.6 55.2 60.4 Q50 63.4 44.8 60.4 Z" fill="${lip}"/>`,                                        // eh
+  ];
   let mouth;
-  if(opts.mouthOnly === 'open') mouth = mouthOpen;
-  else if(opts.mouthOnly === 'rest') mouth = mouthRest;
-  else mouth = `<g class="m-rest">${mouthRest}</g><g class="m-talk"><g class="m-talk-y">${mouthOpen}</g></g>`;
+  if(opts.mouthOnly === 'rest') mouth = mouthRest;
+  else if(opts.mouthOnly !== undefined) mouth = VIS[+opts.mouthOnly] || VIS[0];
+  else mouth = `<g class="m-rest">${mouthRest}</g><g class="m-talk">${VIS.map((v, i) => `<g class="vis v${i}"${i ? ' style="display:none"' : ''}>${v}</g>`).join('')}</g>`;
   const clothes = {
     tee:    `<path d="M14 108 Q16 80 50 77.5 Q84 80 86 108 Z" fill="${shirt}"/><path d="M41 78.2 Q50 88 59 78.2" stroke="${shade}" stroke-width="2" fill="none"/>`,
     collar: `<path d="M14 108 Q16 80 50 77.5 Q84 80 86 108 Z" fill="${shirt}"/><path d="M40 78 L50 90 L45.5 93 L37 81 Z M60 78 L50 90 L54.5 93 L63 81 Z" fill="#fff" opacity=".92"/>`,
@@ -1699,6 +1705,21 @@ function setStageFace(name, mood){
   face.style.setProperty('--talk', (1.8 + ((h >>> 12) % 8) / 10) + 's');
   face.innerHTML = `<span class="av" style="--ink-c:${inkOf(name)}">${figureSVG(name, inkOf(name), {mood})}</span>`;
 }
+let lipTimer = null;
+function lipSync(on){
+  clearTimeout(lipTimer);
+  const pick = () => {
+    const vis = document.querySelectorAll('#stageFace .vis');
+    if(!vis.length) return;
+    const r = Math.random();
+    const n = r < .30 ? 0 : r < .50 ? 4 : r < .66 ? 1 : r < .80 ? 2 : 3;    // mostly open sounds, some closures
+    vis.forEach((v, i) => v.style.display = i === n ? '' : 'none');
+    lipFrame = n;
+    lipTimer = setTimeout(pick, n === 3 ? 70 + Math.random() * 60 : 90 + Math.random() * 90);
+  };
+  if(on) pick();
+}
+let lipFrame = 0;
 let gazeTimer = null;
 function wanderGaze(){
   clearTimeout(gazeTimer);
@@ -1725,7 +1746,7 @@ function stageShowPartner(line, still){
   partnerMood[line.character] = mood;
   setStageFace(line.character, mood);
   st.classList.remove('listening');
-  if(!still) st.classList.add('talking');
+  if(!still){ st.classList.add('talking'); lipSync(true); }
   document.getElementById('stageWho').textContent = line.character;
   const box = document.getElementById('stageLine');
   box.onclick = null;
@@ -1736,7 +1757,7 @@ function stageShowPartner(line, still){
 }
 function stageShowMine(line){
   const st = document.getElementById('stage');
-  st.classList.remove('talking'); st.classList.add('listening');
+  st.classList.remove('talking'); st.classList.add('listening'); lipSync(false);
   document.getElementById('stageWho').textContent = 'התור שלך';
   const box = document.getElementById('stageLine');
   const words = line.text.trim().split(/\s+/);
@@ -1790,7 +1811,7 @@ function drawFrame(ctx, W, H){
   const name = stageChar || (runLines.find(l => l.character !== myCharacter) || {}).character;
   if(name){
     const talking = document.getElementById('stage').classList.contains('talking') || (!viewFace && tapeCaption && isPartnerTalking);
-    const mouth = talking && (Math.floor(Date.now() / 140) % 2) ? 'open' : 'rest';
+    const mouth = talking ? String(lipFrame) : 'rest';
     const img = faceImg(name, partnerMood[name] || 'neutral', mouth);
     const s = Math.round(top * 0.58);
     if(img.complete) ctx.drawImage(img, (W - s)/2, Math.round(top*0.06), s, s);
@@ -1903,7 +1924,8 @@ function addLineToFeed(line, isMine){
     }
   }
   const dir = line.dir ? `<span class="dir">(${esc(line.dir)})</span>` : '';
-  div.innerHTML = `${avatar(line.character, ink)}<div class="body"><span class="who">${esc(line.character)}</span><span class="txt">${txt}</span>${dir}</div>`;
+  const lineMood = isMine ? 'neutral' : moodOf(line.dir);
+  div.innerHTML = `<span class="av" style="--ink-c:${ink}">${figureSVG(line.character, ink, {mood: lineMood})}</span><div class="body"><span class="who">${esc(line.character)}</span><span class="txt">${txt}</span>${dir}</div>`;
   feed.appendChild(div);
   // Scroll only the script box, not the whole page (scrollIntoView jumps the page on phones)
   feed.scrollTo({top: feed.scrollHeight, behavior:'smooth'});
@@ -2034,6 +2056,7 @@ function advance(myRun){
     isPartnerTalking = true;
     speak(line.text, line.character, () => {
       document.getElementById('stage').classList.remove('talking');
+      lipSync(false);
       isPartnerTalking = false;
       if(myRun !== runId) return;
       el.classList.remove('speaking');
