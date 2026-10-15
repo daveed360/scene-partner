@@ -11,7 +11,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <title>Audition Partner</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Assistant:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Assistant:wght@400;500;600;700&family=Rubik:wght@500;600;700;800&display=swap');
 
 :root{
   --stage:#241B2E;      /* backstage velvet */
@@ -34,7 +34,7 @@
   --sans:'Assistant', system-ui, sans-serif;
 }
 *{box-sizing:border-box}
-html{background:var(--stage)}
+html{background:#1C1524}
 body{
   margin:0;font-family:var(--sans);color:var(--on-stage);
   background:radial-gradient(120% 55% at 50% -12%, var(--glow) 0%, var(--stage-2) 38%, var(--stage) 75%) fixed, var(--stage);
@@ -151,6 +151,7 @@ button.secondary{
 .line.mine.hidden .rest{filter:blur(6px);user-select:none}
 .line.mine.hidden .reveal{display:inline-block;font-family:var(--sans);font-size:13px;color:var(--pencil);margin-top:6px}
 .reveal{display:none}
+.line .dir{display:block;font-size:14px;color:var(--pencil);font-style:italic;margin-top:4px}
 .line.past{opacity:.55}
 .line.mine.current{background:linear-gradient(90deg, transparent, rgba(255,194,75,.16));margin:0 -14px;padding:14px 14px;border-radius:10px}
 .line.speaking .av{box-shadow:0 0 0 0 var(--ink-c);animation:ring 1.3s ease-out infinite}
@@ -203,9 +204,91 @@ button.secondary{
 .voicebox .row button{flex:1}
 .vstate{font-size:14px;margin-top:10px;line-height:1.5}
 .vstate.ok{color:#7BD3A4} .vstate.bad{color:#FF9B8A}
+
+/* ===== Playful layer: chunky, pressable, bright — like a game, not a form ===== */
+:root{ --sans:'Rubik','Assistant',system-ui,sans-serif; --amber-d:#C98A12; --plum-d:#160F1C; }
+body{
+  background:
+    radial-gradient(120% 55% at 50% -12%, rgba(255,200,120,.20) 0%, transparent 45%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cg fill='%23FFE7B0'%3E%3Cpath d='M30 20l2 6 6 2-6 2-2 6-2-6-6-2 6-2z' opacity='.28'/%3E%3Ccircle cx='120' cy='40' r='1.6' opacity='.35'/%3E%3Ccircle cx='80' cy='120' r='1.2' opacity='.3'/%3E%3Cpath d='M150 130l1.5 4.5 4.5 1.5-4.5 1.5-1.5 4.5-1.5-4.5-4.5-1.5 4.5-1.5z' opacity='.22'/%3E%3Ccircle cx='20' cy='150' r='1.4' opacity='.3'/%3E%3C/g%3E%3C/svg%3E"),
+    linear-gradient(180deg, #34264A 0%, #241B2E 45%, #1C1524 100%) fixed;
+}
+h1, h2, .scene .t, .rolecard .name, .donebox h2, button{font-family:var(--sans)}
+header h1{font-weight:800;letter-spacing:-.5px}
+h2.sec{font-family:var(--sans);font-weight:800;font-size:20px}
+.scene-title{font-family:var(--sans);font-weight:800}
+
+/* pressable buttons with a solid "floor" */
+button.primary{border-radius:16px;border-bottom:5px solid var(--amber-d);box-shadow:0 10px 26px -12px rgba(255,194,75,.6);font-weight:800;letter-spacing:.2px;transition:transform .06s, border-bottom-width .06s}
+button.primary:active{transform:translateY(3px);border-bottom-width:2px}
+button.secondary{border-radius:16px;border:2px solid rgba(255,255,255,.18);border-bottom-width:5px;font-weight:700}
+button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
+.minor button,.pace button{border-width:2px;border-bottom-width:4px;border-radius:14px;font-weight:700}
+.minor button:active,.pace button:active{transform:translateY(2px);border-bottom-width:2px}
+.pace button[aria-pressed="true"]{background:#7BD3A4;border-color:#4FA87A;color:#14301F}
+
+/* cards that sit on the table */
+.scene{border:2px solid #E7E1D6;border-bottom-width:6px;border-radius:20px;padding:16px 18px;transition:transform .06s}
+.scene:active{transform:translateY(3px);border-bottom-width:3px}
+.scene .t{font-weight:800;font-size:20px}
+.scene::before{width:8px;border-radius:0 18px 18px 0}
+.rolecard{border:2px solid #E7E1D6;border-bottom-width:5px;border-radius:18px}
+.rolecard.chosen{border-color:var(--ink-c);border-bottom-width:5px;box-shadow:none;background:#FFF6CC}
+.feed{border-radius:20px;border:2px solid #E7E1D6;border-bottom-width:6px}
+.progress{height:14px;border-radius:999px;background:rgba(255,255,255,.12)}
+.progress-fill{border-radius:999px;background:linear-gradient(#FFD36E,#FFC24B);position:relative}
+.progress-fill::after{content:"";position:absolute;left:8px;right:8px;top:3px;height:3px;border-radius:3px;background:rgba(255,255,255,.55)}
+.bubble{border-radius:20px 20px 6px 20px;border-bottom:4px solid #E7E1D6;font-weight:500}
+
+/* practice streak */
+.streak{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:6px 12px 6px 10px;border-radius:999px;background:rgba(255,194,75,.14);border:2px solid rgba(255,194,75,.35);color:#FFD98A;font-weight:700;font-size:14px}
+.streak svg{width:20px;height:20px}
+.streak[hidden]{display:none}
+
+/* curtains and audience on wide screens, so the stage never looks empty */
+.deco{display:none}
+@media (min-width: 900px){
+  .deco{display:block;position:fixed;pointer-events:none;z-index:0}
+  .wrap{position:relative;z-index:1}
+  .curtain{top:0;bottom:0;width:calc((100vw - 600px) / 2);max-width:380px}
+  .curtain.l{left:0}
+  .curtain.r{right:0}
+  .curtain::before{content:"";position:absolute;inset:0;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.0) 60%, rgba(0,0,0,.35)),
+      repeating-linear-gradient(90deg, #7A1E3A 0 22px, #962A4A 22px 34px, #7A1E3A 34px 46px, #5E1630 46px 60px);
+  }
+  .curtain.l::before{border-bottom-right-radius:100% 30%;box-shadow:inset -18px 0 30px rgba(0,0,0,.35)}
+  .curtain.r::before{border-bottom-left-radius:100% 30%;box-shadow:inset 18px 0 30px rgba(0,0,0,.35)}
+  .valance{top:0;left:0;right:0;height:46px;
+    background:
+      radial-gradient(circle at 30px -4px, #962A4A 30px, transparent 31px) 0 0 / 60px 46px repeat-x,
+      linear-gradient(#5E1630, #5E1630) 0 0 / 100% 16px no-repeat;
+    filter:drop-shadow(0 6px 8px rgba(0,0,0,.35))}
+  .tieback{top:52%;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 35% 35%, #FFE29A, #D19A2A);box-shadow:0 3px 8px rgba(0,0,0,.4)}
+  .tieback.l{left:calc((100vw - 600px) / 2 - 40px)}
+  .tieback.r{right:calc((100vw - 600px) / 2 - 40px)}
+  .audience{left:0;right:0;bottom:-6px;height:70px;
+    background:
+      radial-gradient(circle at 40px 30px, #120C17 22px, transparent 23px) 0 0 / 80px 70px repeat-x,
+      radial-gradient(ellipse at 40px 80px, #120C17 40px, transparent 41px) 0 0 / 80px 70px repeat-x,
+      radial-gradient(circle at 20px 44px, #0D0911 20px, transparent 21px) 0 0 / 70px 70px repeat-x;
+    opacity:.95}
+  body{padding-bottom:60px}
+}
+
+/* confetti at the end of a scene */
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:20;overflow:hidden}
+.confetti i{position:absolute;top:-20px;width:10px;height:14px;border-radius:3px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+@media (prefers-reduced-motion: reduce){.confetti{display:none}}
 </style>
 </head>
 <body>
+<div class="deco curtain l" aria-hidden="true"></div><div class="deco curtain r" aria-hidden="true"></div>
+<div class="deco valance" aria-hidden="true"></div>
+<div class="deco tieback l" aria-hidden="true"></div><div class="deco tieback r" aria-hidden="true"></div>
+<div class="deco audience" aria-hidden="true"></div>
 
 <div class="wrap">
 <header>
@@ -218,6 +301,7 @@ button.secondary{
 </svg>
 <h1>Audition<br>Partner</h1>
 </div>
+<div style="text-align:right"><span class="streak" id="streak" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z" fill="#FFC24B"/><path d="M9 5v12" stroke="#7A4E00" stroke-width="1.6" stroke-dasharray="2 2"/></svg><span id="streakTxt"></span></span></div>
 <div class="host">
 <span class="av host-av" id="hostAv" style="--ink-c:#4A3A5C"></span>
 <p class="bubble" id="hostSay">היי! בחר סצנה, ואני אדאג לשאר הדמויות.</p>
@@ -231,7 +315,7 @@ button.secondary{
 
 <h2 class="sec">סצנה משלך</h2>
 <textarea id="scriptInput" aria-label="הטקסט של הסצנה" placeholder="דני: את לא חייבת להישאר.&#10;נועה: אני יודעת. אני פה כי אני רוצה.&#10;דני: זה לא מה שאמרת אתמול."></textarea>
-<div class="hint">כל שורה: שם הדמות, נקודתיים, ואז הטקסט. הוראות במה בסוגריים מדולגות.</div>
+<div class="hint">אפשר להדביק כמעט כל פורמט, גם ישר מאתר. אני מזהה את הדמויות ומסדר את הטקסט לבד. הוראות במה בסוגריים לא מוקראות.</div>
 <div id="inputErr" class="err" style="display:none"></div>
 <button class="primary" id="analyzeBtn">המשך לבחירת תפקיד</button>
 
@@ -331,7 +415,7 @@ scriptInput.addEventListener('input', () => {
 });
 /* ---- Cast figures: small illustrated actors, drawn from the character's name ---- */
 const SKINS = ['#F3CBA5','#E2A97F','#C78B5F','#8E5B3C','#F6D7BD','#B97A55'];
-const HAIRS = ['#2B1D16','#5A3825','#9B4F26','#D7A23F','#161616','#8A8A8A','#6B2E2E'];
+const HAIRS = ['#2B1D16','#5A3825','#9B4F26','#D7A23F','#161616','#6B2E2E'];
 function hashStr(s){ let h = 2166136261; for(const c of String(s)) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
 let figId = 0;
 function figureSVG(name, ink, opts){
@@ -472,6 +556,45 @@ document.getElementById('doneAv').innerHTML = figureSVG(HOST, '#4A3A5C', {gender
 });
 function hostSays(t){ document.getElementById('hostSay').textContent = t; }
 
+/* ---- practice days in a row ---- */
+function dayStr(d){ return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0'); }
+function practiceDays(){ try{ return JSON.parse(lsGet('sp_days') || '[]'); }catch(e){ return []; } }
+function streakCount(){
+  const days = new Set(practiceDays());
+  const d = new Date();
+  if(!days.has(dayStr(d))) d.setDate(d.getDate() - 1);   // today not done yet: count up to yesterday
+  let n = 0;
+  while(days.has(dayStr(d))){ n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function markPracticedToday(){
+  const days = practiceDays(); const t = dayStr(new Date());
+  if(!days.includes(t)){ days.push(t); lsSet('sp_days', JSON.stringify(days.slice(-400))); }
+}
+function renderStreak(){
+  const n = streakCount(), el = document.getElementById('streak');
+  if(!n){ el.hidden = true; return; }
+  el.hidden = false;
+  document.getElementById('streakTxt').textContent = n === 1 ? 'יום חזרות אחד' : n + ' ימי חזרות ברצף';
+}
+document.addEventListener('DOMContentLoaded', renderStreak);
+
+function confetti(){
+  const box = document.createElement('div'); box.className = 'confetti';
+  const colors = ['#FFC24B','#7BD3A4','#FF8FA3','#8FB8FF','#FFFFFF','#C9A2FF'];
+  for(let i = 0; i < 70; i++){
+    const c = document.createElement('i');
+    c.style.left = Math.random()*100 + 'vw';
+    c.style.background = colors[i % colors.length];
+    c.style.animationDuration = (1.6 + Math.random()*1.6) + 's';
+    c.style.animationDelay = (Math.random()*0.5) + 's';
+    c.style.transform = 'rotate(' + Math.random()*360 + 'deg)';
+    box.appendChild(c);
+  }
+  document.body.appendChild(box);
+  setTimeout(() => box.remove(), 4000);
+}
+
 document.addEventListener('DOMContentLoaded', function renderSceneList(){
   const list = document.getElementById('sceneList');
   SCENES.forEach((sc, i) => {
@@ -492,25 +615,80 @@ let parsedLines = [];
 let characters = [];
 let myCharacter = null;
 
+/* Reads almost any pasted script: "שם: טקסט", "שם:" then text, a name alone on its own line,
+   "שם - טקסט", headers and stage directions mixed in. Returns [{character, text, dir}] or null. */
+const META_KEYS = /^(סדרה|סרט|הצגה|מחזה|בימוי|במאי|במאית|תסריט|תסריטאי|תסריטאית|מחזאי|מאת|רקע|הוסיף למאגר|הוסיפה למאגר|עונה|פרק|סצנה|תמונה|מערכה|דמויות|משתתפים|הערה|הערות|מקור|תקציר|מיקום|זמן|שנה|ז׳אנר|ז'אנר|לוקיישן|INT|EXT|פנים|חוץ)(?=$|[\s.:])/i;
+function cleanRaw(raw){
+  return String(raw)
+    .replace(/\r/g, '')
+    .replace(/[​-‏‪-‮⁦-⁩﻿]/g, '')   // invisible direction marks from websites
+    .replace(/ /g, ' ')
+    .replace(/[׃：﹕]/g, ':')
+    .replace(/[״“”„]/g, '"').replace(/[׳‘’]/g, "'")
+    .replace(/[ \t]+/g, ' ');
+}
+function splitDir(t){
+  const dirs = [];
+  const text = t.replace(/\s*[\(\[]([^\)\]]*)[\)\]]\s*/g, (m, d) => { if(d.trim()) dirs.push(d.trim()); return ' '; }).replace(/\s+/g, ' ').trim();
+  return {text, dir: dirs.join(' · ')};
+}
+function looksLikeName(s){
+  s = s.trim();
+  if(!s || s.length > 22) return false;
+  if(/[.?!,;"]|\d{3,}/.test(s)) return false;
+  const words = s.split(/\s+/);
+  return words.length <= 3;
+}
 function parseScript(raw){
-  const lines = raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
-  const result = [];
+  const lines = cleanRaw(raw).split('\n').map(l => l.trim()).filter(Boolean);
+  // 1) collect possible speaker labels and how often they appear
+  const count = {};
+  const bump = n => { n = n.trim(); count[n] = (count[n] || 0) + 1; };
   for(const l of lines){
-    // Lines that are only a stage direction, e.g. "(נכנסת לחדר)" — skip
-    if(/^[\(\[].*[\)\]]$/.test(l)) continue;
-    const idx = l.indexOf(':');
-    const character = idx > -1 ? l.slice(0, idx).trim() : '';
-    const text = idx > -1 ? l.slice(idx+1).trim() : l;
-    if(idx > -1 && character && character.length <= 25 && text){
-      result.push({character, text});
-    } else if(result.length){
-      // Wrapped line (common when pasting on a phone) — glue to the previous speech
-      result[result.length-1].text += ' ' + l;
-    } else {
-      return null;
-    }
+    let m = l.match(/^([^:]{1,24}):\s*(.*)$/);
+    if(m && looksLikeName(m[1])) { bump(m[1]); continue; }
+    m = l.match(/^([^\s\-–—]{1,20}(?:\s[^\s\-–—]{1,20})?)\s+[-–—]\s+(.+)$/);
+    if(m && looksLikeName(m[1])) { bump(m[1] + '\u0001dash'); continue; }
   }
-  return result;
+  // a name alone on its own line (screenplay style), repeated
+  const alone = {};
+  for(const l of lines){ if(looksLikeName(l) && !/[:]/.test(l) && !/^[\(\[]/.test(l)) alone[l] = (alone[l]||0) + 1; }
+  const isSpeaker = (name, n) => {
+    if(META_KEYS.test(name)) return false;
+    return n >= 2 || name.split(/\s+/).length === 1;
+  };
+  const speakers = new Set(Object.entries(count).filter(([k,n]) => !k.includes('\u0001') && isSpeaker(k,n)).map(([k]) => k));
+  const dashSpeakers = new Set(Object.entries(count).filter(([k,n]) => k.includes('\u0001') && n >= 2).map(([k]) => k.split('\u0001')[0]));
+  const aloneSpeakers = new Set(Object.entries(alone).filter(([k,n]) => n >= 2 && !META_KEYS.test(k)).map(([k]) => k));
+
+  // 2) walk the lines
+  const out = [];
+  let cur = null;
+  const start = (name, text) => {
+    cur = {character: name.trim(), text: '', dir: ''};
+    out.push(cur);
+    if(text) add(text);
+  };
+  const add = (t) => {
+    const {text, dir} = splitDir(t);
+    if(text) cur.text = (cur.text ? cur.text + ' ' : '') + text;
+    if(dir) cur.dir = (cur.dir ? cur.dir + ' · ' : '') + dir;
+  };
+  for(const l of lines){
+    let m = l.match(/^([^:]{1,24}):\s*(.*)$/);
+    if(m && speakers.has(m[1].trim())) { start(m[1], m[2]); continue; }
+    m = l.match(/^(.{1,41}?)\s+[-–—]\s+(.+)$/);
+    if(m && dashSpeakers.has(m[1].trim())) { start(m[1], m[2]); continue; }
+    if(aloneSpeakers.has(l)) { start(l, ''); continue; }
+    if(!cur) continue;                       // headers / background before the dialogue starts
+    if(/^[\(\[].*[\)\]]$/.test(l)) { add(l); continue; }   // stage direction on its own line
+    add(l);                                  // continuation of the current speech
+  }
+  const result = out.filter(x => x.text);
+  return result.length ? result : null;
+}
+function toCleanScript(lines){
+  return lines.map(l => `${l.character}: ${l.text}${l.dir ? ' (' + l.dir + ')' : ''}`).join('\n');
 }
 
 document.getElementById('analyzeBtn').onclick = () => {
@@ -523,11 +701,17 @@ document.getElementById('analyzeBtn').onclick = () => {
   }
   const parsed = parseScript(raw);
   if(!parsed || parsed.length === 0){
-    errBox.textContent = "לא זיהיתי מבנה של 'שם: משפט' בכל שורה.";
+    errBox.textContent = "לא מצאתי דמויות בטקסט. צריך שהשם של מי שמדבר יופיע לפני מה שהוא אומר, למשל \"רונה:\" בשורה נפרדת או בתחילת השורה.";
     errBox.style.display = 'block';
     return;
   }
   errBox.style.display = 'none';
+  // show the tidied version, so it's clear how the text was understood
+  const tidy = toCleanScript(parsed);
+  if(tidy !== raw.trim()){
+    scriptInput.value = tidy;
+    try{ localStorage.setItem('sp_script', tidy); }catch(e){}
+  }
   sceneTitle = 'הסצנה שלך';
   document.getElementById('sceneTitle').textContent = sceneTitle;
   parsedLines = parsed;
@@ -625,6 +809,17 @@ let elModel = EL_MODELS[0];
 function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
 function lsSet(k,v){ try{ if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){} }
 function elKey(){ return (lsGet('sp_el_key')||'').trim(); }
+/* Keep a second copy of the key in IndexedDB (still only on this device) and ask the browser
+   not to clear this site's storage, so the key survives updates and storage clean-ups. */
+function idb(){ return new Promise((res, rej) => { try{ const r = indexedDB.open('audition-partner', 1); r.onupgradeneeded = () => r.result.createObjectStore('kv'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }catch(e){ rej(e); } }); }
+async function idbSet(k, v){ try{ const db = await idb(); const tx = db.transaction('kv','readwrite'); if(v===null) tx.objectStore('kv').delete(k); else tx.objectStore('kv').put(v, k); }catch(e){} }
+async function idbGet(k){ try{ const db = await idb(); return await new Promise(res => { const r = db.transaction('kv').objectStore('kv').get(k); r.onsuccess = () => res(r.result || null); r.onerror = () => res(null); }); }catch(e){ return null; } }
+function saveKey(k){ lsSet('sp_el_key', k); idbSet('sp_el_key', k); try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){} }
+async function restoreKey(){
+  if(elKey()) { idbSet('sp_el_key', elKey()); return; }
+  const k = await idbGet('sp_el_key');
+  if(k){ lsSet('sp_el_key', k); const inp = document.getElementById('elKey'); if(inp) inp.value = k; elSetState('המפתח שמור במכשיר הזה.', true); elLoadVoices(); }
+}
 function elOn(){ return !!elKey(); }
 let elVoiceFor = {}; try{ elVoiceFor = JSON.parse(lsGet('sp_el_voices2')||'{}'); }catch(e){}
 try{ elVoices = JSON.parse(lsGet('sp_el_voicelist2')) || elVoices; }catch(e){}
@@ -788,12 +983,13 @@ function stopAudio(){ for(const a of [player, currentAudio]){ try{ if(a){ a.paus
   const inp = document.getElementById('elKey');
   inp.value = elKey();
   if(elOn()) elLoadVoices();   // refresh voice list (with gender labels) in the background
+  restoreKey();
   const lastErr = lsGet('sp_el_lasterr');
   elSetState(elOn() ? (lastErr ? 'בעיה אחרונה: ' + lastErr : 'המפתח שמור במכשיר הזה.') : 'בלי מפתח — משתמשים בקול המובנה של הטלפון.', elOn() ? !lastErr : null);
   document.getElementById('elSave').onclick = async () => {
     const k = inp.value.trim();
     if(!k){ elSetState('הדבק קודם את המפתח בשדה.', false); return; }
-    lsSet('sp_el_key', k);
+    saveKey(k);
     elSetState('בודק…');
     await elLoadVoices();
     try{
@@ -806,7 +1002,7 @@ function stopAudio(){ for(const a of [player, currentAudio]){ try{ if(a){ a.paus
     }
   };
   document.getElementById('elClear').onclick = () => {
-    lsSet('sp_el_key', null); inp.value = '';
+    lsSet('sp_el_key', null); idbSet('sp_el_key', null); inp.value = '';
     elSetState('המפתח נמחק מהמכשיר.', null);
   };
 })();
@@ -1079,7 +1275,8 @@ function addLineToFeed(line, isMine){
       txt = `<mark>${txt}</mark>`;
     }
   }
-  div.innerHTML = `${avatar(line.character, ink)}<div class="body"><span class="who">${esc(line.character)}</span><span class="txt">${txt}</span></div>`;
+  const dir = line.dir ? `<span class="dir">(${esc(line.dir)})</span>` : '';
+  div.innerHTML = `${avatar(line.character, ink)}<div class="body"><span class="who">${esc(line.character)}</span><span class="txt">${txt}</span>${dir}</div>`;
   feed.appendChild(div);
   // Scroll only the script box, not the whole page (scrollIntoView jumps the page on phones)
   feed.scrollTo({top: feed.scrollHeight, behavior:'smooth'});
@@ -1220,6 +1417,10 @@ function finishScene(){
   document.getElementById('stTake').textContent = take;
   document.getElementById('stTime').textContent = Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0');
   document.getElementById('stLines').textContent = parsedLines.filter(l => l.character === myCharacter).length;
+  markPracticedToday(); renderStreak();
+  const st = streakCount();
+  document.getElementById('doneLine').textContent = st > 1 ? 'סיימת את הסצנה. ' + st + ' ימים ברצף, ככה בונים תפקיד!' : 'סיימת את הסצנה. עוד טייק?';
+  setTimeout(confetti, 150);
   closeMic();
   allowScreenOff();
   document.getElementById('progressFill').style.width = '100%';
