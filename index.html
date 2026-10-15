@@ -284,11 +284,10 @@ function renderRoles(){
     if(elOn()){
       const sel = document.createElement('select');
       sel.setAttribute('aria-label', 'קול עבור ' + name);
-      const cur = elVoiceFor[name] || elVoices[characters.indexOf(name) % elVoices.length].voice_id;
+      const cur = elVoiceFor[name] || defaultVoiceFor(name);
       elVoices.forEach(v => { const o = document.createElement('option'); o.value = v.voice_id; o.textContent = v.name; if(v.voice_id===cur) o.selected = true; sel.appendChild(o); });
       sel.onclick = e => e.stopPropagation();
-      sel.onchange = () => { elVoiceFor[name] = sel.value; lsSet('sp_el_voices', JSON.stringify(elVoiceFor)); };
-      if(!elVoiceFor[name]) elVoiceFor[name] = cur;
+      sel.onchange = () => { elVoiceFor[name] = sel.value; lsSet('sp_el_voices2', JSON.stringify(elVoiceFor)); };
       card.appendChild(sel);
     }
     card.onclick = () => {
@@ -331,8 +330,8 @@ function lsGet(k){ try{ return localStorage.getItem(k); }catch(e){ return null; 
 function lsSet(k,v){ try{ if(v===null) localStorage.removeItem(k); else localStorage.setItem(k,v); }catch(e){} }
 function elKey(){ return (lsGet('sp_el_key')||'').trim(); }
 function elOn(){ return !!elKey(); }
-let elVoiceFor = {}; try{ elVoiceFor = JSON.parse(lsGet('sp_el_voices')||'{}'); }catch(e){}
-try{ elVoices = JSON.parse(lsGet('sp_el_voicelist')) || elVoices; }catch(e){}
+let elVoiceFor = {}; try{ elVoiceFor = JSON.parse(lsGet('sp_el_voices2')||'{}'); }catch(e){}
+try{ elVoices = JSON.parse(lsGet('sp_el_voicelist2')) || elVoices; }catch(e){}
 
 function elSetState(msg, ok){
   const st = document.getElementById('elState');
@@ -346,8 +345,8 @@ async function elLoadVoices(){
     if(!r.ok) return false;
     const j = await r.json();
     if(j.voices && j.voices.length){
-      elVoices = j.voices.map(v => ({voice_id:v.voice_id, name:v.name}));
-      lsSet('sp_el_voicelist', JSON.stringify(elVoices));
+      elVoices = j.voices.map(v => ({voice_id:v.voice_id, name:v.name, gender:((v.labels||{}).gender||'').toLowerCase()}));
+      lsSet('sp_el_voicelist2', JSON.stringify(elVoices));
     }
     return true;
   }catch(e){ return false; }
@@ -389,11 +388,34 @@ function elGet(text, voiceId){
   if(!elPending[k]) elPending[k] = elFetchAudio(text, voiceId).catch(e => { delete elPending[k]; throw e; });
   return elPending[k];
 }
+// Guess a Hebrew character's gender from the name, to pick a matching default voice
+const HE_FEMALE = ['יעל','מיכל','רחל','אביגיל','שירן','שיר','ענבל','הדס','אורית','רוני','נועם','גל','שחר','מור','ליאור','סיון','רונית','נוי','אלה','מאיה','שני','קרן','אסתר','רות','לאה','מרים','דנה','עדי','אמא','סבתא','דודה','אחות','מורה'];
+const HE_MALE = ['משה','שלמה','יונה','אריה','יהודה','נתנאל','אבא','סבא','דוד','אח','מורה'];
+function guessGender(name){
+  const n = (name||'').trim().split(/\s+/)[0];
+  if(['אבא','סבא','דוד','אח'].includes(n) || HE_MALE.includes(n) && !HE_FEMALE.includes(n)) return 'male';
+  if(HE_FEMALE.includes(n) && !['נועם','גל','שחר','מור','ליאור','סיון','עדי','רוני','מורה'].includes(n)) return 'female';
+  if(/(ה|ית|לי)$/.test(n)) return 'female';
+  return 'male';
+}
+function voiceGender(v){
+  if(v.gender) return v.gender;
+  if(/אישה|female/i.test(v.name)) return 'female';
+  if(/גבר|male/i.test(v.name)) return 'male';
+  return '';
+}
+function defaultVoiceFor(name){
+  const g = guessGender(name);
+  const others = characters.filter(c => c !== myCharacter);
+  const sameGenderBefore = others.slice(0, Math.max(0, others.indexOf(name))).filter(c => guessGender(c) === g).length;
+  const pool = elVoices.filter(v => voiceGender(v) === g);
+  const list = pool.length ? pool : elVoices;
+  return list[sameGenderBefore % list.length].voice_id;
+}
+
 function elVoiceOf(character){
   if(elVoiceFor[character]) return elVoiceFor[character];
-  const others = characters.filter(c => c !== myCharacter);
-  const i = Math.max(0, others.indexOf(character));
-  return elVoices[i % elVoices.length].voice_id;
+  return defaultVoiceFor(character);
 }
 function elPrefetchFrom(idx){
   if(!elOn()) return;
@@ -429,6 +451,7 @@ function stopAudio(){ try{ player.pause(); player.onended = player.onerror = nul
 (function initVoiceBox(){
   const inp = document.getElementById('elKey');
   inp.value = elKey();
+  if(elOn()) elLoadVoices();   // refresh voice list (with gender labels) in the background
   elSetState(elOn() ? 'המפתח שמור במכשיר הזה.' : 'בלי מפתח — משתמשים בקול המובנה של הטלפון.', elOn() ? true : null);
   document.getElementById('elSave').onclick = async () => {
     const k = inp.value.trim();
