@@ -2,7 +2,10 @@
 <html dir="rtl" lang="he">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F3EFE4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <title>שותף לתפקיד</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Assistant:wght@300;400;500;600&display=swap');
@@ -25,9 +28,12 @@ body{
   background:var(--paper);
   color:var(--ink);
   min-height:100vh;
+  min-height:100dvh;
   -webkit-tap-highlight-color:transparent;
+  -webkit-text-size-adjust:100%;
 }
-.wrap{max-width:480px;margin:0 auto;padding:22px 18px 90px;}
+.wrap{max-width:480px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom));}
+button{touch-action:manipulation}
 
 header{margin-bottom:24px;}
 .slug{font-family:'Courier Prime',monospace;font-size:11px;color:var(--pencil);letter-spacing:0.5px;margin-bottom:6px;}
@@ -40,7 +46,7 @@ header h1{font-family:'Courier Prime',monospace;font-weight:700;font-size:22px;m
 label{display:block;font-size:13px;color:var(--pencil);margin:20px 0 8px;font-weight:500}
 label:first-of-type{margin-top:18px}
 textarea{
-  width:100%;min-height:190px;padding:14px;font-family:'Courier Prime',monospace;font-size:14px;line-height:1.8;
+  width:100%;min-height:190px;padding:14px;font-family:'Courier Prime',monospace;font-size:16px;line-height:1.7;
   border:1px solid var(--line);border-radius:4px;background:var(--card);color:var(--ink);resize:vertical;
 }
 textarea:focus{outline:2px solid var(--ink);outline-offset:-1px}
@@ -75,8 +81,9 @@ button.secondary{
 .progress{height:2px;background:var(--line);margin-bottom:20px;}
 .progress-fill{height:100%;background:var(--red);transition:width .3s}
 
-.feed{display:flex;flex-direction:column;gap:2px;margin-bottom:18px;max-height:48vh;overflow-y:auto;padding:6px 2px}
-.line{padding:10px 4px;font-family:'Courier Prime',monospace;font-size:14px;line-height:1.7;border-bottom:1px dotted var(--line)}
+#screen-rehearse.active{display:flex;flex-direction:column;height:calc(100dvh - 130px - env(safe-area-inset-top) - env(safe-area-inset-bottom));min-height:360px}
+.feed{display:flex;flex-direction:column;gap:2px;margin-bottom:14px;flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:6px 2px}
+.line{padding:10px 4px;font-family:'Courier Prime',monospace;font-size:16px;line-height:1.65;border-bottom:1px dotted var(--line)}
 .line:last-child{border-bottom:none}
 .line .who{display:block;font-weight:700;font-size:12px;letter-spacing:1px;margin-bottom:3px;}
 .line.other .who{color:var(--ink)}
@@ -96,7 +103,8 @@ button.secondary{
 @keyframes bounce{0%,60%,100%{opacity:.25}30%{opacity:1}}
 
 .controls{display:flex;gap:8px}
-.controls button{flex:1}
+.controls button{flex:1;margin-top:0;min-height:52px}
+.rolecard{min-height:52px}
 
 .donebox{text-align:center;padding:34px 10px}
 .donebox .slug{justify-content:center;display:block}
@@ -176,9 +184,21 @@ function show(name){
   screens[name].classList.add('active');
 }
 
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+const IS_MOBILE = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
 const scriptInput = document.getElementById('scriptInput');
+// Keep the pasted scene on the phone so a reload / tab switch doesn't lose it
+try{ const saved = localStorage.getItem('sp_script'); if(saved) scriptInput.value = saved; }catch(e){}
+scriptInput.addEventListener('input', () => {
+  try{ localStorage.setItem('sp_script', scriptInput.value); }catch(e){}
+});
 document.getElementById('loadExample').onclick = () => {
   scriptInput.value = "דני: את לא חייבת להישאר.\nנועה: אני יודעת. אני פה כי אני רוצה.\nדני: זה לא מה שאמרת אתמול.\nנועה: אתמול פחדתי. היום פחות.\nדני: ומה השתנה?\nנועה: את שאלת.";
+  try{ localStorage.setItem('sp_script', scriptInput.value); }catch(e){}
 };
 
 let parsedLines = [];
@@ -189,12 +209,19 @@ function parseScript(raw){
   const lines = raw.split('\n').map(l=>l.trim()).filter(l=>l.length>0);
   const result = [];
   for(const l of lines){
+    // Lines that are only a stage direction, e.g. "(נכנסת לחדר)" — skip
+    if(/^[\(\[].*[\)\]]$/.test(l)) continue;
     const idx = l.indexOf(':');
-    if(idx === -1) return null;
-    const character = l.slice(0, idx).trim();
-    const text = l.slice(idx+1).trim();
-    if(!character || !text) return null;
-    result.push({character, text});
+    const character = idx > -1 ? l.slice(0, idx).trim() : '';
+    const text = idx > -1 ? l.slice(idx+1).trim() : l;
+    if(idx > -1 && character && character.length <= 25 && text){
+      result.push({character, text});
+    } else if(result.length){
+      // Wrapped line (common when pasting on a phone) — glue to the previous speech
+      result[result.length-1].text += ' ' + l;
+    } else {
+      return null;
+    }
   }
   return result;
 }
@@ -228,7 +255,7 @@ function renderRoles(){
     const count = parsedLines.filter(l=>l.character===name).length;
     const card = document.createElement('div');
     card.className = 'rolecard';
-    card.innerHTML = `<span class="name">${name}</span><span class="count">${count} שורות</span>`;
+    card.innerHTML = `<span class="name">${esc(name)}</span><span class="count">${count} שורות</span>`;
     card.onclick = () => {
       document.querySelectorAll('.rolecard').forEach(c=>c.classList.remove('chosen'));
       card.classList.add('chosen');
@@ -241,7 +268,13 @@ function renderRoles(){
 document.getElementById('backToInput').onclick = () => show('input');
 
 document.getElementById('startBtn').onclick = () => {
-  if(!myCharacter){ alert('בחרו תפקיד קודם'); return; }
+  if(!myCharacter){
+    const rl = document.getElementById('roleList');
+    rl.scrollIntoView({behavior:'smooth', block:'center'});
+    rl.style.outline = '2px solid var(--red)';
+    setTimeout(()=>{ rl.style.outline=''; }, 1200);
+    return;
+  }
   document.getElementById('roleLabel').textContent = myCharacter.toUpperCase();
   setupRehearsal();
   show('rehearse');
@@ -264,6 +297,9 @@ initVoices();
 
 function assignVoices(){
   voiceByCharacter = {};
+  if(heVoices.length === 0 && 'speechSynthesis' in window){
+    heVoices = window.speechSynthesis.getVoices().filter(v => v.lang && v.lang.toLowerCase().startsWith('he'));
+  }
   const others = characters.filter(c => c !== myCharacter);
   others.forEach((name, i) => {
     if(heVoices.length > 0){
@@ -272,17 +308,44 @@ function assignVoices(){
   });
 }
 
+// Phones (iOS especially) only allow speech that was first started by a tap.
+// Called from the "התחל" tap to unlock audio for the rest of the scene.
+function unlockSpeech(){
+  if(!('speechSynthesis' in window)) return;
+  try{
+    const u = new SpeechSynthesisUtterance(' ');
+    u.volume = 0;
+    u.lang = 'he-IL';
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+let currentUtterance = null; // global ref: Android Chrome garbage-collects utterances and never fires onend
 function speak(text, character, cb){
   if(!('speechSynthesis' in window)){ cb(); return; }
+  const synth = window.speechSynthesis;
+  let done = false;
+  let watchdog = null;
+  const finish = () => {
+    if(done) return;
+    done = true;
+    if(watchdog) clearTimeout(watchdog);
+    currentUtterance = null;
+    cb();
+  };
   const u = new SpeechSynthesisUtterance(text);
   const v = voiceByCharacter[character];
   if(v) u.voice = v;
   u.lang = 'he-IL';
   u.rate = 0.95;
-  u.onend = cb;
-  u.onerror = cb;
-  window.speechSynthesis.cancel();
-  window.speechSynthesis.speak(u);
+  u.onend = finish;
+  u.onerror = finish;
+  currentUtterance = u;
+  // No cancel() right before speak(): on phones that makes the new line get dropped silently
+  if(synth.paused) synth.resume();
+  // Safety net: if the phone never reports "finished", move on anyway
+  watchdog = setTimeout(finish, 3000 + text.length * 200);
+  synth.speak(u);
 }
 
 /* ---- Voice input (auto turn detection) ---- */
@@ -333,10 +396,14 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
     }, waitTime);
   }
 
+  let restarts = 0;
+  const MAX_RESTARTS = 10;
+
   function startSession(){
     const r = new SR();
     r.lang = 'he-IL';
-    r.continuous = true;
+    // Android Chrome repeats words in continuous mode; on phones we use short sessions and chain them
+    r.continuous = !IS_MOBILE;
     r.interimResults = true;
     activeSession = r;
 
@@ -386,9 +453,22 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
           resolveFail('ended-without-result');
         }
       } else {
-        // Chrome's own endpointing cut us off — the user probably isn't actually done.
-        // Seamlessly start a fresh session and keep accumulating.
-        try{ startSession(); }catch(e){ /* give up quietly if it truly can't restart */ }
+        // The browser ended the session on its own — the user probably isn't done.
+        // Start a fresh session and keep accumulating (capped, so it can't loop forever).
+        restarts++;
+        if(restarts > MAX_RESTARTS){
+          if(finalTranscript.trim()) resolveFinal(finalTranscript.trim());
+          else resolveFail('ended-without-result');
+          return;
+        }
+        setTimeout(() => {
+          if(resolved) return;
+          try{ startSession(); }
+          catch(e){
+            if(finalTranscript.trim()) resolveFinal(finalTranscript.trim());
+            else resolveFail('start-failed');
+          }
+        }, 120);
       }
     };
     r.onstart = () => { resetSilenceTimer(); };
@@ -415,10 +495,40 @@ function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
   };
 }
 
+/* ---- Keep the screen on during a scene ---- */
+let wakeLock = null;
+async function keepScreenOn(){
+  try{
+    if('wakeLock' in navigator && !wakeLock){
+      wakeLock = await navigator.wakeLock.request('screen');
+      wakeLock.addEventListener('release', () => { wakeLock = null; });
+    }
+  }catch(e){}
+}
+function allowScreenOff(){
+  try{ if(wakeLock) wakeLock.release(); }catch(e){}
+  wakeLock = null;
+}
+document.addEventListener('visibilitychange', () => {
+  if(document.visibilityState === 'visible' && sceneRunning) keepScreenOn();
+});
+
 /* ---- Rehearsal engine ---- */
 let cursor = 0;
+let runId = 0;          // bumps on exit/restart so callbacks from an old run do nothing
+let sceneRunning = false;
+
+function stopEverything(){
+  runId++;
+  sceneRunning = false;
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+  if(recog){ try{ recog.abort(); }catch(e){} recog = null; }
+  allowScreenOff();
+  document.getElementById('liveTranscript').textContent = '';
+}
 
 function setupRehearsal(){
+  stopEverything();
   cursor = 0;
   assignVoices();
   document.getElementById('feed').innerHTML = '';
@@ -448,18 +558,24 @@ function updateProgress(){
 function addLineToFeed(line, isMine){
   const div = document.createElement('div');
   div.className = 'line ' + (isMine ? 'mine' : 'other');
-  div.innerHTML = `<span class="who">${line.character}</span>${line.text}`;
-  document.getElementById('feed').appendChild(div);
-  div.scrollIntoView({behavior:'smooth', block:'end'});
+  div.innerHTML = `<span class="who">${esc(line.character)}</span>${esc(line.text)}`;
+  const feed = document.getElementById('feed');
+  feed.appendChild(div);
+  // Scroll only the script box, not the whole page (scrollIntoView jumps the page on phones)
+  feed.scrollTo({top: feed.scrollHeight, behavior:'smooth'});
   return div;
 }
 
 function beginScene(){
   document.getElementById('actionBtn').onclick = null;
-  advance();
+  unlockSpeech();   // must happen inside the tap
+  keepScreenOn();
+  sceneRunning = true;
+  advance(runId);
 }
 
-function advance(){
+function advance(myRun){
+  if(myRun !== runId) return;            // scene was exited/restarted
   if(cursor >= parsedLines.length){ finishScene(); return; }
   const line = parsedLines[cursor];
   updateProgress();
@@ -469,7 +585,18 @@ function advance(){
     const btn = document.getElementById('actionBtn');
 
     if(micAvailable){
-      btn.style.display = 'none';
+      // Keep a manual button visible while listening — phone mics miss words sometimes
+      btn.style.display = 'block';
+      btn.textContent = 'סיימתי — הבא';
+      btn.disabled = false;
+      btn.onclick = () => {
+        if(recog){ try{ recog.abort(); }catch(e){} }
+        runId++; myRun = runId;   // ignore the aborted recognizer's callbacks
+        document.getElementById('liveTranscript').textContent = '';
+        cursor++;
+        btn.disabled = true;
+        setTimeout(() => advance(myRun), 200);
+      };
       setStatus('מקשיב <span class="breathing"><span></span><span></span><span></span></span>', true);
 
       let attempts = 0;
@@ -485,7 +612,7 @@ function advance(){
         btn.onclick = () => {
           cursor++;
           btn.disabled = true;
-          setTimeout(advance, 250);
+          setTimeout(() => advance(myRun), 250);
         };
       };
 
@@ -493,15 +620,17 @@ function advance(){
         attempts++;
         recog = buildRecognizer(
           (said) => {
+            if(myRun !== runId) return;
             cursor++;
-            setStatus('שמעתי: "' + said + '" — ממשיך…', false);
+            setStatus('שמעתי: "' + esc(said) + '" — ממשיך…', false);
             document.getElementById('liveTranscript').textContent = '';
             const nextLine = parsedLines[cursor];
             const nextWordCount = nextLine ? nextLine.text.trim().split(/\s+/).filter(Boolean).length : 0;
             const responseDelay = nextWordCount > 14 ? 200 : nextWordCount <= 6 ? 450 : 300;
-            setTimeout(advance, responseDelay);
+            setTimeout(() => advance(myRun), responseDelay);
           },
           (reason) => {
+            if(myRun !== runId) return;
             if(reason === 'not-allowed'){
               fallbackToButton(reason); // no point retrying if permission itself was denied
               return;
@@ -515,7 +644,7 @@ function advance(){
               btn.onclick = () => {
                 cursor++;
                 btn.disabled = true;
-                setTimeout(advance, 250);
+                setTimeout(() => advance(myRun), 250);
               };
               return;
             }
@@ -528,6 +657,7 @@ function advance(){
           },
           line.text,
           (interim) => {
+            if(myRun !== runId) return;
             document.getElementById('liveTranscript').textContent = interim ? '» ' + interim : '';
           }
         );
@@ -543,7 +673,7 @@ function advance(){
       btn.onclick = () => {
         cursor++;
         btn.disabled = true;
-        setTimeout(advance, 250);
+        setTimeout(() => advance(myRun), 250);
       };
     }
   } else {
@@ -552,27 +682,33 @@ function advance(){
     document.getElementById('actionBtn').style.display = 'none';
     setStatus(line.character.toUpperCase() + ' מדבר…', false);
     speak(line.text, line.character, () => {
+      if(myRun !== runId) return;
       el.classList.remove('speaking');
       cursor++;
       updateProgress();
-      setTimeout(advance, 300);
+      setTimeout(() => advance(myRun), 300);
     });
   }
 }
 
 function finishScene(){
+  sceneRunning = false;
+  allowScreenOff();
   document.getElementById('progressFill').style.width = '100%';
   setStatus('הסתיים', false);
   show('done');
 }
 
 document.getElementById('exitBtn').onclick = () => {
-  window.speechSynthesis.cancel();
-  if(recog){ try{recog.abort();}catch(e){} }
+  stopEverything();
   show('roles');
 };
 document.getElementById('againBtn').onclick = () => { setupRehearsal(); show('rehearse'); };
-document.getElementById('newSceneBtn').onclick = () => { scriptInput.value=''; show('input'); };
+document.getElementById('newSceneBtn').onclick = () => {
+  scriptInput.value='';
+  try{ localStorage.removeItem('sp_script'); }catch(e){}
+  show('input');
+};
 </script>
 </body>
 </html>
