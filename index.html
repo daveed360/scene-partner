@@ -3,10 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#F3EFE4">
+<meta name="theme-color" content="#241B2E">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-title" content="Audition Partner">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<title>שותף לתפקיד</title>
+<title>Audition Partner</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Assistant:wght@400;500;600;700&display=swap');
 
@@ -42,8 +45,14 @@ button{touch-action:manipulation;font-family:var(--sans)}
 :focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 
 header{margin-bottom:22px}
-header h1{font-family:var(--serif);font-weight:900;font-size:38px;line-height:1.05;margin:0;letter-spacing:-.5px}
-header p{margin:8px 0 0;color:var(--on-stage-dim);font-size:16px;line-height:1.5}
+.brand{display:flex;align-items:center;gap:12px;direction:ltr;justify-content:flex-end}
+.logo{width:58px;height:58px;flex-shrink:0;filter:drop-shadow(0 6px 18px rgba(255,194,75,.35))}
+header h1{font-family:var(--serif);font-weight:900;font-size:30px;line-height:.98;margin:0;letter-spacing:-.3px;text-align:left}
+.host{display:flex;align-items:flex-end;gap:10px;margin-top:18px}
+.host .av{width:64px;height:64px}
+.bubble{position:relative;background:var(--sheet);color:var(--ink);border-radius:16px 16px 4px 16px;padding:10px 14px;font-size:16px;line-height:1.45;margin:0 0 14px;flex:1}
+.is-done header .host{display:none}
+
 .rehearsing header{display:none}
 
 .screen{display:none}
@@ -66,14 +75,18 @@ label{display:block;font-size:14px;color:var(--on-stage-dim);margin:18px 0 8px;f
 .scene .m{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:13px;color:var(--pencil)}
 .scene:active{transform:scale(.99)}
 .cast{display:flex}
-.cast .av{width:26px;height:26px;font-size:13px;margin-left:-6px;border:2px solid var(--sheet)}
+.cast .av{width:32px;height:32px;margin-left:-8px;border:2px solid var(--sheet);box-sizing:content-box}
 .scene .m .cnt{color:var(--pencil)}
 
 /* character stamp */
-.av{
-  width:38px;height:38px;border-radius:50%;flex-shrink:0;display:inline-grid;place-items:center;
-  background:var(--ink-c,var(--ink));color:#fff;font-family:var(--serif);font-weight:700;font-size:18px;line-height:1;
-}
+.av{width:46px;height:46px;border-radius:50%;flex-shrink:0;display:inline-block;background:var(--ink-c,var(--ink))}
+.av svg{width:100%;height:100%;display:block;border-radius:50%}
+.av .m-talk{display:none}
+.line.speaking .av .m-rest{display:none}
+.line.speaking .av .m-talk{display:inline;transform-box:fill-box;transform-origin:center;animation:talk .22s ease-in-out infinite alternate}
+@keyframes talk{from{transform:scaleY(.25)}to{transform:scaleY(1.15)}}
+@media (prefers-reduced-motion: reduce){.line.speaking .av .m-talk{animation:none}}
+.rolecard .av{width:54px;height:54px}
 
 textarea{
   width:100%;min-height:170px;padding:14px;font-family:var(--serif);font-size:17px;line-height:1.7;
@@ -119,7 +132,7 @@ button.secondary{
 .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px}
 .topbar .back{font-size:15px;color:var(--on-stage-dim);background:none;border:none;cursor:pointer;padding:8px 0}
 .topbar .role{display:flex;align-items:center;gap:8px;font-family:var(--serif);font-weight:700;font-size:16px}
-.topbar .role .av{width:28px;height:28px;font-size:14px}
+.topbar .role .av{width:34px;height:34px}
 .progress{height:4px;background:rgba(255,255,255,.12);border-radius:2px;margin-bottom:12px;overflow:hidden}
 .progress-fill{height:100%;background:var(--amber);transition:width .3s}
 .notice{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:9px 12px;font-size:13px;color:var(--on-stage-dim);margin-bottom:10px;line-height:1.5}
@@ -196,8 +209,19 @@ button.secondary{
 
 <div class="wrap">
 <header>
-<h1>שותף לתפקיד</h1>
-<p>בוחרים סצנה ותפקיד. את שאר הדמויות משחקים איתך בקול.</p>
+<div class="brand">
+<svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+  <path d="M10 18 H54 a6 6 0 0 1 6 6 V42 a6 6 0 0 1 -6 6 H30 L18 58 V48 H10 a6 6 0 0 1 -6 -6 V24 a6 6 0 0 1 6 -6 Z" fill="#FFC24B"/>
+  <path d="M8 6 L56 6 a4 4 0 0 1 4 4 V14 H4 V10 a4 4 0 0 1 4 -4 Z" fill="#FFF3D6" transform="rotate(-8 32 10)"/>
+  <g transform="rotate(-8 32 10)" fill="#2A1E14"><path d="M12 6 L20 6 L15 14 L7 14 Z"/><path d="M28 6 L36 6 L31 14 L23 14 Z"/><path d="M44 6 L52 6 L47 14 L39 14 Z"/></g>
+  <circle cx="22" cy="33" r="3.2" fill="#2A1E14"/><circle cx="32" cy="33" r="3.2" fill="#2A1E14"/><circle cx="42" cy="33" r="3.2" fill="#2A1E14"/>
+</svg>
+<h1>Audition<br>Partner</h1>
+</div>
+<div class="host">
+<span class="av host-av" id="hostAv" style="--ink-c:#4A3A5C"></span>
+<p class="bubble" id="hostSay">היי! בחר סצנה, ואני אדאג לשאר הדמויות.</p>
+</div>
 </header>
 
 <!-- SCREEN 1: CHOOSE A SCENE -->
@@ -261,6 +285,7 @@ button.secondary{
 <!-- SCREEN 4: DONE -->
 <div class="screen" id="screen-done">
 <div class="donebox">
+<span class="av" id="doneAv" style="--ink-c:#4A3A5C;width:96px;height:96px;margin-bottom:10px"></span>
 <h2>קאט.</h2>
 <p id="doneLine">סיימת את הסצנה. עוד טייק?</p>
 <div class="stats"><div><b id="stTake">1</b><small>טייק</small></div><div><b id="stTime">0:00</b><small>זמן</small></div><div><b id="stLines">0</b><small>שורות שלך</small></div></div>
@@ -284,6 +309,11 @@ function show(name){
   Object.values(screens).forEach(s=>s.classList.remove('active'));
   screens[name].classList.add('active');
   document.body.classList.toggle('rehearsing', name === 'rehearse');
+  document.body.classList.toggle('is-done', name === 'done');
+  if(typeof hostSays === 'function'){
+    if(name === 'input') hostSays('היי! בחר סצנה, ואני אדאג לשאר הדמויות.');
+    if(name === 'roles') hostSays('את מי אתה משחק? את כל השאר אני לוקחת.');
+  }
   window.scrollTo(0, 0);
 }
 
@@ -299,6 +329,60 @@ try{ const saved = localStorage.getItem('sp_script'); if(saved) scriptInput.valu
 scriptInput.addEventListener('input', () => {
   try{ localStorage.setItem('sp_script', scriptInput.value); }catch(e){}
 });
+/* ---- Cast figures: small illustrated actors, drawn from the character's name ---- */
+const SKINS = ['#F3CBA5','#E2A97F','#C78B5F','#8E5B3C','#F6D7BD','#B97A55'];
+const HAIRS = ['#2B1D16','#5A3825','#9B4F26','#D7A23F','#161616','#8A8A8A','#6B2E2E'];
+function hashStr(s){ let h = 2166136261; for(const c of String(s)) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+let figId = 0;
+function figureSVG(name, ink, opts){
+  opts = opts || {};
+  const h = hashStr(name);
+  const g = opts.gender || guessGender(name);
+  const skin = SKINS[h % SKINS.length];
+  const older = /^(אבא|אמא|סבא|סבתא)$/.test((name||'').trim());
+  const hair = older ? (h & 1 ? '#8A8A8A' : '#5A3825') : HAIRS[(h >> 3) % HAIRS.length];
+  const shirt = opts.shirt || '#FFFDF8';
+  const id = 'f' + (figId++);
+  const fStyles = ['long','bob','bun','curly'], mStyles = ['short','curly','side','buzz'];
+  const style = opts.style || (g === 'female' ? fStyles : mStyles)[(h >> 6) % 4];
+  const back = {
+    long:  `<path d="M24 46 Q22 22 50 20 Q78 22 76 46 L78 84 Q64 90 50 88 Q36 90 22 84 Z" fill="${hair}"/>`,
+    bob:   `<path d="M24 48 Q22 20 50 19 Q78 20 76 48 L76 62 Q70 66 64 62 L36 62 Q30 66 24 62 Z" fill="${hair}"/>`,
+    bun:   `<circle cx="50" cy="16" r="9" fill="${hair}"/>`,
+  }[style] || '';
+  const front = {
+    long:  `<path d="M27 44 Q30 22 50 22 Q70 22 73 44 Q62 34 46 36 Q36 37 27 44 Z" fill="${hair}"/>`,
+    bob:   `<path d="M27 46 Q28 22 50 22 Q72 22 73 46 Q66 32 50 33 Q36 32 27 46 Z" fill="${hair}"/>`,
+    bun:   `<path d="M27 44 Q30 23 50 23 Q70 23 73 44 Q64 33 50 33 Q36 33 27 44 Z" fill="${hair}"/>`,
+    curly: `<g fill="${hair}"><circle cx="32" cy="34" r="8"/><circle cx="41" cy="26" r="9"/><circle cx="52" cy="24" r="9"/><circle cx="62" cy="27" r="9"/><circle cx="69" cy="35" r="7"/></g>`,
+    short: `<path d="M28 42 Q28 21 50 21 Q72 21 72 42 Q66 31 50 31 Q34 31 28 42 Z" fill="${hair}"/>`,
+    side:  `<path d="M28 44 Q27 20 52 20 Q73 22 72 40 Q60 28 44 33 Q34 36 28 44 Z" fill="${hair}"/>`,
+    buzz:  `<path d="M29 40 Q30 23 50 23 Q70 23 71 40 Q60 31 50 31 Q40 31 29 40 Z" fill="${hair}" opacity=".85"/>`,
+  }[style];
+  const beard = (g === 'male' && older) ? `<path d="M34 54 Q36 72 50 74 Q64 72 66 54 Q60 62 50 62 Q40 62 34 54 Z" fill="${hair}"/>` : '';
+  const hat = opts.beret ? `<ellipse cx="46" cy="22" rx="22" ry="8" fill="#9E2B3A" transform="rotate(-12 46 22)"/><circle cx="40" cy="14" r="2.5" fill="#9E2B3A"/>` : '';
+  const mood = opts.mood || 'rest';
+  const mouths = {
+    rest:  `<path class="m-rest" d="M44 59 Q50 63 56 59" stroke="#5B2C22" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
+    happy: `<path d="M42 57 Q50 68 58 57 Z" fill="#7A2E24"/>`,
+  };
+  return `<svg viewBox="0 0 100 100" role="img" aria-label="${esc(name)}">
+    <defs><clipPath id="${id}"><circle cx="50" cy="50" r="50"/></clipPath></defs>
+    <g clip-path="url(#${id})">
+      <rect width="100" height="100" fill="${ink}"/>
+      <circle cx="50" cy="38" r="40" fill="#fff" opacity=".10"/>
+      ${back}
+      <path d="M18 104 Q20 80 50 78 Q80 80 82 104 Z" fill="${shirt}"/>
+      <path d="M42 78 L50 88 L58 78" fill="${skin}"/>
+      <rect x="43" y="64" width="14" height="16" rx="6" fill="${skin}"/>
+      <ellipse cx="50" cy="46" rx="22" ry="23" fill="${skin}"/>
+      ${front}${hat}${beard}
+      <g class="eyes"><ellipse cx="42" cy="47" rx="2.6" ry="3.2" fill="#22201E"/><ellipse cx="58" cy="47" rx="2.6" ry="3.2" fill="#22201E"/></g>
+      <circle cx="36" cy="55" r="3.6" fill="#E9897A" opacity=".35"/><circle cx="64" cy="55" r="3.6" fill="#E9897A" opacity=".35"/>
+      ${mood === 'happy' ? mouths.happy : mouths.rest + `<ellipse class="m-talk" cx="50" cy="60" rx="5" ry="3.6" fill="#7A2E24"/>`}
+    </g></svg>`;
+}
+
 /* ---- Ready-made scenes ---- */
 const SCENES = [
  {title:'המפתחות', genre:'קומדיה', blurb:'זוג נעול מחוץ לבית. אחד מהם היה אמור להביא מפתחות.', text:
@@ -367,7 +451,7 @@ const SCENES = [
 const INKS = ['#2F5DA8','#2E7D5B','#8A4FA8','#B23A3A','#A8661F','#2F7C8C','#5A5F66'];
 let sceneTitle = 'הסצנה שלך';
 function inkOf(name){ const i = characters.indexOf(name); return INKS[(i < 0 ? 0 : i) % INKS.length]; }
-function avatar(name, ink){ return `<span class="av" style="--ink-c:${ink}" aria-hidden="true">${esc((name||'?').trim().charAt(0))}</span>`; }
+function avatar(name, ink){ return `<span class="av" style="--ink-c:${ink}">${figureSVG(name, ink)}</span>`; }
 
 function loadScene(raw, title){
   const parsed = parseScript(raw);
@@ -381,7 +465,14 @@ function loadScene(raw, title){
   return true;
 }
 
-(function renderSceneList(){
+const HOST = 'מאיה';
+document.addEventListener('DOMContentLoaded', () => {
+document.getElementById('hostAv').innerHTML = figureSVG(HOST, '#4A3A5C', {gender:'female', style:'bun', beret:true, shirt:'#FFC24B'});
+document.getElementById('doneAv').innerHTML = figureSVG(HOST, '#4A3A5C', {gender:'female', style:'bun', beret:true, shirt:'#FFC24B', mood:'happy'});
+});
+function hostSays(t){ document.getElementById('hostSay').textContent = t; }
+
+document.addEventListener('DOMContentLoaded', function renderSceneList(){
   const list = document.getElementById('sceneList');
   SCENES.forEach((sc, i) => {
     const lines = parseScript(sc.text);
@@ -395,7 +486,7 @@ function loadScene(raw, title){
     b.onclick = () => loadScene(sc.text, sc.title);
     list.appendChild(b);
   });
-})();
+});
 
 let parsedLines = [];
 let characters = [];
@@ -1104,7 +1195,7 @@ function advance(myRun){
     const el = addLineToFeed(line, false);
     el.classList.add('speaking');
     document.getElementById('actionBtn').style.display = 'none';
-    setStatus(esc(line.character) + ' מדבר…', false);
+    setStatus(esc(line.character) + (guessGender(line.character) === 'female' ? ' מדברת…' : ' מדבר…'), false);
     speak(line.text, line.character, () => {
       if(myRun !== runId) return;
       el.classList.remove('speaking');
