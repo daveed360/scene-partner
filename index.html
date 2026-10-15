@@ -84,6 +84,7 @@ label{display:block;font-size:14px;color:var(--on-stage-dim);margin:18px 0 8px;f
 .av .m-talk{display:none}
 .line.speaking .av .m-rest{display:none}
 .line.speaking .av .m-talk{display:inline;transform-box:fill-box;transform-origin:center;animation:talk .22s ease-in-out infinite alternate}
+.av .m-talk{display:none}
 @keyframes talk{from{transform:scaleY(.25)}to{transform:scaleY(1.15)}}
 @media (prefers-reduced-motion: reduce){.line.speaking .av .m-talk{animation:none}}
 .rolecard .av{width:54px;height:54px}
@@ -315,15 +316,27 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 .duo{display:flex;align-items:center;justify-content:center;gap:12px;flex-shrink:0}
 .face{width:min(62vw, 34vh, 280px);aspect-ratio:1;border-radius:50%;box-shadow:0 18px 50px -18px rgba(0,0,0,.6)}
 .face .av{width:100%;height:100%}
-.face .av svg .eyes{transform-box:fill-box;transform-origin:center;animation:blink 4.2s infinite}
-@keyframes blink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
-.stage.talking .face .av .m-rest{display:none}
-.stage.talking .face .av .m-talk{display:inline;transform-box:fill-box;transform-origin:center;animation:talk .2s ease-in-out infinite alternate}
-.stage.talking .face{animation:bob 1.1s ease-in-out infinite}
-.stage.listening .face{animation:nod 2.6s ease-in-out infinite}
-@keyframes bob{50%{transform:translateY(-4px) rotate(-1deg)}}
-@keyframes nod{0%,70%,100%{transform:none}80%{transform:translateY(3px) rotate(1deg)}}
-@media (prefers-reduced-motion: reduce){.stage .face,.face .av svg .eyes{animation:none!important}}
+/* a living face: breathing, natural blinks, small head movements, a mouth that never moves the same way twice */
+.av .lid{transform-box:fill-box;transform-origin:50% 0}
+.av .pupil{transform-box:fill-box;transition:transform .35s ease}
+.face .lid{animation:blink var(--blink,5.3s) infinite var(--blinkd,0s)}
+@keyframes blink{0%,91%,100%{transform:scaleY(0)}94.5%{transform:scaleY(1)}}
+.face .fig-head{transform-box:view-box;transform-origin:50px 74px;animation:sway var(--sway,7s) ease-in-out infinite}
+.face .fig-body{transform-box:view-box;animation:breathe 4.6s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-1.1deg)}50%{transform:rotate(1.3deg) translateY(-.4px)}}
+@keyframes breathe{0%,100%{transform:none}50%{transform:translateY(-.7px)}}
+.stage.talking .face .fig-head{animation:talkhead var(--talk,2.1s) ease-in-out infinite}
+@keyframes talkhead{0%{transform:rotate(-.8deg)}22%{transform:rotate(1.6deg) translateY(-.7px)}48%{transform:rotate(-.3deg) translateY(.3px)}70%{transform:rotate(1deg)}100%{transform:rotate(-.8deg)}}
+.stage.talking .face .brows{transform-box:view-box;animation:browtalk 2.6s ease-in-out infinite}
+@keyframes browtalk{0%,55%,100%{transform:none}65%,75%{transform:translateY(-1.3px)}}
+.stage.talking .face .m-rest{display:none}
+.stage.talking .face .m-talk{display:inline;transform-box:fill-box;transform-origin:center;animation:mx .37s ease-in-out infinite alternate}
+.stage.talking .face .m-talk-y{transform-box:fill-box;transform-origin:center;animation:my .27s ease-in-out infinite alternate}
+@keyframes mx{from{transform:scaleX(.85)}to{transform:scaleX(1.08)}}
+@keyframes my{0%{transform:scaleY(.2)}35%{transform:scaleY(1)}60%{transform:scaleY(.5)}100%{transform:scaleY(.85)}}
+.stage.listening .face .fig-head{animation:listen 3.6s ease-in-out infinite}
+@keyframes listen{0%,58%,100%{transform:rotate(.4deg)}68%{transform:rotate(1.4deg) translateY(1.1px)}78%{transform:rotate(.6deg) translateY(.2px)}}
+@media (prefers-reduced-motion: reduce){.face .fig-head,.face .fig-body,.face .lid,.face .brows,.face .m-talk,.face .m-talk-y{animation:none!important}}
 .stage-who{margin-top:14px;font-weight:800;font-size:18px;color:var(--amber)}
 .stage-line{margin-top:6px;font-family:var(--serif);font-size:22px;line-height:1.5;max-width:30ch;color:var(--on-stage);overflow-y:auto;min-height:0;flex:1 1 auto;padding:0 6px}
 .stage-line.long{font-size:19px}
@@ -536,78 +549,105 @@ function figureSVG(name, ink, opts){
   const g = opts.gender || guessGender(name);
   const skin = SKINS[h % SKINS.length];
   const older = /^(אבא|אמא|סבא|סבתא)$/.test((name||'').trim());
-  const hair = older ? (h & 1 ? '#9A9A9A' : '#5A3825') : HAIRS[(h >>> 3) % HAIRS.length];
+  const hair = older ? (h & 1 ? '#A8A8A8' : '#5A3825') : HAIRS[(h >>> 3) % HAIRS.length];
   const SHIRTS = ['#F28C38','#4C9BE8','#E35D6A','#58B57B','#F2C14E','#8E6CE0','#2FA4A9'];
   let shirt = opts.shirt || SHIRTS[(h >>> 9) % SHIRTS.length];
   if(!opts.shirt && shirt.toLowerCase() === String(ink).toLowerCase()) shirt = SHIRTS[((h >>> 9) + 1) % SHIRTS.length];
   const id = 'f' + (figId++);
   const fStyles = ['long','bob','bun','curly'], mStyles = ['short','curly','side','buzz'];
   const style = opts.style || (g === 'female' ? fStyles : mStyles)[(h >>> 6) % 4];
+  const glasses = !opts.beret && (h >>> 12) % 5 === 0;
+  const earrings = g === 'female' && (h >>> 14) % 3 === 0;
+  const freckles = (h >>> 16) % 4 === 0 && !older;
+  const garment = opts.beret ? 'tee' : ['tee','collar','hoodie'][(h >>> 18) % 3];
+  const shade = 'rgba(0,0,0,.10)';
   const back = {
-    long:  `<path d="M23 48 Q20 20 50 18 Q80 20 77 48 L79 86 Q64 92 50 90 Q36 92 21 86 Z" fill="${hair}"/>`,
-    bob:   `<path d="M23 50 Q20 18 50 17 Q80 18 77 50 L77 64 Q70 68 63 64 L37 64 Q30 68 23 64 Z" fill="${hair}"/>`,
-    bun:   `<circle cx="50" cy="15" r="9.5" fill="${hair}"/>`,
+    long:  `<path d="M22 50 Q19 18 50 16 Q81 18 78 50 L80 88 Q65 94 50 92 Q35 94 20 88 Z" fill="${hair}"/>`,
+    bob:   `<path d="M22 52 Q19 17 50 16 Q81 17 78 52 L78 66 Q71 70 64 66 L36 66 Q29 70 22 66 Z" fill="${hair}"/>`,
+    bun:   `<circle cx="50" cy="13.5" r="9.5" fill="${hair}"/><path d="M44 12 Q50 7 56 12" stroke="#fff" stroke-opacity=".18" stroke-width="2" fill="none" stroke-linecap="round"/>`,
   }[style] || '';
   const front = {
-    long:  `<path d="M27 46 Q29 21 50 21 Q71 21 73 46 Q63 33 47 35 Q36 36 27 46 Z" fill="${hair}"/>`,
-    bob:   `<path d="M27 47 Q27 21 50 21 Q73 21 73 47 Q67 31 50 32 Q35 31 27 47 Z" fill="${hair}"/>`,
-    bun:   `<path d="M27 44 Q29 22 50 22 Q71 22 73 44 Q64 32 50 32 Q36 32 27 44 Z" fill="${hair}"/>`,
-    curly: `<g fill="${hair}"><circle cx="31" cy="35" r="8"/><circle cx="39" cy="26" r="9"/><circle cx="50" cy="23" r="9.5"/><circle cx="61" cy="26" r="9"/><circle cx="69" cy="35" r="8"/></g>`,
-    short: `<path d="M27.5 43 Q27 20 50 20 Q73 20 72.5 43 Q67 30 50 30 Q33 30 27.5 43 Z" fill="${hair}"/>`,
-    side:  `<path d="M27.5 45 Q26 19 52 19 Q74 21 72.5 41 Q61 27 44 32 Q33 35 27.5 45 Z" fill="${hair}"/>`,
-    buzz:  `<path d="M28.5 41 Q29 22 50 22 Q71 22 71.5 41 Q61 30 50 30 Q39 30 28.5 41 Z" fill="${hair}" opacity=".9"/>`,
+    long:  `<path d="M26.5 47 Q28 20 50 20 Q72 20 73.5 47 Q64 31 46 34 Q35 36 26.5 47 Z" fill="${hair}"/>`,
+    bob:   `<path d="M26.5 48 Q26 20 50 20 Q74 20 73.5 48 Q68 30 50 31 Q34 30 26.5 48 Z" fill="${hair}"/>`,
+    bun:   `<path d="M27 44 Q28.5 21 50 21 Q71.5 21 73 44 Q64 31 50 31 Q36 31 27 44 Z" fill="${hair}"/>`,
+    curly: `<g fill="${hair}"><circle cx="30.5" cy="36" r="8"/><circle cx="38.5" cy="26.5" r="9"/><circle cx="50" cy="23" r="9.5"/><circle cx="61.5" cy="26.5" r="9"/><circle cx="69.5" cy="36" r="8"/></g>`,
+    short: `<path d="M27 44 Q26.5 19 50 19 Q73.5 19 73 44 Q67 29 50 29.5 Q33 29 27 44 Z" fill="${hair}"/>`,
+    side:  `<path d="M27 46 Q25.5 18 52 18 Q75 20 73 42 Q61 26 43 31.5 Q32 35 27 46 Z" fill="${hair}"/>`,
+    buzz:  `<path d="M28 42 Q28.5 21 50 21 Q71.5 21 72 42 Q61 29.5 50 29.5 Q39 29.5 28 42 Z" fill="${hair}" opacity=".92"/>`,
   }[style];
-  const beard = (g === 'male' && older) ? `<path d="M31 53 Q33 74 50 76 Q67 74 69 53 Q62 63 50 63 Q38 63 31 53 Z" fill="${hair}"/>` : '';
-  const hat = opts.beret ? `<ellipse cx="46" cy="21" rx="23" ry="8" fill="#9E2B3A" transform="rotate(-12 46 21)"/><circle cx="40" cy="13" r="2.5" fill="#9E2B3A"/>` : '';
+  const shine = style === 'curly' || style === 'buzz' ? '' : `<path d="M36 27 Q44 22.5 52 23.5" stroke="#fff" stroke-opacity=".16" stroke-width="2.4" fill="none" stroke-linecap="round"/>`;
+  const beard = (g === 'male' && older) ? `<path d="M30.5 53 Q32.5 75 50 77 Q67.5 75 69.5 53 Q62 64 50 64 Q38 64 30.5 53 Z" fill="${hair}"/>` : '';
+  const hat = opts.beret ? `<ellipse cx="46" cy="20" rx="23.5" ry="8.2" fill="#9E2B3A" transform="rotate(-12 46 20)"/><circle cx="40" cy="12" r="2.5" fill="#9E2B3A"/>` : '';
   const mood = opts.mood || 'smile';
+  // eyes: soft almonds with a lid line, small pupils, a little sparkle; lids lower with mood
+  const eye = (cx, cy, k) => `
+    <clipPath id="${id}e${k}"><path d="M${cx-5.2} ${cy} Q${cx} ${cy-4.8} ${cx+5.2} ${cy} Q${cx} ${cy+4} ${cx-5.2} ${cy} Z"/></clipPath>
+    <path d="M${cx-5.2} ${cy} Q${cx} ${cy-4.8} ${cx+5.2} ${cy} Q${cx} ${cy+4} ${cx-5.2} ${cy} Z" fill="#FFFDF8"/>
+    <g clip-path="url(#${id}e${k})">
+      <g class="pupil"><circle cx="${cx}" cy="${cy+0.3}" r="2.7" fill="#3A2A20"/><circle cx="${cx}" cy="${cy+0.3}" r="1.4" fill="#120C08"/><circle cx="${cx+1}" cy="${cy-0.7}" r=".85" fill="#fff"/></g>
+      <rect class="lid" x="${cx-6}" y="${cy-5}" width="12" height="10" fill="${skin}" transform="scale(1 0)"/>
+      ${mood === 'sad' || mood === 'angry' ? `<rect x="${cx-6}" y="${cy-5}" width="12" height="${mood === 'angry' ? 3.6 : 3.2}" fill="${skin}"/>` : ''}
+    </g>
+    <path d="M${cx-5.6} ${cy+0.1} Q${cx} ${cy-5.2} ${cx+5.6} ${cy+0.1}" stroke="#2B211C" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    ${g === 'female' ? `<path d="M${k ? cx+5.4 : cx-5.4} ${cy-0.3} l${k ? 1.8 : -1.8} -1.6" stroke="#2B211C" stroke-width="1.3" stroke-linecap="round"/>` : ''}`;
   const brow = {
-    smile:    ['M35 38 Q40.5 35.5 46 37.5', 'M54 37.5 Q59.5 35.5 65 38'],
-    neutral:  ['M35 38 Q40.5 37 46 38', 'M54 38 Q59.5 37 65 38'],
-    happy:    ['M35 36.5 Q40.5 33.5 46 36', 'M54 36 Q59.5 33.5 65 36.5'],
-    surprised:['M35 35 Q40.5 31 46 34', 'M54 34 Q59.5 31 65 35'],
-    sad:      ['M35 39 Q41 37 46 35', 'M54 35 Q59 37 65 39'],
-    angry:    ['M35 35.5 Q41 37 46 40', 'M54 40 Q59 37 65 35.5'],
-  }[mood] || ['M35 38 Q40.5 37 46 38', 'M54 38 Q59.5 37 65 38'];
-  const lip = '#6E2A22';
+    smile:    ['M35 37.5 Q40.5 35 46 37', 'M54 37 Q59.5 35 65 37.5'],
+    neutral:  ['M35 38 Q40.5 36.8 46 37.8', 'M54 37.8 Q59.5 36.8 65 38'],
+    happy:    ['M35 36 Q40.5 33 46 35.5', 'M54 35.5 Q59.5 33 65 36'],
+    surprised:['M35 34.5 Q40.5 30.5 46 33.5', 'M54 33.5 Q59.5 30.5 65 34.5'],
+    sad:      ['M35 39 Q41 37 46 34.8', 'M54 34.8 Q59 37 65 39'],
+    angry:    ['M35 35 Q41 36.5 46 39.6', 'M54 39.6 Q59 36.5 65 35'],
+  }[mood] || ['M35 38 Q40.5 36.8 46 37.8', 'M54 37.8 Q59.5 36.8 65 38'];
+  const lip = '#7A3328';
   const mouthRest = {
-    smile:    `<path d="M44 59.5 Q50 64.5 56 59.5" stroke="${lip}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
-    neutral:  `<path d="M45 61 Q50 62 55 61" stroke="${lip}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
-    happy:    `<path d="M42.5 58 Q50 69 57.5 58 Z" fill="${lip}"/><path d="M45 60.5 Q50 63 55 60.5" fill="#fff" opacity=".85"/>`,
-    surprised:`<ellipse cx="50" cy="61.5" rx="3.6" ry="4.3" fill="${lip}"/>`,
-    sad:      `<path d="M44.5 63 Q50 58.5 55.5 63" stroke="${lip}" stroke-width="2.4" fill="none" stroke-linecap="round"/>`,
-    angry:    `<path d="M44.5 62 Q50 59.5 55.5 62" stroke="${lip}" stroke-width="2.8" fill="none" stroke-linecap="round"/>`,
+    smile:    `<path d="M44.5 59.5 Q50 64 55.5 59.5" stroke="${lip}" stroke-width="2.3" fill="none" stroke-linecap="round"/>`,
+    neutral:  `<path d="M45.5 61 Q50 62.2 54.5 61" stroke="${lip}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`,
+    happy:    `<path d="M43 58 Q50 68.5 57 58 Z" fill="${lip}"/><path d="M45.3 60.2 Q50 62.6 54.7 60.2" fill="#fff" opacity=".9"/>`,
+    surprised:`<ellipse cx="50" cy="61.5" rx="3.4" ry="4" fill="${lip}"/>`,
+    sad:      `<path d="M45 63 Q50 59 55 63" stroke="${lip}" stroke-width="2.3" fill="none" stroke-linecap="round"/>`,
+    angry:    `<path d="M45 62 Q50 59.8 55 62" stroke="${lip}" stroke-width="2.7" fill="none" stroke-linecap="round"/>`,
   }[mood];
-  const mouthOpen = `<ellipse cx="50" cy="61" rx="5" ry="4" fill="${lip}"/><path d="M46 63.4 Q50 65.6 54 63.4" fill="#E9897A"/>`;
+  const mouthOpen = `<ellipse cx="50" cy="61" rx="4.6" ry="3.7" fill="${lip}"/><path d="M46.4 63.2 Q50 65.2 53.6 63.2" fill="#E9897A"/>`;
   let mouth;
   if(opts.mouthOnly === 'open') mouth = mouthOpen;
   else if(opts.mouthOnly === 'rest') mouth = mouthRest;
-  else mouth = `<g class="m-rest">${mouthRest}</g><g class="m-talk">${mouthOpen}</g>`;
-  const lidY = mood === 'sad' ? 44.5 : mood === 'angry' ? 44 : 0;
-  const lids = lidY ? `<path d="M36.5 ${lidY} Q41 ${lidY-2.4} 45.5 ${lidY} L45.5 42 L36.5 42 Z M54.5 ${lidY} Q59 ${lidY-2.4} 63.5 ${lidY} L63.5 42 L54.5 42 Z" fill="${skin}"/>` : '';
+  else mouth = `<g class="m-rest">${mouthRest}</g><g class="m-talk"><g class="m-talk-y">${mouthOpen}</g></g>`;
+  const clothes = {
+    tee:    `<path d="M14 108 Q16 80 50 77.5 Q84 80 86 108 Z" fill="${shirt}"/><path d="M41 78.2 Q50 88 59 78.2" stroke="${shade}" stroke-width="2" fill="none"/>`,
+    collar: `<path d="M14 108 Q16 80 50 77.5 Q84 80 86 108 Z" fill="${shirt}"/><path d="M40 78 L50 90 L45.5 93 L37 81 Z M60 78 L50 90 L54.5 93 L63 81 Z" fill="#fff" opacity=".92"/>`,
+    hoodie: `<path d="M30 80 Q50 92 70 80 L74 86 Q50 100 26 86 Z" fill="${shirt}" opacity=".8"/><path d="M14 108 Q16 82 50 79 Q84 82 86 108 Z" fill="${shirt}"/><path d="M46 86 L45 98 M54 86 L55 98" stroke="#fff" stroke-opacity=".8" stroke-width="1.4" stroke-linecap="round"/>`,
+  }[garment];
+  const specs = glasses ? `<g fill="none" stroke="#2B2B33" stroke-width="1.5"><rect x="34.2" y="42" width="13.6" height="10" rx="4.2"/><rect x="52.2" y="42" width="13.6" height="10" rx="4.2"/><path d="M47.8 46.4 Q50 45.2 52.2 46.4"/></g><g fill="#fff" opacity=".22"><rect x="35.5" y="43.2" width="4" height="7" rx="2"/><rect x="53.5" y="43.2" width="4" height="7" rx="2"/></g>` : '';
+  const rings = earrings ? `<circle cx="27.4" cy="55.4" r="1.7" fill="#F2C14E"/><circle cx="72.6" cy="55.4" r="1.7" fill="#F2C14E"/>` : '';
+  const dots = freckles ? `<g fill="#9C5A3C" opacity=".35"><circle cx="38" cy="54.5" r=".7"/><circle cx="40.5" cy="56" r=".7"/><circle cx="36.5" cy="56.6" r=".6"/><circle cx="62" cy="54.5" r=".7"/><circle cx="59.5" cy="56" r=".7"/><circle cx="63.5" cy="56.6" r=".6"/></g>` : '';
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" role="img" aria-label="${esc(name)}">
-    <defs><clipPath id="${id}"><circle cx="50" cy="50" r="50"/></clipPath></defs>
+    <defs>
+      <clipPath id="${id}"><circle cx="50" cy="50" r="50"/></clipPath>
+      <radialGradient id="${id}bg" cx="50%" cy="38%" r="70%"><stop offset="0" stop-color="#fff" stop-opacity=".28"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+    </defs>
     <g clip-path="url(#${id})">
       <rect width="100" height="100" fill="${ink}"/>
-      <circle cx="50" cy="40" r="40" fill="#fff" opacity=".12"/>
-      ${back}
-      <path d="M16 106 Q18 80 50 78 Q82 80 84 106 Z" fill="${shirt}"/>
-      <path d="M41 78.5 Q50 90 59 78.5 Z" fill="${skin}"/>
-      <path d="M41 78.5 Q50 90 59 78.5" stroke="#000" stroke-opacity=".12" stroke-width="1.5" fill="none"/>
-      <rect x="43" y="63" width="14" height="17" rx="6" fill="${skin}"/>
-      <rect x="43" y="63" width="14" height="6" rx="3" fill="#000" opacity=".08"/>
-      <ellipse cx="27.6" cy="49" rx="3.6" ry="5.2" fill="${skin}"/><ellipse cx="72.4" cy="49" rx="3.6" ry="5.2" fill="${skin}"/>
-      <ellipse cx="50" cy="46" rx="22.5" ry="23.5" fill="${skin}"/>
-      ${front}${hat}${beard}
-      <g class="eyes">
-        <ellipse cx="41" cy="47" rx="4.4" ry="4.9" fill="#fff"/><ellipse cx="59" cy="47" rx="4.4" ry="4.9" fill="#fff"/>
-        <circle cx="41.4" cy="47.8" r="3" fill="#2B211C"/><circle cx="59.4" cy="47.8" r="3" fill="#2B211C"/>
-        <circle cx="42.6" cy="46.5" r="1.1" fill="#fff"/><circle cx="60.6" cy="46.5" r="1.1" fill="#fff"/>
+      <rect width="100" height="100" fill="url(#${id}bg)"/>
+      <g class="fig-body">
+        ${back}
+        ${clothes}
+        <rect x="43" y="62" width="14" height="18" rx="6" fill="${skin}"/>
+        <rect x="43" y="62" width="14" height="7" rx="3.5" fill="#000" opacity=".09"/>
       </g>
-      ${lids}
-      <g stroke="${older && !beard ? '#7A7A7A' : hair}" stroke-width="2.2" fill="none" stroke-linecap="round"><path d="${brow[0]}"/><path d="${brow[1]}"/></g>
-      <path d="M50 50.5 Q48 55.5 50.8 56.2" stroke="#000" stroke-opacity=".18" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-      <circle cx="34.5" cy="55.5" r="3.8" fill="#E9897A" opacity="${mood === 'angry' ? .55 : .3}"/><circle cx="65.5" cy="55.5" r="3.8" fill="#E9897A" opacity="${mood === 'angry' ? .55 : .3}"/>
-      ${mouth}
+      <g class="fig-head">
+        <ellipse cx="27.4" cy="49" rx="3.6" ry="5.2" fill="${skin}"/><ellipse cx="72.6" cy="49" rx="3.6" ry="5.2" fill="${skin}"/>
+        <ellipse cx="27.8" cy="49.5" rx="1.6" ry="2.6" fill="#000" opacity=".08"/><ellipse cx="72.2" cy="49.5" rx="1.6" ry="2.6" fill="#000" opacity=".08"/>
+        ${rings}
+        <path d="M27.5 44 Q27.5 22 50 22 Q72.5 22 72.5 44 Q72.5 62 61 67.5 Q55 70.5 50 70.5 Q45 70.5 39 67.5 Q27.5 62 27.5 44 Z" fill="${skin}"/>
+        ${front}${shine}${hat}${beard}
+        <g class="eyes">${eye(41, 47.5, 0)}${eye(59, 47.5, 1)}</g>
+        <g class="brows" stroke="${older && !beard ? '#7A7A7A' : hair}" stroke-width="2.3" fill="none" stroke-linecap="round"><path d="${brow[0]}"/><path d="${brow[1]}"/></g>
+        ${specs}
+        <path d="M50.4 51 Q48.6 55.4 51.2 56" stroke="#000" stroke-opacity=".16" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        ${dots}
+        <ellipse cx="35" cy="56" rx="4" ry="2.6" fill="#E9897A" opacity="${mood === 'angry' ? .5 : .28}"/><ellipse cx="65" cy="56" rx="4" ry="2.6" fill="#E9897A" opacity="${mood === 'angry' ? .5 : .28}"/>
+        <g class="mouth">${mouth}</g>
+      </g>
     </g></svg>`;
 }
 // Mood for a line, from its stage direction (בכעס, בוכה, צוחק...)
@@ -1651,8 +1691,30 @@ function setStageFace(name, mood){
   mood = mood || partnerMood[name] || 'neutral';
   if(stageChar === name && stageMood === mood) return;
   stageChar = name; stageMood = mood;
-  document.getElementById('stageFace').innerHTML = `<span class="av" style="--ink-c:${inkOf(name)}">${figureSVG(name, inkOf(name), {mood})}</span>`;
+  const h = hashStr(name);
+  const face = document.getElementById('stageFace');
+  face.style.setProperty('--sway', (6 + (h % 30) / 10) + 's');
+  face.style.setProperty('--blink', (4.4 + ((h >>> 4) % 25) / 10) + 's');
+  face.style.setProperty('--blinkd', '-' + ((h >>> 8) % 40) / 10 + 's');
+  face.style.setProperty('--talk', (1.8 + ((h >>> 12) % 8) / 10) + 's');
+  face.innerHTML = `<span class="av" style="--ink-c:${inkOf(name)}">${figureSVG(name, inkOf(name), {mood})}</span>`;
 }
+let gazeTimer = null;
+function wanderGaze(){
+  clearTimeout(gazeTimer);
+  const st = document.getElementById('stage');
+  const pupils = document.querySelectorAll('#stageFace .pupil');
+  if(!st.hidden && pupils.length){
+    const listening = st.classList.contains('listening');
+    const r = Math.random();
+    // when you talk it mostly looks at you; when it talks it glances around
+    const [dx, dy] = listening ? (r < .8 ? [0, 0] : [r < .9 ? -0.8 : 0.8, 0.2])
+      : (r < .45 ? [0, 0] : r < .65 ? [-1.2, 0.3] : r < .85 ? [1.2, 0.3] : [0, -0.7]);
+    pupils.forEach(p => p.style.transform = `translate(${dx}px, ${dy}px)`);
+  }
+  gazeTimer = setTimeout(wanderGaze, 1400 + Math.random() * 2600);
+}
+wanderGaze();
 function fitLine(box, text){
   box.classList.toggle('long', text.length > 110);
   box.classList.toggle('xlong', text.length > 220);
