@@ -111,6 +111,9 @@ button.secondary{
 .donebox h2{font-family:'Courier Prime',monospace;font-size:20px;margin:6px 0 8px}
 .donebox p{color:var(--pencil);font-size:14px;margin:0 0 22px}
 
+.meter{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:12px}
+#meterFill{height:100%;width:0;background:var(--pencil);transition:width .08s}
+#meterFill.talking{background:var(--sage)}
 .notice{
   border-right:2px solid var(--red);background:var(--card);border-radius:0 4px 4px 0;padding:9px 12px;font-size:12px;color:var(--ink);margin-bottom:16px;line-height:1.5;
 }
@@ -153,7 +156,7 @@ button.secondary{
 <div id="micNotice" class="notice" style="display:none">האזנה למיקרופון פעילה — המערכת מזהה אוטומטית מתי סיימתם לדבר.</div>
 <div class="feed" id="feed"></div>
 <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">מוכן</span></div>
-<div id="liveTranscript" style="font-family:'Courier Prime',monospace;font-size:13px;color:var(--pencil);min-height:18px;margin-bottom:10px;"></div>
+<div id="liveTranscript" class="meter"><div id="meterFill"></div></div>
 <div class="controls">
 <button class="primary" id="actionBtn">התחל</button>
 </div>
@@ -313,10 +316,11 @@ function assignVoices(){
 function unlockSpeech(){
   if(!('speechSynthesis' in window)) return;
   try{
-    const u = new SpeechSynthesisUtterance(' ');
+    const u = new SpeechSynthesisUtterance('.');
     u.volume = 0;
     u.lang = 'he-IL';
     window.speechSynthesis.speak(u);
+    setTimeout(() => { try{ if(!currentUtterance) window.speechSynthesis.cancel(); }catch(e){} }, 250);
   }catch(e){}
 }
 
@@ -341,158 +345,95 @@ function speak(text, character, cb){
   u.onend = finish;
   u.onerror = finish;
   currentUtterance = u;
-  // No cancel() right before speak(): on phones that makes the new line get dropped silently
-  if(synth.paused) synth.resume();
-  // Safety net: if the phone never reports "finished", move on anyway
-  watchdog = setTimeout(finish, 3000 + text.length * 200);
-  synth.speak(u);
+  const go = () => {
+    if(synth.paused) synth.resume();
+    // Safety net: if the phone never reports "finished", move on anyway
+    watchdog = setTimeout(finish, 3000 + text.length * 200);
+    synth.speak(u);
+  };
+  // Something stuck in the queue blocks new lines on Android: clear it, then speak after a short gap
+  if(synth.speaking || synth.pending){ synth.cancel(); setTimeout(go, 120); }
+  else go();
 }
 
-/* ---- Voice input (auto turn detection) ---- */
-let SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-let recog = null;
-let micAvailable = !!SR;
+/* ---- Voice input: detect when you start and stop talking by mic volume ----
+   No speech recognition, so no "beep" each time and works the same in any language.
+   The mic is opened once per scene and kept open. */
+let micAvailable = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+let micStream = null, audioCtx = null, analyser = null, levelBuf = null;
+let recog = null; // current listener for this turn
 
-function buildRecognizer(onFinal, onFail, expectedLine, onInterim){
-  if(!micAvailable) return null;
-
-  let finalTranscript = '';
-  let silenceTimer = null;
-  let weDecidedStop = false;
-  let activeSession = null;
-  let resolved = false; // ensures onFinal/onFail fires exactly once for this turn
-
-  function resolveFinal(text){
-    if(resolved) return;
-    resolved = true;
-    if(hardCeilingTimer) clearTimeout(hardCeilingTimer);
-    onFinal(text);
+async function openMic(){
+  if(micStream) return true;
+  try{
+    micStream = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:true, autoGainControl:true}});
+    const AC = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AC();
+    if(audioCtx.state === 'suspended') await audioCtx.resume();
+    const src = audioCtx.createMediaStreamSource(micStream);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 1024;
+    levelBuf = new Float32Array(analyser.fftSize);
+    src.connect(analyser);
+    return true;
+  }catch(e){
+    closeMic();
+    return false;
   }
-  function resolveFail(reason){
-    if(resolved) return;
-    resolved = true;
-    if(hardCeilingTimer) clearTimeout(hardCeilingTimer);
-    onFail(reason);
-  }
+}
+function closeMic(){
+  try{ if(micStream) micStream.getTracks().forEach(t=>t.stop()); }catch(e){}
+  try{ if(audioCtx) audioCtx.close(); }catch(e){}
+  micStream = null; audioCtx = null; analyser = null;
+}
+function micLevel(){
+  if(!analyser) return 0;
+  analyser.getFloatTimeDomainData(levelBuf);
+  let sum = 0;
+  for(let i=0;i<levelBuf.length;i++) sum += levelBuf[i]*levelBuf[i];
+  return Math.sqrt(sum/levelBuf.length);
+}
 
-  const wordCount = (expectedLine || '').trim().split(/\s+/).filter(Boolean).length;
-  const INITIAL_GRACE_MS = 9000; // time to breathe / take a beat before starting the line
-  const POST_SPEECH_SILENCE_MS = wordCount <= 6 ? 2200 : wordCount <= 14 ? 2500 : 2800;
-  let hasSpokenYet = false;
+// Listens for one line. Calls onDone() when you've spoken and then gone quiet.
+function listenForLine(expectedLine, onDone, onLevel){
+  const words = (expectedLine||'').trim().split(/\s+/).filter(Boolean).length;
+  const TICK = 50;
+  const MIN_SPEECH_MS = 250;                       // ignore coughs / clicks
+  const EXPECTED_MS = Math.max(words * 250, 600);   // roughly how long the line takes at a fast pace
+  const END_SILENCE_MS = words <= 6 ? 1300 : words <= 14 ? 1500 : 1700;
+  const MIDLINE_SILENCE_MS = 3000;                  // a dramatic pause in the middle of a long line
+  let floor = 0, calib = 0, calibN = 0;
+  let speechMs = 0, silenceMs = 0, talkedMs = 0, started = false, finished = false;
+  if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
 
-  // Hard ceiling on total listening time for this turn, independent of content or silence
-  // detection. Continuous low-level background noise (even a quiet TV) can make the
-  // recognizer perpetually think "speech is happening," which means our silence timer
-  // never naturally fires. This guarantees the turn always resolves within a bounded time.
-  const HARD_TIME_CEILING_MS = Math.min(INITIAL_GRACE_MS + Math.max(wordCount * 900, 4000), 30000);
-  let hardCeilingTimer = null;
+  const timer = setInterval(() => {
+    if(finished) return;
+    const lvl = micLevel();
+    // First ~300ms: measure the room's background noise
+    if(calibN < 6){ calib += lvl; calibN++; floor = calib/calibN; return; }
+    const threshold = Math.max(0.018, floor * 2.5);
+    if(onLevel) onLevel(Math.min(1, lvl / (threshold*3)), lvl > threshold);
+    if(lvl > threshold){
+      speechMs += TICK; silenceMs = 0;
+      if(speechMs >= MIN_SPEECH_MS) started = true;
+    } else {
+      if(!started){ speechMs = Math.max(0, speechMs - TICK); floor = floor*0.97 + lvl*0.03; }
+      else silenceMs += TICK;
+    }
+    if(started) talkedMs += TICK;
+    const needSilence = talkedMs < EXPECTED_MS ? MIDLINE_SILENCE_MS : END_SILENCE_MS;
+    if(started && silenceMs >= needSilence){
+      finished = true; clearInterval(timer); onDone();
+    }
+  }, TICK);
 
-  function resetSilenceTimer(){
-    if(silenceTimer) clearTimeout(silenceTimer);
-    const waitTime = hasSpokenYet ? POST_SPEECH_SILENCE_MS : INITIAL_GRACE_MS;
-    silenceTimer = setTimeout(() => {
-      weDecidedStop = true;
-      if(activeSession){ try{ activeSession.stop(); }catch(e){} }
-    }, waitTime);
-  }
+  return { abort: () => { finished = true; clearInterval(timer); } };
+}
 
-  let restarts = 0;
-  const MAX_RESTARTS = 25;
-
-  function startSession(){
-    const r = new SR();
-    r.lang = 'he-IL';
-    // Continuous everywhere: each new session pops the mic again on phones, so keep one open as long as possible
-    r.continuous = true;
-    r.interimResults = true;
-    activeSession = r;
-
-    r.onresult = (e) => {
-      if(resolved) return;
-      let interim = '';
-      for(let i = e.resultIndex; i < e.results.length; i++){
-        if(e.results[i].isFinal){
-          finalTranscript += e.results[i][0].transcript;
-        } else {
-          interim += e.results[i][0].transcript;
-        }
-      }
-      hasSpokenYet = true;
-
-      const combined = (finalTranscript + ' ' + interim).trim();
-      const heardWords = combined.split(/\s+/).filter(Boolean);
-      const heardWordCount = heardWords.length;
-
-      // Keep only the most recent, relevant chunk of what was heard — people often
-      // repeat a line while the mic keeps listening, and that's normal rehearsal,
-      // not something to reject.
-      const RELEVANT_WINDOW = Math.max(wordCount * 2, 12);
-      if(heardWordCount > RELEVANT_WINDOW){
-        finalTranscript = heardWords.slice(-RELEVANT_WINDOW).join(' ');
-      }
-
-      resetSilenceTimer();
-      if(typeof onInterim === 'function'){
-        onInterim(combined);
-      }
-    };
-    r.onerror = (e) => {
-      if(resolved) return;
-      if(e.error !== 'no-speech' && e.error !== 'aborted' && !finalTranscript.trim()){
-        weDecidedStop = true;
-        resolveFail(e.error);
-      }
-    };
-    r.onend = () => {
-      if(resolved) return; // already handled by the hard ceiling or an error above
-      if(weDecidedStop){
-        if(silenceTimer) clearTimeout(silenceTimer);
-        if(finalTranscript.trim().length > 0){
-          resolveFinal(finalTranscript.trim());
-        } else {
-          resolveFail('ended-without-result');
-        }
-      } else {
-        // The browser ended the session on its own — the user probably isn't done.
-        // Start a fresh session and keep accumulating (capped, so it can't loop forever).
-        restarts++;
-        if(restarts > MAX_RESTARTS){
-          if(finalTranscript.trim()) resolveFinal(finalTranscript.trim());
-          else resolveFail('ended-without-result');
-          return;
-        }
-        setTimeout(() => {
-          if(resolved) return;
-          try{ startSession(); }
-          catch(e){
-            if(finalTranscript.trim()) resolveFinal(finalTranscript.trim());
-            else resolveFail('start-failed');
-          }
-        }, 120);
-      }
-    };
-    r.onstart = () => { resetSilenceTimer(); };
-    r.start();
-  }
-
-  return {
-    start: () => {
-      hardCeilingTimer = setTimeout(() => {
-        weDecidedStop = true;
-        if(activeSession){ try{ activeSession.stop(); }catch(e){} }
-        // If stopping doesn't yield a result quickly, force a resolution either way.
-        setTimeout(() => {
-          if(!resolved){
-            if(finalTranscript.trim().length > 0) resolveFinal(finalTranscript.trim());
-            else resolveFail('timeout');
-          }
-        }, 400);
-      }, HARD_TIME_CEILING_MS);
-      startSession();
-    },
-    stop: () => { weDecidedStop = true; if(hardCeilingTimer) clearTimeout(hardCeilingTimer); if(activeSession){ try{activeSession.stop();}catch(e){} } },
-    abort: () => { weDecidedStop = true; if(hardCeilingTimer) clearTimeout(hardCeilingTimer); if(activeSession){ try{activeSession.abort();}catch(e){} } }
-  };
+function setMeter(lvl, talking){
+  const f = document.getElementById('meterFill');
+  f.style.width = Math.round(lvl*100) + '%';
+  f.className = talking ? 'talking' : '';
 }
 
 /* ---- Keep the screen on during a scene ---- */
@@ -523,8 +464,9 @@ function stopEverything(){
   sceneRunning = false;
   try{ window.speechSynthesis.cancel(); }catch(e){}
   if(recog){ try{ recog.abort(); }catch(e){} recog = null; }
+  closeMic();
   allowScreenOff();
-  document.getElementById('liveTranscript').textContent = '';
+  setMeter(0, false);
 }
 
 function setupRehearsal(){
@@ -537,11 +479,11 @@ function setupRehearsal(){
   document.getElementById('actionBtn').style.display = 'block';
   document.getElementById('actionBtn').onclick = beginScene;
   document.getElementById('actionBtn').disabled = false;
-  document.getElementById('micNotice').style.display = micAvailable ? 'block' : 'none';
-  if(!micAvailable){
-    document.getElementById('micNotice').style.display = 'block';
-    document.getElementById('micNotice').textContent = 'זיהוי קול אוטומטי לא נתמך בדפדפן הזה — יופיע כפתור "סיימתי לדבר" בתור שלכם.';
-  }
+  const notice = document.getElementById('micNotice');
+  notice.style.display = 'block';
+  notice.textContent = micAvailable
+    ? 'המיקרופון נפתח פעם אחת בתחילת הסצנה. כשתסיים משפט ותשתוק רגע — הסצנה ממשיכה לבד.'
+    : 'אין גישה למיקרופון בדפדפן הזה — בתור שלך לחץ "סיימתי — הבא".';
   setStatus('מוכן להתחיל', false);
 }
 
@@ -566,12 +508,23 @@ function addLineToFeed(line, isMine){
   return div;
 }
 
-function beginScene(){
-  document.getElementById('actionBtn').onclick = null;
+async function beginScene(){
+  const btn = document.getElementById('actionBtn');
+  btn.onclick = null;
+  btn.disabled = true;
   unlockSpeech();   // must happen inside the tap
   keepScreenOn();
+  const myRun = runId;
+  if(micAvailable){
+    setStatus('פותח מיקרופון…', true);
+    const ok = await openMic();
+    if(myRun !== runId) { closeMic(); return; }
+    if(!ok){
+      document.getElementById('micNotice').textContent = 'אין אישור למיקרופון — בתור שלך לחץ "סיימתי — הבא". (אפשר לאשר בהגדרות האתר בדפדפן)';
+    }
+  }
   sceneRunning = true;
-  advance(runId);
+  advance(myRun);
 }
 
 function advance(myRun){
@@ -584,97 +537,27 @@ function advance(myRun){
     const el = addLineToFeed(line, true);
     const btn = document.getElementById('actionBtn');
 
-    if(micAvailable){
-      // Keep a manual button visible while listening — phone mics miss words sometimes
-      btn.style.display = 'block';
-      btn.textContent = 'סיימתי — הבא';
-      btn.disabled = false;
-      btn.onclick = () => {
-        if(recog){ try{ recog.abort(); }catch(e){} }
-        runId++; myRun = runId;   // ignore the aborted recognizer's callbacks
-        document.getElementById('liveTranscript').textContent = '';
-        cursor++;
-        btn.disabled = true;
-        setTimeout(() => advance(myRun), 200);
-      };
-      setStatus('מקשיב <span class="breathing"><span></span><span></span><span></span></span>', true);
+    const goNext = () => {
+      if(recog){ recog.abort(); recog = null; }
+      setMeter(0, false);
+      btn.disabled = true;
+      cursor++;
+      setTimeout(() => advance(myRun), 200);
+    };
+    btn.style.display = 'block';
+    btn.textContent = 'סיימתי — הבא';
+    btn.disabled = false;
+    btn.onclick = goNext;
 
-      let attempts = 0;
-      const MAX_ATTEMPTS = 4;
-
-      const fallbackToButton = (reason) => {
-        let msg = 'לא זיהיתי דיבור — לחצו כשסיימתם';
-        if(reason === 'not-allowed') msg = 'אין גישה למיקרופון — צריך לאשר בהגדרות הדפדפן. בינתיים, לחצו כשסיימתם';
-        setStatus(msg, true);
-        btn.style.display = 'block';
-        btn.textContent = 'סיימתי לדבר';
-        btn.disabled = false;
-        btn.onclick = () => {
-          cursor++;
-          btn.disabled = true;
-          setTimeout(() => advance(myRun), 250);
-        };
-      };
-
-      const tryListening = () => {
-        attempts++;
-        recog = buildRecognizer(
-          (said) => {
-            if(myRun !== runId) return;
-            cursor++;
-            setStatus('שמעתי: "' + esc(said) + '" — ממשיך…', false);
-            document.getElementById('liveTranscript').textContent = '';
-            const nextLine = parsedLines[cursor];
-            const nextWordCount = nextLine ? nextLine.text.trim().split(/\s+/).filter(Boolean).length : 0;
-            const responseDelay = nextWordCount > 14 ? 200 : nextWordCount <= 6 ? 450 : 300;
-            setTimeout(() => advance(myRun), responseDelay);
-          },
-          (reason) => {
-            if(myRun !== runId) return;
-            if(reason === 'not-allowed'){
-              fallbackToButton(reason); // no point retrying if permission itself was denied
-              return;
-            }
-            if(reason === 'timeout'){
-              setStatus('לקח יותר מדי זמן — לחצו כשסיימתם', true);
-              btn.style.display = 'block';
-              btn.textContent = 'סיימתי לדבר';
-              btn.disabled = false;
-              document.getElementById('liveTranscript').textContent = '';
-              btn.onclick = () => {
-                cursor++;
-                btn.disabled = true;
-                setTimeout(() => advance(myRun), 250);
-              };
-              return;
-            }
-            if(attempts < MAX_ATTEMPTS){
-              // retry silently — no flicker
-              tryListening();
-            } else {
-              fallbackToButton(reason);
-            }
-          },
-          line.text,
-          (interim) => {
-            if(myRun !== runId) return;
-            document.getElementById('liveTranscript').textContent = interim ? '» ' + interim : '';
-          }
-        );
-        try{ recog.start(); }catch(e){ fallbackToButton('start-failed'); }
-      };
-
-      tryListening();
+    if(micStream){
+      setStatus('התור שלך — דבר, וכשתסיים זה ימשיך לבד', true);
+      recog = listenForLine(line.text, () => {
+        if(myRun !== runId) return;
+        recog = null;
+        goNext();
+      }, (lvl, talking) => setMeter(lvl, talking));
     } else {
-      btn.style.display = 'block';
-      btn.textContent = 'סיימתי לדבר';
-      btn.disabled = false;
-      setStatus('התור שלכם — לחצו כשסיימתם', true);
-      btn.onclick = () => {
-        cursor++;
-        btn.disabled = true;
-        setTimeout(() => advance(myRun), 250);
-      };
+      setStatus('התור שלך — לחץ כשסיימת', true);
     }
   } else {
     const el = addLineToFeed(line, false);
@@ -693,6 +576,7 @@ function advance(myRun){
 
 function finishScene(){
   sceneRunning = false;
+  closeMic();
   allowScreenOff();
   document.getElementById('progressFill').style.width = '100%';
   setStatus('הסתיים', false);
