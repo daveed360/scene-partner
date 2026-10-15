@@ -8,147 +8,178 @@
 <meta name="mobile-web-app-capable" content="yes">
 <title>שותף לתפקיד</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Assistant:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Assistant:wght@400;500;600;700&display=swap');
 
 :root{
-  --paper:#F3EFE4;
-  --card:#FBF9F3;
-  --ink:#211E19;
-  --pencil:#8B8577;
-  --red:#A63D2F;
-  --red-bg:#F3E2DD;
-  --sage:#54614A;
-  --sage-bg:#E7EADD;
-  --line:#D8D2C2;
+  --paper:#FBFAF7;      /* photocopy-white script page */
+  --sheet:#FFFFFF;
+  --ink:#1E2226;
+  --pencil:#6E7177;
+  --rule:#E3E1DB;
+  --hl:#FFEF5C;         /* actor's yellow highlighter */
+  --hl-soft:#FFF8B8;
+  --go:#1E2226;
+  --ok:#2E7D5B;
+  --warn:#B23A3A;
+  --serif:'Frank Ruhl Libre', 'Times New Roman', serif;
+  --sans:'Assistant', system-ui, sans-serif;
 }
 *{box-sizing:border-box}
+html{background:var(--paper)}
 body{
-  margin:0;
-  font-family:'Assistant',sans-serif;
-  background:var(--paper);
-  color:var(--ink);
-  min-height:100vh;
-  min-height:100dvh;
-  -webkit-tap-highlight-color:transparent;
-  -webkit-text-size-adjust:100%;
+  margin:0;font-family:var(--sans);background:var(--paper);color:var(--ink);
+  min-height:100vh;min-height:100dvh;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;
 }
-.wrap{max-width:480px;margin:0 auto;padding:calc(18px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom));}
-button{touch-action:manipulation}
+.wrap{max-width:520px;margin:0 auto;padding:calc(20px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom));}
+button{touch-action:manipulation;font-family:var(--sans)}
+:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 
-header{margin-bottom:24px;}
-.slug{font-family:'Courier Prime',monospace;font-size:11px;color:var(--pencil);letter-spacing:0.5px;margin-bottom:6px;}
-header h1{font-family:'Courier Prime',monospace;font-weight:700;font-size:22px;margin:0;letter-spacing:-0.2px;}
-.rule{height:1px;background:var(--line);margin:14px 0 0;border:none;}
+header{margin-bottom:22px}
+header h1{font-family:var(--serif);font-weight:900;font-size:38px;line-height:1.05;margin:0;letter-spacing:-.5px}
+header p{margin:8px 0 0;color:var(--pencil);font-size:16px;line-height:1.5}
+.rehearsing header{display:none}
 
 .screen{display:none}
 .screen.active{display:block}
 
-label{display:block;font-size:13px;color:var(--pencil);margin:20px 0 8px;font-weight:500}
-label:first-of-type{margin-top:18px}
+h2.sec{font-family:var(--serif);font-weight:700;font-size:21px;margin:26px 0 10px}
+label{display:block;font-size:14px;color:var(--pencil);margin:18px 0 8px;font-weight:600}
+.hint{font-size:13px;color:var(--pencil);margin-top:8px;line-height:1.6}
+.err{color:var(--warn);font-size:14px;margin-top:10px}
+
+/* ready-made scenes: each one a script cover on the table */
+.scenes{display:flex;flex-direction:column;gap:10px}
+.scene{
+  display:block;width:100%;text-align:right;background:var(--sheet);border:1px solid var(--rule);border-radius:10px;
+  padding:14px 16px;cursor:pointer;color:var(--ink);position:relative;overflow:hidden;
+}
+.scene::before{content:"";position:absolute;inset:0 0 0 auto;width:5px;background:var(--tab,var(--ink))}
+.scene .t{font-family:var(--serif);font-weight:700;font-size:19px;display:block}
+.scene .d{font-size:14px;color:var(--pencil);display:block;margin-top:2px;line-height:1.45}
+.scene .m{display:flex;align-items:center;gap:10px;margin-top:10px;font-size:13px;color:var(--pencil)}
+.scene:active{transform:scale(.99)}
+.cast{display:flex}
+.cast .av{width:26px;height:26px;font-size:13px;margin-left:-6px;border:2px solid var(--sheet)}
+
+/* character stamp */
+.av{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;display:inline-grid;place-items:center;
+  background:var(--ink-c,var(--ink));color:#fff;font-family:var(--serif);font-weight:700;font-size:18px;line-height:1;
+}
+
 textarea{
-  width:100%;min-height:190px;padding:14px;font-family:'Courier Prime',monospace;font-size:16px;line-height:1.7;
-  border:1px solid var(--line);border-radius:4px;background:var(--card);color:var(--ink);resize:vertical;
+  width:100%;min-height:170px;padding:14px;font-family:var(--serif);font-size:17px;line-height:1.7;
+  border:1px solid var(--rule);border-radius:10px;background:var(--sheet);color:var(--ink);resize:vertical;
 }
 textarea:focus{outline:2px solid var(--ink);outline-offset:-1px}
-.hint{font-size:12px;color:var(--pencil);margin-top:8px;line-height:1.6}
-.example{
-  background:none;border:none;padding:0;font-size:13px;color:var(--red);cursor:pointer;
-  text-decoration:underline;text-underline-offset:3px;font-family:'Assistant',sans-serif;margin-top:10px;display:inline-block;
-}
+
 button.primary{
-  width:100%;padding:15px;font-family:'Assistant',sans-serif;font-size:15px;font-weight:600;
-  background:var(--ink);color:var(--paper);border:none;border-radius:4px;cursor:pointer;margin-top:26px;
-  letter-spacing:0.2px;
+  width:100%;min-height:54px;padding:14px;font-size:17px;font-weight:700;background:var(--go);color:#fff;
+  border:none;border-radius:12px;cursor:pointer;margin-top:20px;
 }
 button.primary:disabled{opacity:.4;cursor:default}
 button.secondary{
-  width:100%;padding:13px;font-family:'Assistant',sans-serif;font-size:14px;font-weight:500;
-  background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:4px;cursor:pointer;margin-top:10px;
+  width:100%;min-height:48px;padding:12px;font-size:15px;font-weight:600;background:transparent;color:var(--ink);
+  border:1px solid var(--rule);border-radius:12px;cursor:pointer;margin-top:10px;
 }
-.err{color:var(--red);font-size:13px;margin-top:10px}
 
+/* role picking */
+.scene-title{font-family:var(--serif);font-weight:900;font-size:28px;margin:0 0 2px}
 .rolecard{
-  display:flex;align-items:center;justify-content:space-between;padding:14px 16px;
-  border:1px solid var(--line);border-radius:4px;background:var(--card);margin-bottom:10px;cursor:pointer;
+  display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:64px;border:1.5px solid var(--rule);
+  border-radius:12px;background:var(--sheet);margin-bottom:10px;cursor:pointer;
 }
-.rolecard.chosen{border-color:var(--ink);border-width:2px;background:var(--red-bg)}
-.rolecard .name{font-family:'Courier Prime',monospace;font-weight:700;font-size:15px}
-.rolecard .count{font-size:12px;color:var(--pencil)}
+.rolecard.chosen{border-color:var(--ink-c);box-shadow:inset 0 0 0 1px var(--ink-c);background:var(--hl-soft)}
+.rolecard .meta{display:flex;flex-direction:column;flex:1;min-width:0}
+.rolecard .name{font-family:var(--serif);font-weight:700;font-size:19px}
+.rolecard .count{font-size:13px;color:var(--pencil)}
+.rolecard .me{font-size:12px;font-weight:700;color:var(--ink);display:none}
+.rolecard.chosen .me{display:block}
+.rolecard.chosen .voicepick{display:none}
+.voicepick{display:flex;align-items:center;gap:6px}
+.voicepick select{font-size:14px;padding:7px 6px;border:1px solid var(--rule);border-radius:8px;background:var(--paper);color:var(--ink);max-width:130px;font-family:var(--sans)}
+.play{width:36px;height:36px;border-radius:50%;border:1px solid var(--rule);background:var(--paper);cursor:pointer;font-size:13px;color:var(--ink);display:grid;place-items:center}
+.play.busy{opacity:.5}
 
-.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.topbar .back{font-size:13px;color:var(--pencil);background:none;border:none;cursor:pointer;font-family:'Assistant',sans-serif;padding:0}
-.topbar .role{font-family:'Courier Prime',monospace;font-size:12px;color:var(--pencil)}
-.progress{height:2px;background:var(--line);margin-bottom:20px;}
-.progress-fill{height:100%;background:var(--red);transition:width .3s}
+.toggle{display:flex;align-items:center;gap:12px;margin:16px 0 0;padding:12px 14px;border:1px dashed var(--rule);border-radius:12px;cursor:pointer;font-size:15px;line-height:1.4}
+.toggle input{width:22px;height:22px;accent-color:var(--ink);flex-shrink:0}
+.toggle small{display:block;color:var(--pencil);font-size:13px}
 
-#screen-rehearse.active{display:flex;flex-direction:column;height:calc(100dvh - 130px - env(safe-area-inset-top) - env(safe-area-inset-bottom));min-height:360px}
-.feed{display:flex;flex-direction:column;gap:2px;margin-bottom:14px;flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:6px 2px}
-.line{padding:10px 4px;font-family:'Courier Prime',monospace;font-size:16px;line-height:1.65;border-bottom:1px dotted var(--line)}
+/* rehearsal */
+#screen-rehearse.active{display:flex;flex-direction:column;height:calc(100dvh - 40px - env(safe-area-inset-top) - env(safe-area-inset-bottom));min-height:380px}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;gap:10px}
+.topbar .back{font-size:15px;color:var(--pencil);background:none;border:none;cursor:pointer;padding:8px 0}
+.topbar .role{display:flex;align-items:center;gap:8px;font-family:var(--serif);font-weight:700;font-size:16px}
+.topbar .role .av{width:28px;height:28px;font-size:14px}
+.progress{height:3px;background:var(--rule);border-radius:2px;margin-bottom:12px;overflow:hidden}
+.progress-fill{height:100%;background:var(--ink);transition:width .3s}
+.notice{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:9px 12px;font-size:13px;color:var(--pencil);margin-bottom:10px;line-height:1.5}
+
+.feed{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  background:var(--sheet);border:1px solid var(--rule);border-radius:12px;padding:6px 14px;margin-bottom:12px}
+.line{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--rule)}
 .line:last-child{border-bottom:none}
-.line .who{display:block;font-weight:700;font-size:12px;letter-spacing:1px;margin-bottom:3px;}
-.line.other .who{color:var(--ink)}
-.line.mine .who{color:var(--red)}
-.line.mine{background:var(--sage-bg);border-radius:3px;padding:10px 10px;border-bottom:none;}
-.line.dim{opacity:.3}
-.line.speaking{background:var(--red-bg);border-radius:3px;padding:10px 10px;border-bottom:none;}
+.line .av{margin-top:2px}
+.line .body{flex:1;min-width:0}
+.line .who{display:block;font-weight:700;font-size:14px;color:var(--ink-c);margin-bottom:2px}
+.line .txt{font-family:var(--serif);font-size:19px;line-height:1.6}
+.line.other .txt{color:var(--ink)}
+/* your lines: the highlighter, the way actors mark their own part */
+.line.mine .txt mark{background:linear-gradient(transparent 12%, var(--hl) 12%, var(--hl) 88%, transparent 88%);color:var(--ink);padding:0 2px;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.line.mine.hidden .rest{filter:blur(6px);user-select:none}
+.line.mine.hidden .reveal{display:inline-block;font-family:var(--sans);font-size:13px;color:var(--pencil);margin-top:6px}
+.reveal{display:none}
+.line.past{opacity:.55}
+.line.speaking .av{box-shadow:0 0 0 0 var(--ink-c);animation:ring 1.3s ease-out infinite}
+@keyframes ring{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--ink-c) 55%,transparent)}100%{box-shadow:0 0 0 12px transparent}}
+@media (prefers-reduced-motion: reduce){.line.speaking .av{animation:none;outline:3px solid var(--ink-c);outline-offset:2px}}
 
-.status{display:flex;align-items:center;gap:9px;font-size:13px;color:var(--pencil);margin-bottom:16px;min-height:20px}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--sage);flex-shrink:0}
-.dot.wait{background:var(--red);animation:pulse 1s ease-in-out infinite}
+.status{display:flex;align-items:center;gap:9px;font-size:15px;color:var(--ink);margin-bottom:10px;min-height:22px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);flex-shrink:0}
+.dot.wait{background:var(--warn);animation:pulse 1s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.breathing{display:inline-flex;gap:3px}
-.breathing span{width:4px;height:4px;border-radius:50%;background:var(--red);animation:bounce 1.2s infinite}
-.breathing span:nth-child(2){animation-delay:.15s}
-.breathing span:nth-child(3){animation-delay:.3s}
-@keyframes bounce{0%,60%,100%{opacity:.25}30%{opacity:1}}
-
-.controls{display:flex;gap:8px}
-.controls button{flex:1;margin-top:0;min-height:52px}
-.rolecard{min-height:52px}
-
-.donebox{text-align:center;padding:34px 10px}
-.donebox .slug{justify-content:center;display:block}
-.donebox h2{font-family:'Courier Prime',monospace;font-size:20px;margin:6px 0 8px}
-.donebox p{color:var(--pencil);font-size:14px;margin:0 0 22px}
-
-.meter{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:12px}
+.meter{height:6px;background:var(--rule);border-radius:3px;overflow:hidden;margin-bottom:12px}
 #meterFill{height:100%;width:0;background:var(--pencil);transition:width .08s}
-#meterFill.talking{background:var(--sage)}
-.voicebox{margin-top:28px;border-top:1px solid var(--line);padding-top:6px}
-.voicebox summary{font-size:13px;color:var(--pencil);cursor:pointer;padding:10px 0;list-style:none}
+#meterFill.talking{background:var(--ok)}
+.controls{display:flex;gap:8px}
+.controls button{flex:1;margin-top:0}
+
+.donebox{text-align:center;padding:40px 6px}
+.donebox h2{font-family:var(--serif);font-weight:900;font-size:34px;margin:0 0 8px}
+.donebox p{color:var(--pencil);font-size:16px;margin:0 0 22px}
+
+/* natural voice settings */
+.voicebox{margin-top:30px;border-top:1px solid var(--rule);padding-top:4px}
+.voicebox summary{font-size:15px;color:var(--pencil);cursor:pointer;padding:12px 0;list-style:none;font-weight:600}
 .voicebox summary::-webkit-details-marker{display:none}
-.voicebox input{width:100%;padding:12px;font-size:16px;border:1px solid var(--line);border-radius:4px;background:var(--card);color:var(--ink);font-family:monospace;direction:ltr}
+.voicebox input{width:100%;padding:12px;font-size:16px;border:1px solid var(--rule);border-radius:10px;background:var(--sheet);color:var(--ink);font-family:monospace;direction:ltr}
 .voicebox .row{display:flex;gap:8px}
-.voicebox .row button{flex:1;margin-top:10px}
-.vstate{font-size:13px;margin-top:10px;line-height:1.5}
-.vstate.ok{color:var(--sage)} .vstate.bad{color:var(--red)}
-.rolecard select{font-size:14px;padding:6px;border:1px solid var(--line);border-radius:4px;background:var(--paper);color:var(--ink);max-width:55%}
-.rolecard .meta{display:flex;flex-direction:column;align-items:flex-start;gap:6px}
-.notice{
-  border-right:2px solid var(--red);background:var(--card);border-radius:0 4px 4px 0;padding:9px 12px;font-size:12px;color:var(--ink);margin-bottom:16px;line-height:1.5;
-}
+.voicebox .row button{flex:1}
+.vstate{font-size:14px;margin-top:10px;line-height:1.5}
+.vstate.ok{color:var(--ok)} .vstate.bad{color:var(--warn)}
 </style>
 </head>
 <body>
 
 <div class="wrap">
 <header>
-<div class="slug">אימפרו · מאגר תסריטים</div>
 <h1>שותף לתפקיד</h1>
-<hr class="rule">
+<p>בוחרים סצנה ותפקיד. את שאר הדמויות משחקים איתך בקול.</p>
 </header>
 
-<!-- SCREEN 1: INPUT -->
+<!-- SCREEN 1: CHOOSE A SCENE -->
 <div class="screen active" id="screen-input">
-<label for="scriptInput">הדביקו את הסצנה</label>
-<textarea id="scriptInput" placeholder="דני: את לא חייבת להישאר.&#10;נועה: אני יודעת. אני פה כי אני רוצה.&#10;דני: זה לא מה שאמרת אתמול."></textarea>
-<div class="hint">כל שורה: שם הדמות, נקודתיים, ואז הטקסט.</div>
-<button class="example" id="loadExample">טען דוגמה</button>
+<h2 class="sec">סצנות מוכנות</h2>
+<div class="scenes" id="sceneList"></div>
+
+<h2 class="sec">סצנה משלך</h2>
+<textarea id="scriptInput" aria-label="הטקסט של הסצנה" placeholder="דני: את לא חייבת להישאר.&#10;נועה: אני יודעת. אני פה כי אני רוצה.&#10;דני: זה לא מה שאמרת אתמול."></textarea>
+<div class="hint">כל שורה: שם הדמות, נקודתיים, ואז הטקסט. הוראות במה בסוגריים מדולגות.</div>
 <div id="inputErr" class="err" style="display:none"></div>
 <button class="primary" id="analyzeBtn">המשך לבחירת תפקיד</button>
 
 <details class="voicebox" id="voiceBox">
-<summary id="voiceSummary">⚙ קול טבעי (ElevenLabs)</summary>
+<summary id="voiceSummary">קול טבעי (ElevenLabs)</summary>
 <label for="elKey" style="margin-top:4px">מפתח API של ElevenLabs</label>
 <input id="elKey" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="sk_...">
 <div class="hint">המפתח נשמר רק בדפדפן של המכשיר הזה. הוא לא נכנס לקוד ולא עולה ל-GitHub.</div>
@@ -162,20 +193,22 @@ button.secondary{
 
 <!-- SCREEN 2: ROLE PICK -->
 <div class="screen" id="screen-roles">
-<label>איזה תפקיד אתם משחקים?</label>
+<h2 class="scene-title" id="sceneTitle">הסצנה שלך</h2>
+<label>את מי אתה משחק?</label>
 <div id="roleList"></div>
+<label class="toggle"><input type="checkbox" id="hideMine"><span>הסתר את השורות שלי<small>רואים רק את המילה הראשונה. לתרגול זיכרון.</small></span></label>
 <button class="primary" id="startBtn">התחל תרגול</button>
-<button class="secondary" id="backToInput">חזרה לעריכת הסצנה</button>
+<button class="secondary" id="backToInput">חזרה</button>
 </div>
 
 <!-- SCREEN 3: REHEARSE -->
 <div class="screen" id="screen-rehearse">
 <div class="topbar">
-<button class="back" id="exitBtn">← יציאה</button>
+<button class="back" id="exitBtn">יציאה</button>
 <span class="role" id="roleLabel"></span>
 </div>
 <div class="progress"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-<div id="micNotice" class="notice" style="display:none">האזנה למיקרופון פעילה — המערכת מזהה אוטומטית מתי סיימתם לדבר.</div>
+<div id="micNotice" class="notice" style="display:none"></div>
 <div class="feed" id="feed"></div>
 <div class="status"><span class="dot" id="statusDot"></span><span id="statusText">מוכן</span></div>
 <div id="liveTranscript" class="meter"><div id="meterFill"></div></div>
@@ -187,11 +220,10 @@ button.secondary{
 <!-- SCREEN 4: DONE -->
 <div class="screen" id="screen-done">
 <div class="donebox">
-<div class="slug">— סוף הסצנה —</div>
-<h2>זהו, לתיאבון</h2>
-<p>אפשר לתרגל שוב, או להביא סצנה חדשה</p>
-<button class="primary" id="againBtn">תרגל שוב מההתחלה</button>
-<button class="secondary" id="newSceneBtn">סצנה חדשה</button>
+<h2>קאט.</h2>
+<p>סיימת את הסצנה. עוד טייק?</p>
+<button class="primary" id="againBtn">עוד פעם מההתחלה</button>
+<button class="secondary" id="newSceneBtn">סצנה אחרת</button>
 </div>
 </div>
 
@@ -207,6 +239,8 @@ const screens = {
 function show(name){
   Object.values(screens).forEach(s=>s.classList.remove('active'));
   screens[name].classList.add('active');
+  document.body.classList.toggle('rehearsing', name === 'rehearse');
+  window.scrollTo(0, 0);
 }
 
 function esc(s){
@@ -221,10 +255,103 @@ try{ const saved = localStorage.getItem('sp_script'); if(saved) scriptInput.valu
 scriptInput.addEventListener('input', () => {
   try{ localStorage.setItem('sp_script', scriptInput.value); }catch(e){}
 });
-document.getElementById('loadExample').onclick = () => {
-  scriptInput.value = "דני: את לא חייבת להישאר.\nנועה: אני יודעת. אני פה כי אני רוצה.\nדני: זה לא מה שאמרת אתמול.\nנועה: אתמול פחדתי. היום פחות.\nדני: ומה השתנה?\nנועה: את שאלת.";
-  try{ localStorage.setItem('sp_script', scriptInput.value); }catch(e){}
-};
+/* ---- Ready-made scenes ---- */
+const SCENES = [
+ {title:'המפתחות', genre:'קומדיה', blurb:'זוג נעול מחוץ לבית. אחד מהם היה אמור להביא מפתחות.', text:
+`יעל: הבאת את המפתחות?
+אורי: איזה מפתחות?
+יעל: אורי. אמרתי לך שלוש פעמים הבוקר.
+אורי: אמרת לי להביא חלב.
+יעל: גם. וגם את המפתחות של אמא שלי.
+(שתיקה)
+אורי: אז אנחנו תקועים פה.
+יעל: אנחנו תקועים פה.
+אורי: יש לפחות חלב.
+יעל: זה ממש לא מצחיק.
+אורי: קצת מצחיק.
+יעל: טוב. קצת.`},
+ {title:'תחנה אחרונה', genre:'דרמה', blurb:'רציף, עשר דקות לפני רכבת. מישהו מחכה שיבקשו ממנו להישאר.', text:
+`רונית: הרכבת יוצאת בעוד עשר דקות.
+אבי: אני יודע. ראיתי את הלוח.
+רונית: אז למה אתה עדיין עומד פה?
+אבי: כי חשבתי שתגידי לי להישאר.
+רונית: ואם אגיד, תישאר?
+אבי: לא יודע. אולי. תלוי איך תגידי את זה.
+רונית: אני לא יודעת להגיד את זה יפה.
+אבי: אז תגידי את זה מכוער.
+(שתיקה)
+רונית: תישאר.
+אבי: זה היה דווקא די יפה.`},
+ {title:'חדר האודישן', genre:'קומדיה', blurb:'שחקן לחוץ, במאית סבלנית, ומישהו מאחור שכותב כל הזמן.', text:
+`גלית: שם, ומה הבאת לנו היום?
+נדב: נדב. הבאתי מונולוג, אבל אני קצת לחוץ.
+גלית: כולם לחוצים. זה סימן שאכפת לך.
+נדב: אז כרגע מאוד אכפת לי.
+גלית: מתי שאתה מוכן.
+נדב: רגע, אפשר להתחיל מההתחלה?
+גלית: עוד לא התחלת.
+נדב: נכון. אז זאת ההתחלה.
+גלית: נדב, תנשום. אף אחד פה לא נגדך.
+נדב: גם לא האיש מאחור שכותב כל הזמן?
+גלית: הוא עושה רשימת קניות.`},
+ {title:'ארוחת שישי', genre:'משפחה', blurb:'ארבעה סביב שולחן, סלט שאף אחד לא מעביר, וסוד אחד.', text:
+`אמא: מי מעביר לי את הסלט?
+יונתן: מיכל, תעבירי לאמא את הסלט.
+מיכל: למה אני? אתה יותר קרוב.
+אבא: אף אחד לא זז עד שמיכל מספרת מה קרה בעבודה.
+מיכל: לא קרה כלום בעבודה.
+אמא: היא אומרת "כלום" בדיוק כמו שאמרה "כלום" כשנפרדה מגיל.
+יונתן: רגע, נפרדת מגיל?
+מיכל: עזבתי את העבודה. בסדר? עזבתי.
+(שתיקה)
+אבא: אז מי מעביר את הסלט?
+אמא: אבא שלך, תמיד יודע מה להגיד.
+מיכל: תודה, אבא.`},
+ {title:'חדר המתנה', genre:'דרמה', blurb:'מסדרון בבית חולים. שניים מפחדים, אחת כבר ראתה הכול.', text:
+`אחות: איתי לוי? הרופא יקרא לך עוד כמה דקות.
+איתי: אמרת את זה לפני שעה.
+אחות: ואגיד את זה שוב בעוד שעה, אם תמשיך לשאול.
+שירה: אל תתעצבן עליה, היא רק עושה את העבודה שלה.
+איתי: אני לא מתעצבן. אני מפחד.
+שירה: אני יודעת. גם אני.
+אחות: אתם ביחד?
+שירה: היום כן.
+איתי: מה זה אמור להגיד?
+שירה: שאני פה, איתך. זה מה שזה אומר.
+אחות: איתי לוי, אתה יכול להיכנס.`},
+];
+const INKS = ['#2F5DA8','#2E7D5B','#8A4FA8','#B23A3A','#A8661F','#2F7C8C','#5A5F66'];
+let sceneTitle = 'הסצנה שלך';
+function inkOf(name){ const i = characters.indexOf(name); return INKS[(i < 0 ? 0 : i) % INKS.length]; }
+function avatar(name, ink){ return `<span class="av" style="--ink-c:${ink}" aria-hidden="true">${esc((name||'?').trim().charAt(0))}</span>`; }
+
+function loadScene(raw, title){
+  const parsed = parseScript(raw);
+  if(!parsed || !parsed.length) return false;
+  parsedLines = parsed;
+  characters = [...new Set(parsed.map(l=>l.character))];
+  sceneTitle = title;
+  document.getElementById('sceneTitle').textContent = title;
+  renderRoles();
+  show('roles');
+  return true;
+}
+
+(function renderSceneList(){
+  const list = document.getElementById('sceneList');
+  SCENES.forEach((sc, i) => {
+    const lines = parseScript(sc.text);
+    const cast = [...new Set(lines.map(l=>l.character))];
+    const b = document.createElement('button');
+    b.className = 'scene';
+    b.style.setProperty('--tab', INKS[i % INKS.length]);
+    b.innerHTML = `<span class="t">${esc(sc.title)}</span><span class="d">${esc(sc.blurb)}</span>
+      <span class="m"><span class="cast">${cast.map((c,j)=>avatar(c, INKS[j % INKS.length])).join('')}</span>
+      <span>${esc(sc.genre)}, ${cast.length} דמויות, ${lines.length} שורות</span></span>`;
+    b.onclick = () => loadScene(sc.text, sc.title);
+    list.appendChild(b);
+  });
+})();
 
 let parsedLines = [];
 let characters = [];
@@ -266,6 +393,8 @@ document.getElementById('analyzeBtn').onclick = () => {
     return;
   }
   errBox.style.display = 'none';
+  sceneTitle = 'הסצנה שלך';
+  document.getElementById('sceneTitle').textContent = sceneTitle;
   parsedLines = parsed;
   characters = [...new Set(parsed.map(l=>l.character))];
   renderRoles();
@@ -278,25 +407,54 @@ function renderRoles(){
   myCharacter = null;
   characters.forEach(name=>{
     const count = parsedLines.filter(l=>l.character===name).length;
+    const ink = inkOf(name);
     const card = document.createElement('div');
     card.className = 'rolecard';
-    card.innerHTML = `<span class="meta"><span class="name">${esc(name)}</span><span class="count">${count} שורות</span></span>`;
+    card.style.setProperty('--ink-c', ink);
+    card.setAttribute('role', 'button');
+    card.tabIndex = 0;
+    card.innerHTML = `${avatar(name, ink)}<span class="meta"><span class="name">${esc(name)}</span><span class="count">${count} שורות</span><span class="me">זה אתה</span></span>`;
     if(elOn()){
+      const pick = document.createElement('span');
+      pick.className = 'voicepick';
       const sel = document.createElement('select');
       sel.setAttribute('aria-label', 'קול עבור ' + name);
       const cur = elVoiceFor[name] || defaultVoiceFor(name);
       elVoices.forEach(v => { const o = document.createElement('option'); o.value = v.voice_id; o.textContent = v.name; if(v.voice_id===cur) o.selected = true; sel.appendChild(o); });
       sel.onclick = e => e.stopPropagation();
       sel.onchange = () => { elVoiceFor[name] = sel.value; lsSet('sp_el_voices2', JSON.stringify(elVoiceFor)); };
-      card.appendChild(sel);
+      const play = document.createElement('button');
+      play.className = 'play';
+      play.setAttribute('aria-label', 'השמע את הקול של ' + name);
+      play.textContent = '▶';
+      play.onclick = async (e) => {
+        e.stopPropagation();
+        const first = parsedLines.find(l => l.character === name);
+        play.classList.add('busy');
+        try{
+          const blob = await elGet(first ? first.text : 'שלום', sel.value);
+          player.src = URL.createObjectURL(blob);
+          await player.play();
+        }catch(err){ alertInline(elErrorText(err)); }
+        play.classList.remove('busy');
+      };
+      pick.appendChild(sel); pick.appendChild(play);
+      card.appendChild(pick);
     }
-    card.onclick = () => {
+    const choose = () => {
       document.querySelectorAll('.rolecard').forEach(c=>c.classList.remove('chosen'));
       card.classList.add('chosen');
       myCharacter = name;
     };
+    card.onclick = choose;
+    card.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); choose(); } };
     roleList.appendChild(card);
   });
+}
+function alertInline(msg){
+  let el = document.getElementById('roleErr');
+  if(!el){ el = document.createElement('div'); el.id = 'roleErr'; el.className = 'err'; document.getElementById('roleList').after(el); }
+  el.textContent = msg;
 }
 
 document.getElementById('backToInput').onclick = () => show('input');
@@ -305,11 +463,14 @@ document.getElementById('startBtn').onclick = () => {
   if(!myCharacter){
     const rl = document.getElementById('roleList');
     rl.scrollIntoView({behavior:'smooth', block:'center'});
-    rl.style.outline = '2px solid var(--red)';
+    rl.style.outline = '2px solid var(--warn)';
+    rl.style.borderRadius = '12px';
     setTimeout(()=>{ rl.style.outline=''; }, 1200);
     return;
   }
-  document.getElementById('roleLabel').textContent = myCharacter.toUpperCase();
+  document.getElementById('roleLabel').innerHTML = avatar(myCharacter, inkOf(myCharacter)) + esc(myCharacter);
+  hideMine = document.getElementById('hideMine').checked;
+  lsSet('sp_hide', hideMine ? '1' : null);
   setupRehearsal();
   show('rehearse');
 };
@@ -336,7 +497,7 @@ try{ elVoices = JSON.parse(lsGet('sp_el_voicelist2')) || elVoices; }catch(e){}
 function elSetState(msg, ok){
   const st = document.getElementById('elState');
   st.textContent = msg; st.className = 'vstate ' + (ok===true?'ok':ok===false?'bad':'');
-  document.getElementById('voiceSummary').textContent = elOn() ? '⚙ קול טבעי (ElevenLabs) — פעיל ✓' : '⚙ קול טבעי (ElevenLabs)';
+  document.getElementById('voiceSummary').textContent = elOn() ? 'קול טבעי (ElevenLabs): פעיל ✓' : 'קול טבעי (ElevenLabs)';
 }
 async function elLoadVoices(){
   // Needs the key's "Voices: read" permission; if missing we keep the built-in list
@@ -707,11 +868,28 @@ function updateProgress(){
   document.getElementById('progressFill').style.width = pct + '%';
 }
 
+let hideMine = lsGet('sp_hide') === '1';
+document.getElementById('hideMine').checked = hideMine;
+
 function addLineToFeed(line, isMine){
-  const div = document.createElement('div');
-  div.className = 'line ' + (isMine ? 'mine' : 'other');
-  div.innerHTML = `<span class="who">${esc(line.character)}</span>${esc(line.text)}`;
   const feed = document.getElementById('feed');
+  feed.querySelectorAll('.line').forEach(l => l.classList.add('past'));
+  const div = document.createElement('div');
+  const ink = inkOf(line.character);
+  div.className = 'line ' + (isMine ? 'mine' : 'other');
+  div.style.setProperty('--ink-c', ink);
+  let txt = esc(line.text);
+  if(isMine){
+    const words = line.text.trim().split(/\s+/);
+    if(hideMine && words.length > 1){
+      div.classList.add('hidden');
+      txt = `<mark>${esc(words[0])} <span class="rest">${esc(words.slice(1).join(' '))}</span></mark><span class="reveal">הקש כדי לראות את השורה</span>`;
+      div.onclick = () => div.classList.remove('hidden');
+    } else {
+      txt = `<mark>${txt}</mark>`;
+    }
+  }
+  div.innerHTML = `${avatar(line.character, ink)}<div class="body"><span class="who">${esc(line.character)}</span><span class="txt">${txt}</span></div>`;
   feed.appendChild(div);
   // Scroll only the script box, not the whole page (scrollIntoView jumps the page on phones)
   feed.scrollTo({top: feed.scrollHeight, behavior:'smooth'});
@@ -750,6 +928,7 @@ function advance(myRun){
     const btn = document.getElementById('actionBtn');
 
     const goNext = () => {
+      el.classList.remove('hidden');
       if(recog){ recog.abort(); recog = null; }
       setMeter(0, false);
       btn.disabled = true;
@@ -776,7 +955,7 @@ function advance(myRun){
     const el = addLineToFeed(line, false);
     el.classList.add('speaking');
     document.getElementById('actionBtn').style.display = 'none';
-    setStatus(line.character.toUpperCase() + ' מדבר…', false);
+    setStatus(esc(line.character) + ' מדבר…', false);
     speak(line.text, line.character, () => {
       if(myRun !== runId) return;
       el.classList.remove('speaking');
@@ -801,11 +980,7 @@ document.getElementById('exitBtn').onclick = () => {
   show('roles');
 };
 document.getElementById('againBtn').onclick = () => { setupRehearsal(); show('rehearse'); };
-document.getElementById('newSceneBtn').onclick = () => {
-  scriptInput.value='';
-  try{ localStorage.removeItem('sp_script'); }catch(e){}
-  show('input');
-};
+document.getElementById('newSceneBtn').onclick = () => { show('input'); };
 </script>
 </body>
 </html>
