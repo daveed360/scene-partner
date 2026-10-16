@@ -388,6 +388,21 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 .keys{display:none;text-align:center;font-size:13px;color:var(--on-stage-dim);margin-top:10px}
 .keys kbd{font-family:var(--sans);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-bottom-width:3px;border-radius:6px;padding:1px 7px;margin:0 2px;color:var(--on-stage)}
 
+/* illustrated cast */
+.av img.portrait{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;-webkit-user-drag:none;user-select:none}
+.av:has(img.portrait){box-shadow:0 0 0 2.5px var(--ink-c);background:#3A2D4A}
+.face .av:has(img.portrait){box-shadow:0 0 0 5px var(--ink-c), 0 18px 50px -18px rgba(0,0,0,.6)}
+.face{animation:breathe2 4.8s ease-in-out infinite}
+@keyframes breathe2{0%,100%{transform:scale(1)}50%{transform:scale(1.012) translateY(-1px)}}
+.stage.talking .face{animation:talkbob 1.7s ease-in-out infinite}
+@keyframes talkbob{0%,100%{transform:rotate(-.6deg)}30%{transform:rotate(.9deg) translateY(-2px)}60%{transform:rotate(-.2deg) translateY(1px)}}
+.stage.talking .face .av:has(img.portrait){animation:speakring 1.1s ease-out infinite}
+@keyframes speakring{0%{box-shadow:0 0 0 5px var(--ink-c), 0 0 0 5px rgba(255,194,75,.55)}100%{box-shadow:0 0 0 5px var(--ink-c), 0 0 0 26px rgba(255,194,75,0)}}
+.stage.listening .face{animation:nod2 3.6s ease-in-out infinite}
+@keyframes nod2{0%,60%,100%{transform:none}72%{transform:translateY(3px) rotate(.8deg)}84%{transform:translateY(0)}}
+@media (prefers-reduced-motion: reduce){.face,.stage.talking .face,.stage.listening .face,.stage.talking .face .av{animation:none!important}}
+.intro .card .av{background:#3A2D4A;border-radius:50%}
+
 /* confetti at the end of a scene */
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:20;overflow:hidden}
 .confetti i{position:absolute;top:-20px;width:10px;height:14px;border-radius:3px;animation:fall linear forwards}
@@ -886,13 +901,50 @@ const SCENES = [
 const INKS = ['#2F5DA8','#2E7D5B','#8A4FA8','#B23A3A','#A8661F','#2F7C8C','#5A5F66'];
 let sceneTitle = 'הסצנה שלך';
 function inkOf(name){ const i = characters.indexOf(name); return INKS[(i < 0 ? 0 : i) % INKS.length]; }
-function avatar(name, ink){ return `<span class="av" style="--ink-c:${ink}">${figureSVG(name, ink)}</span>`; }
+/* ---- The cast: 8 illustrated actors (+ Maya the director), each in 6 expressions ---- */
+const CAST = [
+  {id:'c1', g:'female', age:'young'}, {id:'c5', g:'female', age:'young'}, {id:'c3', g:'female', age:'mid'}, {id:'c7', g:'female', age:'old'},
+  {id:'c2', g:'male',   age:'young'}, {id:'c6', g:'male',   age:'young'}, {id:'c4', g:'male',   age:'mid'}, {id:'c8', g:'male',   age:'old'},
+];
+const MOOD_FRAME = {neutral:0, smile:0, curious:0, talk:1, happy:2, angry:3, sad:4, surprised:5};
+function ageOf(name){
+  const n = (name || '').trim();
+  if(/^(סבא|סבתא|זקן|זקנה|הזקן|הזקנה)/.test(n)) return 'old';
+  if(/^(אבא|אמא|דוד|דודה|מורה|המורה|במאי|במאית|מנהל|מנהלת|אחות|רופא|רופאה|שוטר|שוטרת|השוטר|הרופא)/.test(n)) return 'mid';
+  return null;
+}
+function assignCast(names){
+  const used = new Set(), map = {};
+  // parents and grandparents pick first, so a plain name never takes the "dad" face
+  [...names].sort((x, y) => (ageOf(y) ? 1 : 0) - (ageOf(x) ? 1 : 0)).forEach(n => {
+    const g = guessGender(n) === 'female' ? 'female' : 'male', a = ageOf(n);
+    const pool = CAST.filter(c => c.g === g);
+    let pref = a ? pool.filter(c => c.age === a) : pool.filter(c => c.age === 'young');
+    const start = hashStr(n) % pref.length;
+    pref = pref.slice(start).concat(pref.slice(0, start));
+    if(!a) pref = pref.concat(pool.filter(c => c.age === 'mid'));
+    const pick = pref.find(c => !used.has(c.id)) || pool.find(c => !used.has(c.id)) || pref[0];
+    used.add(pick.id); map[n] = pick.id;
+  });
+  return map;
+}
+let castMap = {};
+function setCast(names){
+  castMap = assignCast(names);
+  // warm up the pictures so nothing blinks in during the scene
+  Object.values(castMap).forEach(id => [0,1,2,3,4,5].forEach(k => { const im = new Image(); im.src = `cast/${id}-${k}.jpg`; }));
+}
+function castId(name){ return castMap[name] || assignCast([name])[name]; }
+function portraitSrc(name, mood, id){ return `cast/${name === HOST ? 'host' : (id || castId(name))}-${MOOD_FRAME[mood] ?? 0}.jpg`; }
+function portraitHTML(name, mood, id){ return `<img class="portrait" src="${portraitSrc(name, mood, id)}" alt="" draggable="false">`; }
+function avatar(name, ink, id){ return `<span class="av" style="--ink-c:${ink}">${portraitHTML(name, 'neutral', id)}</span>`; }
 
 function loadScene(raw, title){
   const parsed = parseScript(raw);
   if(!parsed || !parsed.length) return false;
   parsedLines = parsed;
   characters = [...new Set(parsed.map(l=>l.character))];
+  setCast(characters);
   sceneTitle = title;
   document.getElementById('sceneTitle').textContent = title;
   renderRoles();
@@ -902,8 +954,8 @@ function loadScene(raw, title){
 
 const HOST = 'מאיה';
 document.addEventListener('DOMContentLoaded', () => {
-document.getElementById('hostAv').innerHTML = figureSVG(HOST, '#4A3A5C', {gender:'female', style:'bun', beret:true, shirt:'#FFC24B'});
-document.getElementById('doneAv').innerHTML = figureSVG(HOST, '#4A3A5C', {gender:'female', style:'bun', beret:true, shirt:'#FFC24B', mood:'happy'});
+document.getElementById('hostAv').innerHTML = portraitHTML(HOST, 'neutral');
+document.getElementById('doneAv').innerHTML = portraitHTML(HOST, 'happy');
 });
 function hostSays(t){
   const b = document.getElementById('hostSay');
@@ -1088,7 +1140,7 @@ function showIntro(){
   let i = 0;
   const draw = () => {
     const s = INTRO[i];
-    box.querySelector('.slide').innerHTML = `<span class="av" style="--ink-c:#4A3A5C">${figureSVG(HOST, '#4A3A5C', {gender:'female', style:'bun', beret:true, shirt:'#FFC24B', mood: s.mood})}</span><h3>${esc(s.t)}</h3><p>${esc(s.p)}</p>`;
+    box.querySelector('.slide').innerHTML = `<span class="av" style="--ink-c:#4A3A5C">${portraitHTML(HOST, s.mood)}</span><h3>${esc(s.t)}</h3><p>${esc(s.p)}</p>`;
     box.querySelector('.slide').style.animation = 'none'; void box.offsetWidth; box.querySelector('.slide').style.animation = '';
     box.querySelector('.dots').innerHTML = INTRO.map((_, j) => `<i class="${j === i ? 'on' : ''}"></i>`).join('');
     document.getElementById('introNext').textContent = i === INTRO.length - 1 ? 'מתחילים!' : 'הבא';
@@ -1211,7 +1263,7 @@ document.addEventListener('DOMContentLoaded', function renderSceneList(){
     b.style.setProperty('--tab', INKS[i % INKS.length]);
     b.style.setProperty('--i', i);
     b.innerHTML = `<span class="t">${esc(sc.title)}</span><span class="d">${esc(sc.blurb)}</span>
-      <span class="m"><span class="cast">${cast.map((c,j)=>avatar(c, INKS[j % INKS.length])).join('')}</span>
+      <span class="m"><span class="cast">${(m => cast.map((c,j)=>avatar(c, INKS[j % INKS.length], m[c])).join(''))(assignCast(cast))}</span>
       <span>${esc(sc.genre)}, ${cast.length} דמויות, ${lines.length} שורות</span></span>`;
     b.onclick = () => loadScene(sc.text, sc.title);
     list.appendChild(b);
@@ -1331,6 +1383,7 @@ document.getElementById('analyzeBtn').onclick = () => {
   saveMyScene(sceneTitle, toCleanScript(parsed));
   parsedLines = parsed;
   characters = [...new Set(parsed.map(l=>l.character))];
+  setCast(characters);
   renderRoles();
   show('roles');
 };
@@ -2079,11 +2132,24 @@ function setStageFace(name, mood){
   face.style.setProperty('--blink', (4.4 + ((h >>> 4) % 25) / 10) + 's');
   face.style.setProperty('--blinkd', '-' + ((h >>> 8) % 40) / 10 + 's');
   face.style.setProperty('--talk', (1.8 + ((h >>> 12) % 8) / 10) + 's');
-  face.innerHTML = `<span class="av" style="--ink-c:${inkOf(name)}">${figureSVG(name, inkOf(name), {mood})}</span>`;
+  face.innerHTML = `<span class="av" style="--ink-c:${inkOf(name)}">${portraitHTML(name, mood)}</span>`;
 }
 let lipTimer = null;
 function lipSync(on){
   clearTimeout(lipTimer);
+  const img = document.querySelector('#stageFace img.portrait');
+  if(img){
+    const mood = stageMood || 'neutral';
+    const calm = !['happy', 'angry', 'sad', 'surprised'].includes(mood);
+    const flap = () => {
+      const open = Math.random() < .62;
+      lipFrame = open ? 1 : 0;
+      img.src = portraitSrc(stageChar, calm && open ? 'talk' : mood);
+      lipTimer = setTimeout(flap, open ? 110 + Math.random() * 120 : 70 + Math.random() * 90);
+    };
+    if(on) flap(); else { lipFrame = 0; img.src = portraitSrc(stageChar, mood); }
+    return;
+  }
   const pick = () => {
     const vis = document.querySelectorAll('#stageFace .vis');
     if(!vis.length) return;
@@ -2157,7 +2223,8 @@ function faceImg(name, mood, mouth){
   const k = name + '|' + mood + '|' + mouth;
   if(!faceImgs[k]){
     const img = new Image();
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(figureSVG(name, inkOf(name), {mood, mouthOnly: mouth}));
+    const calm = !['happy', 'angry', 'sad', 'surprised'].includes(mood);
+    img.src = portraitSrc(name, mouth !== 'rest' && calm && (+mouth % 2 === 1) ? 'talk' : mood);
     faceImgs[k] = img;
   }
   return faceImgs[k];
@@ -2195,7 +2262,11 @@ function drawFrame(ctx, W, H){
     const img = faceImg(name, partnerMood[name] || 'neutral', mouth);
     const s = Math.round(Math.min(P.w * 0.62, P.h * (land ? 0.46 : 0.58)));
     const fy = P.y + Math.round(land ? (P.h - s) * 0.3 : P.h * 0.06);
-    if(img.complete) ctx.drawImage(img, P.x + (P.w - s)/2, fy, s, s);
+    if(img.complete && img.naturalWidth){
+      ctx.save(); ctx.beginPath(); ctx.arc(P.x + P.w/2, fy + s/2, s/2, 0, Math.PI*2); ctx.clip();
+      ctx.drawImage(img, P.x + (P.w - s)/2, fy, s, s); ctx.restore();
+      ctx.strokeStyle = inkOf(name); ctx.lineWidth = Math.max(4, s*0.02); ctx.beginPath(); ctx.arc(P.x + P.w/2, fy + s/2, s/2, 0, Math.PI*2); ctx.stroke();
+    }
     ctx.direction = 'rtl'; ctx.textAlign = 'center';
     const unit = P.w;
     ctx.fillStyle = '#FFC24B'; ctx.font = '700 ' + Math.round(unit*0.05) + 'px Rubik, Assistant, sans-serif';
@@ -2309,7 +2380,7 @@ function addLineToFeed(line, isMine){
   const dir = line.dir ? `<span class="dir">(${esc(line.dir)})</span>` : '';
   const lineMood = moodOfLine(line);
   const fix = isMine ? '' : `<button type="button" class="sayfix" aria-label="תיקון הגייה">🗣️ תיקון הגייה</button>`;
-  div.innerHTML = `<span class="av" style="--ink-c:${ink}">${figureSVG(line.character, ink, {mood: lineMood})}</span><div class="body"><span class="who">${esc(line.character)}</span><span class="txt">${txt}</span>${dir}${fix}</div>`;
+  div.innerHTML = `<span class="av" style="--ink-c:${ink}">${portraitHTML(line.character, lineMood)}</span><div class="body"><span class="who">${esc(line.character)}</span><span class="txt">${txt}</span>${dir}${fix}</div>`;
   if(!isMine) div.querySelector('.sayfix').onclick = e => { e.stopPropagation(); openSayEditor(line); };
   feed.appendChild(div);
   // Scroll only the script box, not the whole page (scrollIntoView jumps the page on phones)
