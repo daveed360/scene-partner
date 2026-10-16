@@ -597,7 +597,7 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 .moretoggle,.vswitch.tofull{display:none}
 .vswitch.toclean{display:block;text-align:center;margin:24px 0 0;font-size:14px}
 .vswitch.toclean a{color:var(--on-stage-dim)}
-html.clean{--paper:#F8F6F0;--sheet:#FFFFFF;--ink:#1F1D1A;--pencil:#6E675B;--rule:#E6E0D3;--hl:rgba(255,226,64,.75);--pen:#2B4FA8;--red:#C2362C;--lines:#DCE6F3;--margin:#F0A8A0;--shadow:rgba(60,45,20,.35);
+html.clean{--paper:#F8F6F0;--sheet:#FFFFFF;--ink:#1F1D1A;--pencil:#6E675B;--rule:#E6E0D3;--hl:rgba(134,232,150,.62);--pen:#2B4FA8;--red:#C2362C;--lines:#DCE6F3;--margin:#F0A8A0;--shadow:rgba(60,45,20,.35);
   --typed:'David Libre','Frank Ruhl Libre',serif;--hand:'Amatic SC',cursive;background:var(--paper)}
 html.clean .vswitch.toclean{display:none}
 html.clean body{background:var(--paper);color:var(--ink)}
@@ -687,10 +687,36 @@ html.clean .stats b{color:var(--ink);font-family:var(--typed)}
 html.clean .stats small{color:var(--pencil)}
 html.clean .toast{background:var(--ink);color:#FFF8E6;border-bottom:0}
 html.clean .intro .card{background:var(--sheet);border-radius:6px}
+/* add-a-scene page */
+.fab,.addhead,.fld,.namein,.seg,.tips{display:none}
+html.clean .fab{display:grid;place-items:center;position:fixed;left:18px;bottom:calc(22px + env(safe-area-inset-bottom));z-index:25;width:62px;height:62px;border-radius:50%;border:0;background:var(--ink);color:var(--paper);font-size:34px;line-height:1;box-shadow:0 10px 24px -8px var(--shadow);cursor:pointer}
+html.clean #screen-input:not(.adding) #uploadBox,html.clean #screen-input:not(.adding) .or,html.clean #screen-input:not(.adding) #scriptInput,html.clean #screen-input:not(.adding) .hint,
+html.clean #screen-input:not(.adding) #analyzeBtn,html.clean #screen-input:not(.adding) h2.sec:not(.lib){display:none}
+html.clean #screen-input.adding > :not(.addhead):not(.fld):not(.namein):not(.seg):not(#uploadBox):not(.or):not(#scriptInput):not(.hint):not(#inputErr):not(#analyzeBtn):not(.tips){display:none!important}
+html.clean #screen-input.adding .addhead{display:flex;align-items:center;gap:10px;margin:4px 0 14px}
+html.clean .addhead h2{margin:0;font-family:var(--typed);font-size:26px}
+html.clean .backbtn{width:42px;height:42px;border-radius:50%;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);font-size:20px;cursor:pointer}
+html.clean #screen-input.adding .fld{display:block;margin:6px 0 6px;font-weight:700;color:var(--ink)}
+html.clean #screen-input.adding .namein{display:block;width:100%;padding:13px 14px;border-radius:10px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);font:inherit;font-size:17px}
+html.clean #screen-input.adding .seg{display:flex;gap:6px;margin:14px 0 4px;padding:4px;border-radius:14px;background:var(--rule)}
+.seg button{flex:1;padding:11px 6px;border-radius:11px;border:0;background:transparent;color:var(--ink);font-family:var(--sans);font-weight:700;font-size:15px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--sheet);box-shadow:0 2px 8px -4px var(--shadow)}
+html.clean #screen-input.adding .tips{display:block;margin:20px 0 90px;padding:16px;border:1px solid var(--rule);border-radius:10px;background:var(--sheet)}
+.tips b{font-family:var(--typed);font-size:20px}
+.tips p{margin:8px 0 0;color:var(--pencil);line-height:1.55;font-size:15px}
+html.clean.adding-open .fab,html.clean.adding-open .quota{display:none}
+#myList[hidden],#takesBox[hidden]{display:none!important}
+/* empty states */
+.empty .big{display:block;font-size:44px;margin-bottom:6px}
+.empty b{display:block;font-family:var(--typed);font-size:20px;color:var(--ink);margin-bottom:4px}
+/* removed in this design: pronunciation fixes and the API-key box (?key brings the key box back) */
+html.clean .sayfix,html.clean #namesBox{display:none!important}
+html.clean #voiceBox{display:none}
+html.clean.showkey #voiceBox{display:block}
 html.clean .vswitch{display:block;text-align:center;margin:28px 0 0;font-size:14px}
 html.clean .vswitch a{color:var(--pencil)}
 /* dark: a black notebook, chalk-white text, the same highlighter */
-html.clean.dark{--paper:#0E0E0F;--sheet:#18181A;--ink:#ECE9E2;--pencil:#9C968B;--rule:#2A2A2D;--hl:rgba(255,214,0,.32);--pen:#8FB0FF;--red:#FF7A6E;--lines:#232529;--margin:#5A2D2B;--shadow:rgba(0,0,0,.6)}
+html.clean.dark{--paper:#0E0E0F;--sheet:#18181A;--ink:#ECE9E2;--pencil:#9C968B;--rule:#2A2A2D;--hl:rgba(110,220,130,.34);--pen:#8FB0FF;--red:#FF7A6E;--lines:#232529;--margin:#5A2D2B;--shadow:rgba(0,0,0,.6)}
 html.clean.dark button.primary{background:#ECE9E2;color:#111}
 html.clean.dark .pace button[aria-pressed=true]{background:#ECE9E2;color:#111}
 html.clean.dark .scene::after{background:linear-gradient(45deg,transparent 50%,#2A2A2D 50%)}
@@ -813,6 +839,11 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <div class="scenes" id="myList"></div>
 </div>
 <div id="takesBox" hidden><div class="takes" id="takesList"></div></div>
+<button type="button" class="fab" id="addBtn" aria-label="סצנה חדשה">+</button>
+<div class="addhead"><button type="button" class="backbtn" id="addBack" aria-label="חזרה">→</button><h2>סצנה חדשה</h2></div>
+<label class="fld" for="scriptName">שם הסצנה</label>
+<input id="scriptName" class="namein" placeholder="למשל: אודישן לקופיקו, סצנה 3" autocomplete="off">
+<div class="seg" id="kindSeg"><button type="button" data-k="scene" aria-pressed="true">👥 סצנה עם פרטנר</button><button type="button" data-k="mono" aria-pressed="false">🎤 מונולוג</button></div>
 <h2 class="sec">הסצנה שלך</h2>
 <label class="upload" id="uploadBox">
 <input type="file" id="fileInput" accept=".docx,.pdf,.txt,.rtf,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
@@ -824,9 +855,15 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <div class="hint">אפשר להדביק כמעט כל פורמט, גם ישר מאתר. אני מזהה את הדמויות ומסדר את הטקסט לבד. הוראות במה בסוגריים לא מוקראות.</div>
 <div id="inputErr" class="err" style="display:none"></div>
 <button class="primary" id="analyzeBtn">המשך לבחירת תפקיד</button>
+<div class="tips"><b>טיפים</b>
+<p>✏️ בסצנה עם פרטנר, שם הדמות לפני מה שהיא אומרת: "נועה: אני פה."</p>
+<p>🎤 במונולוג אפשר להדביק טקסט רגיל, בלי שמות. כל פסקה היא קטע.</p>
+<p>📄 אפשר להעלות Word או PDF. כשהטקסט נקי, הזיהוי מדויק יותר.</p>
+<p>💾 כל סצנה נשמרת ב"הסצנות שלי", והקולות נשמרים בטלפון אחרי הפעם הראשונה.</p>
+</div>
 
-<h2 class="sec">או סצנה מוכנה לתרגול</h2>
-<div class="lib-tabs" id="libTabs"><button type="button" data-l="1" aria-pressed="true">קל</button><button type="button" data-l="2" aria-pressed="false">בינוני</button><button type="button" data-l="3" aria-pressed="false">מאתגר</button></div>
+<h2 class="sec lib">או סצנה מוכנה לתרגול</h2>
+<div class="lib-tabs" id="libTabs"><button type="button" data-l="1" aria-pressed="true">קל</button><button type="button" data-l="2" aria-pressed="false">בינוני</button><button type="button" data-l="3" aria-pressed="false">מאתגר</button><button type="button" data-l="4" aria-pressed="false">מונולוגים</button></div>
 <div class="scenes" id="sceneList"></div>
 
 <details class="voicebox" id="voiceBox">
@@ -1152,6 +1189,111 @@ function moodOf(dir){
 
 /* ---- Ready-made scenes ---- */
 const SCENES = [
+ {title:'המקלחת של השכן', genre:'קומדיה', level:1, blurb:'שכנה דופקת בדלת בעשר בלילה. יש לה בקשה מוזרה, ואין לה זמן להסביר.', text:
+`רותם: היי. סליחה על השעה. אני רותם, מהקומה למעלה.
+גיל: אה. היי. קרה משהו?
+רותם: אפשר להתקלח אצלך?
+גיל: סליחה?
+רותם: יש לי דייט בעוד ארבעים דקות, ואצלי נגמרו המים החמים. הדוד מת. הלך. נפטר.
+גיל: אני... משתתף בצערך.
+רותם: תודה. אז אפשר?
+גיל: אנחנו לא מכירים בכלל.
+רותם: אנחנו מכירים! אני זאת ששומעת אותך שר כל בוקר "הללויה" במקלחת.
+גיל: (מסמיק) את שומעת את זה?
+רותם: כל הבניין שומע. זה בסדר. אתה פוגע בצליל הגבוה בערך פעם בשבוע.
+גיל: טוב. המגבת הכחולה נקייה. הירוקה לא.
+רותם: אני אסתדר. ותודה. באמת.
+גיל: ורותם? בהצלחה בדייט.
+רותם: (מחייכת) אם זה ילך טוב, אני מביאה לך עוגה.
+גיל: ואם זה ילך רע?
+רותם: אז אני חוזרת להתקלח שוב ולבכות. תשאיר את המגבת הכחולה.`},
+ {title:'הגירושים של ההורים', genre:'דרמה', level:2, blurb:'אח בכור מספר לאחותו הצעירה מה ההורים עומדים להגיד לה מחר.', text:
+`אביב: את ערה?
+שירה: עכשיו כן. מה השעה?
+אביב: שתיים. אני צריך להגיד לך משהו לפני מחר.
+שירה: אתה מפחיד אותי.
+אביב: מחר בארוחת בוקר אמא ואבא יגידו לנו שהם נפרדים.
+(שתיקה)
+שירה: איך אתה יודע?
+אביב: שמעתי אותם. לפני שבועיים. הם מתכננים את זה כבר הרבה זמן.
+שירה: ושתקת שבועיים?
+אביב: לא ידעתי איך. חשבתי שאולי הם יתחרטו.
+שירה: (בשקט) הם לא רבו בכלל. זה מה שמוזר. לא שמעתי אותם רבים אף פעם.
+אביב: אולי בגלל זה. הם הפסיקו לדבר, גם לריב.
+שירה: למה אתה מספר לי עכשיו, באמצע הלילה?
+אביב: כי רציתי שתשמעי את זה ממני. שמחר, כשהם יגידו, את לא תהיי לבד בהפתעה.
+שירה: ומה אני אמורה לעשות מחר?
+אביב: להעמיד פנים שאת לא יודעת. ולהחזיק לי את היד מתחת לשולחן.
+שירה: (מחייכת חלש) כמו כשהיינו קטנים והיה רעם?
+אביב: בדיוק ככה. רק שהפעם אני זה שמפחד.`},
+ {title:'הביקורת', genre:'דרמה', level:3, blurb:'שחקנית צעירה קוראת ביקורת קטלנית על ההצגה. הבמאי שלה מסרב לתת לה לוותר.', text:
+`עדי: קראת? "השחקנית הראשית נראית כאילו היא מחכה שמישהו יגיד לה מה להרגיש."
+יובל: קראתי. הוא כותב ככה על כולם.
+הילה: הוא לא כתב ככה על כולם. הוא כתב ככה עליי. בשם מלא. עם תמונה.
+יובל: עדי, ביקורת אחת—
+הילה: (בכעס) אל תגיד לי "ביקורת אחת"! אמא שלי שלחה לי את זה בוואטסאפ עם לב שבור!
+יובל: אמא שלך שולחת לב שבור גם על מזג אוויר.
+הילה: זה לא מצחיק. אני לא עולה הערב.
+יובל: את עולה.
+הילה: אני לא יכולה לעמוד שם ולחשוב שכל הקהל קרא את זה.
+יובל: חצי מהקהל בכלל לא יודע לקרוא את העיתון הזה. הם באו כי הנכדה שלהם בהפקה.
+הילה: יובל, אני רצינית.
+יובל: גם אני. (מתיישב לידה) את רוצה לדעת מה הוא צדק בו?
+הילה: (שתיקה) ...כן.
+יובל: בסצנה השלישית את באמת מחכה. את מחכה שאני אגיד לך מה להרגיש, כי בחזרות אני כל הזמן אומר לך.
+הילה: אז זה באשמתך.
+יובל: חצי. אז הערב אני לא אומר כלום. את עולה, ומרגישה מה שאת מרגישה. גם אם זה כעס על עיתונאי.
+הילה: ואם זה ייצא נורא?
+יובל: אז לפחות זה יהיה נורא שלך. וזה כבר יותר טוב ממה שהוא כתב.`},
+ {title:'דייט ראשון, שוב', genre:'קומדיה', level:2, blurb:'שני גרושים בדייט עיוור. אחרי עשר דקות מתברר שהם כבר יצאו פעם. לפני עשרים שנה.', text:
+`מיכאל: אז... מה את עושה בחיים?
+אורנה: אני מורה לספרות. ואתה?
+מיכאל: אדריכל. כלומר, הייתי. עכשיו אני בעיקר מתקן דברים בבית שבניתי.
+אורנה: (מסתכלת עליו) רגע. אדריכל. גבוה. צוחק מהבדיחות של עצמו.
+מיכאל: זה... ניתוח מדויק, אבל לא נעים.
+אורנה: מיכאל לוין? מהחוג לתיאטרון בתל אביב? 2004?
+מיכאל: (נחנק מהקפה) אורנה? אורנה עם השיער האדום?
+אורנה: הצבע ירד. גם השיער, קצת.
+מיכאל: יצאנו! יצאנו פעם אחת!
+אורנה: יצאנו פעם אחת, ואתה הלכת לשירותים באמצע ולא חזרת.
+מיכאל: זה לא מה שקרה.
+אורנה: אז מה קרה?
+מיכאל: נתקעתי בשירותים. המנעול נשבר. הייתי שם שעה וחצי. כשיצאתי, כבר הלכת.
+אורנה: (צוחקת) ואני עשרים שנה מספרת שברחת ממני!
+מיכאל: אני עשרים שנה מספר שנתקעתי בשירותים ושאף אחד לא האמין לי.
+אורנה: אז זה דייט ראשון או שני?
+מיכאל: נגיד אחד וחצי. ואני לא הולך לשירותים עד הסוף.`},
+ {title:'הנאום', genre:'מונולוג', level:4, blurb:'אחות הכלה עולה לנאום בחתונה, ומבינה באמצע שהיא צריכה להגיד את האמת.', text:
+`טל: ערב טוב לכולם. אני ליה, האחות הגדולה של הכלה. כתבתי נאום, הוא פה בטלפון, הוא מצחיק, היו בו שלוש בדיחות על זה שמיכל אף פעם לא מגיעה בזמן.
+ליה: (מסתכלת על הטלפון, ואז מכניסה אותו לכיס) אבל אני לא אקריא אותו.
+ליה: כי כשמיכל הייתה בת שבע, ואני בת אחת־עשרה, אבא עזב. ואמא עבדה בשתי עבודות. ומי שהכין לה סנדוויצ'ים, ומי שחתם לה על מבחנים, ומי שישבה איתה בלילות כשהיא פחדה מהחושך, זאת הייתי אני.
+ליה: והייתי כועסת. אלוהים, כמה כעסתי. על אבא, על אמא, ובעיקר עלייך, מיכל, כי היית ילדה ואני לא הספקתי להיות.
+ליה: (שתיקה) ועכשיו אני מסתכלת עלייך בשמלה הזאת, ואני מבינה שלא הייתי צריכה לכעוס. כי את יצאת הדבר הכי טוב שעשיתי בחיים.
+ליה: דני, אני מעבירה לך אותה. היא עדיין מפחדת מהחושך, אז תשאיר אור קטן במסדרון. ואם תפגע בה, אני יודעת איפה אתה גר.
+ליה: לחיי מיכל ודני.`},
+ {title:'השיחה שלא נשלחה', genre:'מונולוג', level:4, blurb:'הודעה קולית לאבא שכבר לא יכול לשמוע אותה. מתחילה בצחוק, ונגמרת במשהו אחר.', text:
+`יונתן: היי אבא. כן, אני יודע. אני מקליט לך הודעה בטלפון הישן שלך. אמא שומרת אותו בטעינה, אל תשאל.
+יונתן: רציתי להגיד לך שקיבלתי את העבודה. זאת שאמרת שאין לי סיכוי. (צוחק) טוב, לא אמרת "אין סיכוי". אמרת "נו, תנסה", בטון הזה שלך.
+יונתן: אתה יודע מה הדבר הראשון שעשיתי כשהם התקשרו? חייגתי אליך. בלי לחשוב. האצבע פשוט הלכה לשם.
+יונתן: (שתיקה) ושמעתי את המשיבון. "הגעתם ליוסי, אני לא זמין, תשאירו הודעה ואל תהיו נודניקים." ונשארתי לשמוע את זה שלוש פעמים.
+יונתן: אני לא כועס עליך שלא אמרת לי שאתה גאה. אני יודע שהיית. היית מספר לכל השכנים ולי לא, זה היה הקטע שלך.
+יונתן: אני רק רוצה שתדע שאני לא נודניק. זאת הפעם היחידה. בפעם הבאה אני אשאיר הודעה רק כשיהיה משהו באמת חשוב.
+יונתן: כמו כשהמכבי ייקחו אליפות. אז תהיה זמין, טוב?`},
+ {title:'אני לא הולכת', genre:'מונולוג', level:4, blurb:'אישה בשנות השלושים שלה מודיעה למשפחה שהיא לא באה לליל הסדר. בפעם הראשונה בחיים.', text:
+`ענבל: לא, אמא, תני לי לסיים. בפעם אחת, תני לי לסיים משפט.
+ענבל: אני לא באה לסדר השנה. לא בגלל שאני כועסת. בגלל שאני עייפה. שלושים ושתיים שנה אני מגיעה, מבשלת, מגישה, מנקה, ומחייכת כשדודה רחל שואלת למה אני עוד לבד.
+ענבל: והשנה אני רוצה לשבת אצלי, עם חברים שבחרתי, ולשמוע את מה נשתנה בקול שלי.
+ענבל: (שתיקה) אני יודעת שזה כואב לך. גם לי זה כואב. כל הבוקר תרגלתי את השיחה הזאת מול המראה, ובכל פעם בכיתי בסוף.
+ענבל: זה לא נגדך. זה בעדי. בפעם הראשונה אני בוחרת משהו בעדי, ואני מבקשת ממך לא לקחת את זה כמו עונש.
+ענבל: ובשנה הבאה? אולי אני אבוא. אולי אני אזמין את כולכם אליי. ואולי דודה רחל תשאל אותי משהו אחר.
+ענבל: אוהבת אותך, אמא. חג שמח.`},
+ {title:'הראיון בטלוויזיה', genre:'מונולוג', level:4, blurb:'שף מפורסם בשידור חי. המראיינת שואלת על המסעדה הראשונה שלו, והוא מחליט לא לשקר.', text:
+`ארז: את רוצה לדעת איך המסעדה הראשונה נסגרה? אוקיי. כולם מספרים את הסיפור היפה, אז אני אספר את האמיתי.
+ארז: היא לא נסגרה בגלל הקורונה, ולא בגלל שותף רע. היא נסגרה כי אני הייתי שף מעולה ובן אדם בלתי נסבל.
+ארז: צעקתי על כולם. זרקתי צלחות. פעם אחת זרקתי מחבת, היא פספסה טבח בעשרה סנטימטרים. הוא התפטר באותו ערב. בצדק.
+ארז: (שתיקה) ובסוף נשארתי לבד במטבח, עם תפריט מושלם, ואף אחד לא רצה לבשל אותו איתי.
+ארז: אז מה למדתי? שאוכל טוב עושים ביחד. שהעגבנייה לא אכפת לה כמה אתה מוכשר. ושהטבח ההוא, אבי, עובד אצלי היום. הוא סו־שף. וכל בוקר הוא מזכיר לי את המחבת.
+ארז: ככה זה. אפשר לחתוך את זה מהשידור אם את רוצה. אבל אני מעדיף שלא.`},
  {title:'טסט', genre:'קומדיה', level:1, blurb:'טסט שלישי, בוחן עייף, ותלמידה שבטוחה שהפעם זה שלה.', text:
 `בוחן: תתחילי כשאת מוכנה.
 שני: אני מוכנה. אני מאוד מוכנה. זה הטסט השלישי שלי.
@@ -1667,7 +1809,7 @@ function saveMyScene(title, text){
 function renderMyScenes(){
   const list = myScenes(), box = document.getElementById('myBox'), el = document.getElementById('myList');
   box.hidden = !list.length; el.innerHTML = '';
-  if(CLEAN && !list.length) el.innerHTML = '<div class="empty">עוד אין כאן סצנות. מעלים קובץ או מדביקים טקסט למטה, והסצנה נשמרת כאן.</div>';
+  if(CLEAN && !list.length) el.innerHTML = '<div class="empty"><span class="big">📄</span><b>עוד אין סצנות שלך</b>לוחצים על + למטה, מדביקים או מעלים סצנה, והיא נשמרת כאן.</div>';
   list.forEach((sc, i) => {
     const lines = parseScript(sc.text) || [];
     const cast = [...new Set(lines.map(l => l.character))];
@@ -1744,7 +1886,8 @@ function renderDaily(){
   if(!CLEAN){ box.hidden = true; return; }
   const now = new Date();
   const dayNo = Math.floor((now - new Date(2026, 0, 1)) / 864e5);
-  const sc = SCENES[((dayNo % SCENES.length) + SCENES.length) % SCENES.length];
+  const pool = SCENES.filter(x => !isLocked(x));
+  const sc = pool[((dayNo % pool.length) + pool.length) % pool.length];
   const done = new Set(practiceDays());
   const n = streakCount();
   const tally = n ? ('𝍸 '.repeat(Math.floor(n / 5)) + '|'.repeat(n % 5)).trim() : '';
@@ -1777,7 +1920,7 @@ function confetti(){
 const FREE_WEEK = 5;
 function isPro(){ return lsGet('sp_pro') === '1'; }
 function sceneSecs(text){ const w = (text.match(/\S+/g) || []).length; return Math.round(w / 2.2 + (text.match(/\n/g) || []).length * 0.8); }
-function isLocked(sc){ if(!CLEAN || isPro()) return false; const lv = sc.level || 1; if(lv === 1) return false; return !(lv === 2 && SCENES.filter(x => (x.level || 1) === 2)[0] === sc); }
+function isLocked(sc){ if(!CLEAN || isPro()) return false; const lv = sc.level || 1; if(lv === 1) return false; return !((lv === 2 || lv === 4) && SCENES.filter(x => (x.level || 1) === lv)[0] === sc); }
 let libLevel = 1;
 function renderSceneList(){
   const list = document.getElementById('sceneList');
@@ -1794,7 +1937,7 @@ function renderSceneList(){
     b.innerHTML = `<span class="t">${esc(sc.title)}</span><span class="d">${esc(sc.blurb)}</span>
       <span class="m"><span class="cast">${(m => cast.map((c,j)=>avatar(c, INKS[j % INKS.length], m[c])).join(''))(assignCast(cast))}</span>
       <span>${esc(sc.genre)}, ${cast.length} דמויות, ${lines.length} שורות</span></span>
-      <span class="meta2"><span class="lvl l${lv}">${['', 'קל', 'בינוני', 'מאתגר'][lv]}</span><span>⏱ ${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}</span><span>${cast.map(esc).join(' · ')}</span></span>`;
+      <span class="meta2"><span class="lvl l${lv}">${['', 'קל', 'בינוני', 'מאתגר', 'מונולוג'][lv]}</span><span>⏱ ${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}</span><span>${cast.map(esc).join(' · ')}</span></span>`;
     b.onclick = () => { if(isLocked(sc)){ openPro('הסצנה "' + sc.title + '" היא חלק מהגרסה המלאה.'); return; } loadScene(sc.text, sc.title); };
     list.appendChild(b);
   });
@@ -1834,7 +1977,7 @@ function myTab(which){
   document.getElementById('myList').hidden = which !== 'mine';
   document.getElementById('takesBox').hidden = which !== 'takes';
   if(which === 'takes') renderTakes();
-  if(which === 'mine' && !myScenes().length) document.getElementById('myList').innerHTML = '<div class="empty">עוד אין כאן סצנות. מעלים קובץ או מדביקים טקסט למטה, והסצנה נשמרת כאן.</div>';
+  if(which === 'mine' && !myScenes().length) document.getElementById('myList').innerHTML = '<div class="empty"><span class="big">📄</span><b>עוד אין סצנות שלך</b>לוחצים על + למטה, מדביקים או מעלים סצנה, והיא נשמרת כאן.</div>';
 }
 document.getElementById('tabMine').onclick = () => myTab('mine');
 document.getElementById('tabTakes').onclick = () => myTab('takes');
@@ -1853,7 +1996,7 @@ async function saveTake(blob, title, take){
 async function renderTakes(){
   const box = document.getElementById('takesList');
   const idx = await takesIndex();
-  if(!idx.length){ box.innerHTML = '<div class="empty">עוד אין טייקים. בבחירת התפקיד, ב"עוד אפשרויות", מדליקים "צילום self-tape", והסרטונים נשמרים כאן.</div>'; return; }
+  if(!idx.length){ box.innerHTML = '<div class="empty"><span class="big">🎥</span><b>עוד אין טייקים</b>בבחירת התפקיד, ב"עוד אפשרויות", מדליקים "צילום self-tape". כל צילום נשמר כאן.</div>'; return; }
   box.innerHTML = '';
   for(const it of idx){
     const blob = await idbGet(it.id); if(!blob) continue;
@@ -1966,6 +2109,34 @@ function toCleanScript(lines){
   return lines.map(l => `${l.character}: ${l.text}${l.dir ? ' (' + l.dir + ')' : ''}`).join('\n');
 }
 
+/* ---- add-a-scene page ---- */
+let sceneKind = 'scene';
+function openAdd(on){
+  document.getElementById('screen-input').classList.toggle('adding', on);
+  document.documentElement.classList.toggle('adding-open', on);
+  scrollTo(0, 0);
+}
+document.getElementById('addBtn').onclick = () => openAdd(true);
+document.getElementById('addBack').onclick = () => openAdd(false);
+document.querySelectorAll('#kindSeg button').forEach(b => b.onclick = () => {
+  sceneKind = b.dataset.k;
+  document.querySelectorAll('#kindSeg button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  document.getElementById('scriptInput').placeholder = sceneKind === 'mono'
+    ? 'מדביקים את המונולוג כמו שהוא. כל פסקה תהיה קטע, ואפשר לעצור ולהמשיך בין קטעים.'
+    : 'דני: את לא חייבת להישאר.\nנועה: אני יודעת. אני פה כי אני רוצה.\nדני: זה לא מה שאמרת אתמול.';
+});
+// a monologue: plain text, one speaker; every paragraph (or 2-3 sentences) is one beat
+function monologueLines(raw, who){
+  const out = [];
+  raw.replace(/\r/g, '').split(/\n\s*\n|\n/).map(p => p.trim()).filter(Boolean).forEach(p => {
+    p = p.replace(/^[^:\n]{1,20}:\s*/, '');
+    const sent = p.match(/[^.!?…]+[.!?…]+["׳״']?\s*|[^.!?…]+$/g) || [p];
+    let cur = '';
+    sent.forEach(x => { if((cur + x).length > 170 && cur){ out.push(cur.trim()); cur = ''; } cur += x; });
+    if(cur.trim()) out.push(cur.trim());
+  });
+  return out.map(t => { const m = t.match(/^\(([^)]*)\)\s*/); return {character: who, text: m ? t.slice(m[0].length) : t, dir: m ? m[1] : ''}; }).filter(l => l.text);
+}
 document.getElementById('analyzeBtn').onclick = () => {
   const raw = scriptInput.value;
   const errBox = document.getElementById('inputErr');
@@ -1974,7 +2145,8 @@ document.getElementById('analyzeBtn').onclick = () => {
     errBox.style.display = 'block';
     return;
   }
-  const parsed = parseScript(raw);
+  let parsed = sceneKind === 'mono' ? monologueLines(raw, 'אני') : parseScript(raw);
+  if((!parsed || !parsed.length) && CLEAN && raw.trim().length > 20) parsed = monologueLines(raw, 'אני');   // no names at all: treat it as a monologue
   if(!parsed || parsed.length === 0){
     errBox.textContent = "לא מצאתי דמויות בטקסט. צריך שהשם של מי שמדבר יופיע לפני מה שהוא אומר, למשל \"רונה:\" בשורה נפרדת או בתחילת השורה.";
     errBox.style.display = 'block';
@@ -1988,7 +2160,8 @@ document.getElementById('analyzeBtn').onclick = () => {
     try{ localStorage.setItem('sp_script', tidy); }catch(e){}
   }
   const cast = [...new Set(parsed.map(l => l.character))];
-  sceneTitle = pendingTitle || (cast.length <= 2 ? cast.join(' ו') : cast.slice(0, 2).join(', ') + ' ועוד ' + (cast.length - 2));
+  const typed = (document.getElementById('scriptName').value || '').trim();
+  sceneTitle = typed || pendingTitle || (cast.length === 1 ? 'מונולוג' : '') || (cast.length <= 2 ? cast.join(' ו') : cast.slice(0, 2).join(', ') + ' ועוד ' + (cast.length - 2));
   pendingTitle = null;
   document.getElementById('sceneTitle').textContent = sceneTitle;
   saveMyScene(sceneTitle, toCleanScript(parsed));
@@ -1996,6 +2169,7 @@ document.getElementById('analyzeBtn').onclick = () => {
   characters = [...new Set(parsed.map(l=>l.character))];
   setCast(characters);
   renderRoles();
+  openAdd(false); document.getElementById('scriptName').value = '';
   show('roles');
 };
 
@@ -2157,6 +2331,7 @@ function renderRoles(){
     roleList.appendChild(card);
   });
   renderNames(); renderAud(); renderDl();
+  if(characters.length === 1){ const c = roleList.querySelector('.rolecard'); if(c) c.click(); }   // monologue: it's you
 }
 function renderNames(){
   const box = document.getElementById('namesList');
@@ -2324,8 +2499,8 @@ function elGet(text, voiceId, tag){
   return elPending[k];
 }
 // Guess a Hebrew character's gender from the name, to pick a matching default voice
-const HE_FEMALE = ['מראיינת','ליאת','נועה','שני','יעל','מיכל','רחל','אביגיל','שירן','שיר','ענבל','הדס','אורית','רוני','נועם','גל','שחר','מור','ליאור','סיון','רונית','נוי','אלה','מאיה','שני','קרן','אסתר','רות','לאה','מרים','דנה','עדי','אמא','סבתא','דודה','אחות','מורה'];
-const HE_MALE = ['עמית','אסף','יואב','אלון','תום','עידו','בוחן','רוני','משה','שלמה','יונה','אריה','יהודה','נתנאל','אבא','סבא','דוד','אח','מורה'];
+const HE_FEMALE = ['רותם','הילה','אורנה','ליה','מראיינת','ליאת','נועה','שני','יעל','מיכל','רחל','אביגיל','שירן','שיר','ענבל','הדס','אורית','רוני','נועם','גל','שחר','מור','ליאור','סיון','רונית','נוי','אלה','מאיה','שני','קרן','אסתר','רות','לאה','מרים','דנה','עדי','אמא','סבתא','דודה','אחות','מורה'];
+const HE_MALE = ['גיל','אביב','יובל','מיכאל','ארז','יונתן','עמית','אסף','יואב','אלון','תום','עידו','בוחן','רוני','משה','שלמה','יונה','אריה','יהודה','נתנאל','אבא','סבא','דוד','אח','מורה'];
 function guessGender(name){
   const n = (name||'').trim().split(/\s+/)[0];
   if(['אבא','סבא','דוד','אח'].includes(n) || HE_MALE.includes(n) && !HE_FEMALE.includes(n)) return 'male';
@@ -3391,6 +3566,7 @@ document.getElementById('exitBtn').onclick = () => {
 };
 document.getElementById('againBtn').onclick = () => { setupRehearsal(); show('rehearse'); };
 document.getElementById('newSceneBtn').onclick = () => { show('input'); };
+if(/[?&]key\b/.test(location.search)){ document.documentElement.classList.add('showkey'); const vb = document.getElementById('voiceBox'); if(vb) vb.open = true; }
 if('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
