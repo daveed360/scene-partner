@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#241B2E">
+<script>try{if(localStorage.getItem('sp_clean')==='1'||/[?&]clean\b/.test(location.search))document.querySelector('meta[name=theme-color]').content='#F4EEDF'}catch(e){}</script>
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-title" content="Audition Partner">
@@ -19,7 +20,7 @@ try{ const q = location.search;
 }catch(e){}
 </script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Assistant:wght@400;500;600;700&family=Rubik:wght@500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Assistant:wght@400;500;600;700&family=Rubik:wght@500;600;700;800&family=David+Libre:wght@400;500;700&family=Amatic+SC:wght@700&display=swap');
 
 :root{
   --stage:#241B2E;      /* backstage velvet */
@@ -587,117 +588,124 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
   .toast{transition:none}
 }
 
-/* ================= CLEAN VERSION: a quiet script, nothing else ================= */
+/* ================= CLEAN VERSION: "the script page" — cream paper, typed David, highlighter on your lines ================= */
 .moretoggle,.vswitch.tofull{display:none}
 .vswitch.toclean{display:block;text-align:center;margin:24px 0 0;font-size:14px}
 .vswitch.toclean a{color:var(--on-stage-dim)}
+html.clean{--paper:#F4EEDF;--sheet:#FFFDF7;--ink:#1F1D1A;--pencil:#6E675B;--rule:#E6DDCB;--hl:rgba(255,226,64,.75);--pen:#2B4FA8;--red:#C2362C;
+  --typed:'David Libre','Frank Ruhl Libre',serif;--hand:'Amatic SC',cursive;background:var(--paper)}
 html.clean .vswitch.toclean{display:none}
-html.clean{background:#111114}
-html.clean body{background:#111114;color:#ECECEF}
+html.clean body{background:var(--paper);color:var(--ink)}
 html.clean body::before,html.clean body::after,html.clean .curtain,html.clean .marquee,html.clean .host,html.clean .streak,
 html.clean .soundbtn,html.clean #viewBtn,html.clean .scene .cast,html.clean .rolecard .av,html.clean .line .av,html.clean #doneAv,
-html.clean .scene::before,html.clean .chip[data-opt=face],html.clean .keys,html.clean .logo{display:none!important}
+html.clean .scene::before,html.clean .chip[data-opt=face],html.clean .keys,html.clean .tagline,html.clean #roleLabel .av{display:none!important}
 html.clean *,html.clean *::before,html.clean *::after{animation:none!important;transition:none!important}
-html.clean .wrap{padding-top:calc(18px + env(safe-area-inset-top))}
-html.clean header{margin-bottom:8px}
-html.clean .brand{justify-content:flex-start;direction:rtl}
-html.clean header h1{font-family:var(--sans);font-size:20px;font-weight:800;letter-spacing:0;color:#fff}
-html.clean header h1 br{display:none}
+html.clean .wrap{padding-top:calc(16px + env(safe-area-inset-top))}
+/* header */
+html.clean header{margin-bottom:6px}
+html.clean .brand{justify-content:flex-start;direction:rtl;gap:8px}
+html.clean .logo{display:block!important;width:30px;height:30px;filter:none}
 html.clean .lockup{flex-direction:row;align-items:baseline;gap:10px;direction:ltr}
-html.clean .lockup .sub{font-size:13px;margin:0}
-html.clean .tagline{display:none}
-html.clean h2.sec,html.clean .scene-title{font-size:17px;font-weight:700;color:#C9C9CF;margin:22px 0 10px}
-html.clean .upload{border:1px dashed #3A3A42;background:#18181C;border-radius:14px;padding:14px 16px}
-html.clean textarea{background:#18181C;color:#ECECEF;border:1px solid #2C2C33;border-radius:14px;font-family:var(--sans);font-size:16px}
-html.clean textarea::placeholder{color:#6E6E77}
-html.clean .or,html.clean .hint{color:#8A8A93}
-html.clean button.primary{border-radius:14px;border-bottom:0;box-shadow:none;transform:none}
-html.clean button.secondary,html.clean .share{border:1px solid #33333B;border-bottom-width:1px;border-radius:14px;background:transparent;color:#ECECEF;transform:none}
-html.clean .scene,html.clean .rolecard{background:#1A1A1F;color:#ECECEF;border:1px solid #2A2A31;border-bottom-width:1px;border-radius:14px;box-shadow:none;transform:none}
-html.clean .scene .t,html.clean .rolecard .name{color:#ECECEF;font-size:17px}
-html.clean .scene .d,html.clean .scene .cnt,html.clean .rolecard .count{color:#8E8E97}
-html.clean .rolecard.chosen{border-color:#FFC24B;background:#22201A}
-html.clean .rolecard .me{color:#FFC24B}
-html.clean label{color:#B4B4BC}
-html.clean .vchip{background:#24242A;color:#ECECEF;border:1px solid #34343C;border-bottom-width:1px}
-html.clean .voicepick .play{background:#24242A;color:#ECECEF;border:1px solid #34343C}
-html.clean .names summary{color:#8E8E97}
-html.clean .moretoggle{display:flex;flex-direction:column;align-items:flex-start;width:100%;margin:16px 0 4px;padding:12px 14px;border-radius:14px;border:1px solid #2A2A31;background:#16161A;color:#ECECEF;font-family:var(--sans);font-size:16px;font-weight:700;cursor:pointer;text-align:right}
-html.clean .moretoggle small{font-weight:400;color:#8E8E97;font-size:13px;margin-top:2px}
-html.clean .moretoggle::after{content:"▾";position:absolute;left:28px;color:#8E8E97}
-html.clean .moretoggle{position:relative}
+html.clean header h1{font-family:var(--typed);font-size:22px;font-weight:700;letter-spacing:0;color:var(--ink)}
+html.clean header h1 br{display:none}
+html.clean .lockup .sub{font-family:var(--hand);font-size:22px;color:var(--red);margin:0;letter-spacing:0}
+html.clean h2.sec,html.clean .scene-title{font-family:var(--hand);font-size:28px;font-weight:700;color:var(--ink);margin:22px 0 6px;letter-spacing:.3px}
+html.clean label{color:var(--pencil);font-weight:600}
+html.clean .or,html.clean .hint{color:var(--pencil)}
+/* inputs, buttons */
+html.clean .upload{border:2px dashed #BDB29C;background:transparent;border-radius:12px;padding:14px 16px;color:var(--ink)}
+html.clean .upload small{color:var(--pencil)}
+html.clean textarea{background:var(--sheet);color:var(--ink);border:1px solid var(--rule);border-radius:4px;font-family:var(--typed);font-size:18px;line-height:1.7;box-shadow:0 1px 0 #E2D8C4,0 8px 18px -12px rgba(60,45,20,.35);
+  background-image:linear-gradient(transparent calc(1.7em - 1px),#EEE6D4 0);background-size:100% 1.7em;background-attachment:local}
+html.clean textarea::placeholder{color:#A69C89}
+html.clean button.primary{background:var(--ink);color:#FFF8E6;border:0;border-radius:12px;box-shadow:none;transform:none;font-family:var(--sans);font-weight:700}
+html.clean button.secondary,html.clean .share{border:1.5px solid var(--ink);border-radius:12px;background:transparent;color:var(--ink);transform:none}
+/* paper sheets */
+html.clean .scene,html.clean .rolecard,html.clean .moretoggle,html.clean .chip,html.clean .prepbtn,html.clean .pace button{background:var(--sheet);color:var(--ink);border:1px solid var(--rule);border-radius:4px;
+  box-shadow:0 1px 0 #E2D8C4,0 8px 18px -14px rgba(60,45,20,.45);transform:none}
+html.clean .scene{position:relative;padding:16px 18px 14px;clip-path:polygon(0 0,calc(100% - 0px) 0,100% 0,100% 100%,22px 100%,0 calc(100% - 22px))}
+html.clean .scene::after{content:"";position:absolute;left:0;bottom:0;width:22px;height:22px;background:linear-gradient(45deg,transparent 50%,#E7DDC8 50%);}
+html.clean .scene .t,html.clean .rolecard .name{font-family:var(--typed);font-weight:700;font-size:20px;color:var(--ink)}
+html.clean .scene .d,html.clean .scene .cnt,html.clean .scene .m,html.clean .rolecard .count{color:var(--pencil)}
+html.clean .rolecard.chosen{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+html.clean .rolecard.chosen .name{display:inline-block;width:fit-content;align-self:flex-start;justify-self:start;padding:0 4px;background:linear-gradient(transparent 55%,var(--hl) 55%,var(--hl) 92%,transparent 92%)}
+html.clean .rolecard .me{color:var(--red);font-family:var(--hand);font-size:20px}
+html.clean .vchip{background:transparent;color:var(--ink);border:1px solid #CFC5B1;border-bottom-width:1px}
+html.clean .voicepick .play{background:transparent;color:var(--ink);border:1px solid #CFC5B1}
+html.clean .names summary{color:var(--pen)}
+html.clean .moretoggle{display:flex;flex-direction:column;align-items:flex-start;width:100%;margin:16px 0 4px;padding:12px 14px;font-family:var(--sans);font-size:16px;font-weight:700;cursor:pointer;text-align:right;position:relative}
+html.clean .moretoggle small{font-weight:400;color:var(--pencil);font-size:13px;margin-top:2px}
+html.clean .moretoggle::after{content:"▾";position:absolute;left:18px;top:16px;color:var(--pencil)}
 html.clean .opts{display:none}
 html.clean .showmore .opts{display:block}
 html.clean .showmore .moretoggle::after{content:"▴"}
-html.clean .chip,html.clean .prepbtn,html.clean .pace button{background:#1A1A1F;border:1px solid #2A2A31;border-bottom-width:1px;color:#ECECEF;transform:none}
-html.clean .chip[aria-pressed=true]{border-color:#FFC24B;background:#22201A}
-html.clean .pace button[aria-pressed=true]{background:#FFC24B;color:#1A1405;border-color:#FFC24B}
-/* rehearsal: one card per line, colour stripe per character, the live line glows gold */
-html.clean{--gold:#E9B444}
-html.clean .progress{height:3px;background:#24242A}
-html.clean .progress-fill{background:var(--gold)}
-html.clean .notice{background:#18181C;border-color:#26262C;color:#9A9AA3}
-html.clean .feed{background:transparent;border:0;color:#ECECEF;padding:0 2px}
-html.clean .line{background:#1A1B20;border:1px solid #25262D;border-right:4px solid var(--ink-c);border-radius:18px;padding:16px 18px;margin-bottom:12px}
-html.clean .line:last-child{border-bottom:1px solid #25262D}
-html.clean .line .who{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--ink-c)!important;font-size:14px;font-weight:800;letter-spacing:.6px;margin-bottom:6px}
-html.clean .line .txt{font-family:var(--sans);font-size:21px;line-height:1.55}
-html.clean .line.other .txt{color:#E6E6EA}
-html.clean .line.mine .txt mark{background:none;color:#FFFFFF;font-weight:600}
-html.clean .line.past{opacity:.4}
-html.clean .line.speaking{background:#2A2416;border-color:#4A3D1C;border-right-color:var(--gold)}
-html.clean .line.speaking .who{color:var(--gold)!important}
-html.clean .line.speaking .who::after,html.clean .line.mine.current .who::after{content:"מדבר/ת";background:var(--gold);color:#1A1405;border-radius:999px;padding:3px 10px;font-size:12px;letter-spacing:.4px}
-html.clean .line.mine.current{background:#16241F;border-color:#24443A;border-right-color:#3FC1A9;margin:0 0 12px;padding:16px 18px;border-radius:18px}
-html.clean .line.mine.current .who{color:#3FC1A9!important}
-html.clean .line.mine.current .who::after{content:"התור שלך";background:#3FC1A9}
-html.clean .line .dir{color:#7E7E87}
-html.clean .line .sayfix{opacity:.5;font-size:12px;background:transparent;border-color:#34343C;color:#B4B4BC;margin-top:8px}
-/* home: script library cards */
-html.clean #sceneList .scene{background:linear-gradient(135deg,#7A1F2E,#4B1420);border:1px solid #8A3242;color:#fff}
-html.clean #sceneList .scene .d,html.clean #sceneList .scene .cnt{color:#E8C9CE}
-html.clean #sceneList .scene::after{content:"התחל ▶";position:absolute;left:14px;bottom:14px;background:var(--gold);color:#1A1405;font-weight:800;font-size:14px;padding:7px 14px;border-radius:999px}
-html.clean #sceneList .scene{position:relative;padding-bottom:58px}
-html.clean #myList .scene{border-color:#5A4718;background:#1E1B13}
-html.clean .upload{border:1.5px dashed #6B5520;background:#1A1812}
-html.clean button.primary{background:var(--gold);color:#1A1405;border-radius:999px}
-html.clean h2.sec{letter-spacing:.8px;font-size:14px;color:var(--gold);text-transform:uppercase}
-html.clean .logo{display:block!important;width:30px;height:30px;filter:none}
-html.clean .brand{gap:8px}
-html.clean .status{color:#B4B4BC}
+html.clean .chip small,html.clean .prepbtn small{color:var(--pencil)}
+html.clean .chip[aria-pressed=true]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+html.clean .chip[aria-pressed=true] b{background:linear-gradient(transparent 55%,var(--hl) 55%,var(--hl) 92%,transparent 92%)}
+html.clean .pace button[aria-pressed=true]{background:var(--ink);color:#FFF8E6;border-color:var(--ink)}
+html.clean .prepbtn .ic{background:#F1E9D6}
+/* rehearsal: one typed script page */
+html.clean .topbar,html.clean .topbar .back,html.clean .role{color:var(--ink)}
+html.clean .progress{height:2px;background:#DCD2BE;border-radius:0}
+html.clean .progress-fill{background:var(--ink)}
+html.clean .notice{background:transparent;border:1px dashed #C9BEA8;color:var(--pencil)}
 html.clean #micNotice:not(.bad){display:none!important}
-/* preparing voices */
-.prepv{position:fixed;inset:0;z-index:45;background:#121214;display:grid;place-items:center;text-align:center;color:#ECECEF;padding:24px}
-.prepv[hidden]{display:none}
-.prepv h3{font-family:var(--sans);font-size:24px;font-weight:800;margin:18px 0 18px}
-.prepv .pbar{display:flex;align-items:center;gap:12px;width:min(300px,80vw);margin:0 auto 14px;direction:ltr}
-.prepv .pbar b{color:#E9B444;font-size:18px;min-width:48px;text-align:left}
-.prepv .pbar span{flex:1;height:10px;border-radius:99px;background:#2A2A31;overflow:hidden}
-.prepv .pbar i{display:block;height:100%;width:0;background:#E9B444;border-radius:99px;transition:width .3s}
-.prepv p{color:#9A9AA3;font-size:15px;margin:0}
-/* daily challenge (clean version) */
-.daily{display:none}
-html.clean .daily:not([hidden]){display:block;margin:6px 0 4px;padding:18px;border-radius:20px;color:#fff;
-  background:linear-gradient(140deg,#7C2131,#4A1220);border:1px solid #8E3445}
-.daily .top{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#F3D9A0;font-weight:700}
-.daily .top b{font-size:20px;color:#fff;margin-inline-start:4px}
-.daily .k{display:block;margin:12px 0 4px;color:#E9B444;font-weight:800;font-size:13px;letter-spacing:.8px}
-.daily .t{display:block;font-size:22px;font-weight:800}
-.daily .d{display:block;color:#EBC9CF;font-size:15px;line-height:1.5;margin-top:4px}
-.daily .wk{display:flex;justify-content:space-between;margin:16px 2px}
-.daily .wk span{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:#E8C9CE}
-.daily .wk i{width:30px;height:30px;border-radius:50%;background:#2A1218;border:2px solid transparent;display:grid;place-items:center;font-style:normal;font-size:14px;color:#1A1405}
-.daily .wk .on i{background:#E9B444}
-.daily .wk .today i{border-color:#E9B444}
-.daily button{width:100%;border:0;border-radius:999px;background:#E9B444;color:#1A1405;font-family:var(--sans);font-weight:800;font-size:18px;padding:13px;cursor:pointer}
-html.clean .meter{background:#24242A}
-html.clean .cd{background:rgba(10,10,12,.92)}
+html.clean .feed{background:var(--sheet);border:1px solid var(--rule);border-radius:3px;color:var(--ink);padding:10px 22px;
+  box-shadow:0 1px 0 #E2D8C4,0 14px 28px -18px rgba(60,45,20,.5)}
+html.clean .line{display:block;border:0;padding:14px 0;margin:0;text-align:center;position:relative;background:none}
+html.clean .line .who{display:block;font-family:var(--typed);font-weight:700;font-size:15px;letter-spacing:1.5px;color:var(--ink)!important;margin-bottom:4px}
+html.clean .line .txt{font-family:var(--typed);font-size:22px;line-height:1.6;color:var(--ink)}
+html.clean .line .dir{font-family:var(--typed);font-style:italic;color:var(--pencil);font-size:16px}
+html.clean .line.mine .txt mark{background:linear-gradient(100deg,transparent 0 2px,var(--hl) 4px calc(100% - 4px),transparent calc(100% - 2px));color:var(--ink);padding:0 3px;border-radius:3px 6px 4px 7px}
+html.clean .line.past{opacity:.42}
+html.clean .line.mine.current{background:none;margin:0;padding:14px 0;border:0;border-radius:0}
+html.clean .line.speaking::before,html.clean .line.mine.current::before{position:absolute;right:-18px;top:12px;font-family:var(--hand);font-size:22px;line-height:1;writing-mode:vertical-rl}
+html.clean .line.speaking{border-right:0}
+html.clean .line.speaking .txt{text-decoration:underline;text-decoration-color:#B9AE97;text-decoration-thickness:1px;text-underline-offset:6px}
+html.clean .line.speaking::after{content:"מדבר/ת";position:absolute;left:-10px;top:12px;font-family:var(--hand);font-size:22px;color:var(--pen);transform:rotate(-6deg)}
+html.clean .line.mine.current::after{content:"אתה!";position:absolute;left:-10px;top:12px;font-family:var(--hand);font-size:24px;color:var(--red);transform:rotate(-6deg)}
+html.clean .line .sayfix{opacity:.55;font-size:12px;background:transparent;border-color:#D3C9B5;color:var(--pencil);margin-top:6px}
+html.clean .line.mine.hidden .reveal{color:var(--pen);font-family:var(--hand);font-size:20px}
+html.clean .status{color:var(--pencil)}
+html.clean .status .dot{background:var(--ink)}
+html.clean .meter{background:#DCD2BE}
+html.clean #meterFill{background:var(--ink)}
+html.clean .minor button{background:transparent;color:var(--ink);border:1.5px solid #CFC5B1;border-radius:12px}
+html.clean .cd{background:rgba(244,238,223,.96);color:var(--ink)}
 html.clean .cd .clap{display:none}
-html.clean .donebox h2{font-family:var(--sans);font-size:30px;color:#fff}
-html.clean .toast{background:#24242A;color:#ECECEF;border-bottom:0}
-html.clean #roleLabel .av,html.clean.is-done .tagline,html.clean .is-done .tagline{display:none!important}
+html.clean .cd #countNum{color:var(--ink);font-family:var(--typed)}
+/* done */
+html.clean .donebox h2{font-family:var(--hand);font-size:64px;color:var(--red);transform:rotate(-4deg);margin:0}
+html.clean .donebox p{color:var(--pencil)}
+html.clean .stats div{background:var(--sheet);border:1px solid var(--rule);border-radius:4px;color:var(--ink);box-shadow:0 8px 18px -14px rgba(60,45,20,.45)}
+html.clean .stats b{color:var(--ink);font-family:var(--typed)}
+html.clean .stats small{color:var(--pencil)}
+html.clean .toast{background:var(--ink);color:#FFF8E6;border-bottom:0}
+html.clean .intro .card{background:var(--sheet);border-radius:6px}
 html.clean .vswitch{display:block;text-align:center;margin:28px 0 0;font-size:14px}
-html.clean .vswitch a{color:#8E8E97}
+html.clean .vswitch a{color:var(--pencil)}
+/* preparing voices */
+.prepv{position:fixed;inset:0;z-index:45;background:#F4EEDF;display:grid;place-items:center;text-align:center;color:#1F1D1A;padding:24px}
+.prepv[hidden]{display:none}
+.prepv h3{font-family:'David Libre',serif;font-size:26px;font-weight:700;margin:16px 0 14px}
+.prepv .pbar{display:flex;align-items:center;gap:12px;width:min(300px,80vw);margin:0 auto 14px;direction:ltr}
+.prepv .pbar b{font-family:'Amatic SC',cursive;color:#C2362C;font-size:28px;min-width:54px;text-align:left}
+.prepv .pbar span{flex:1;height:3px;background:#DCD2BE;overflow:hidden}
+.prepv .pbar i{display:block;height:100%;width:0;background:#1F1D1A;transition:width .3s}
+.prepv p{color:#6E675B;font-size:15px;margin:0}
+/* "today's scene" — an index card pinned to the page */
+.daily{display:none}
+html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6px;padding:22px 20px 18px 20px;color:var(--ink);transform:rotate(-.6deg);
+  background:#FFFEFA linear-gradient(transparent 46px,#F0A8A0 46px,#F0A8A0 47.5px,transparent 47.5px),#FFFEFA;
+  background-image:linear-gradient(transparent 58px,#EDA49B 58px,#EDA49B 59.5px,transparent 59.5px),repeating-linear-gradient(transparent 0 29px,#D7E2F2 29px 30px);
+  background-position:0 0,0 60px;border-radius:2px;box-shadow:0 2px 0 #E4DACA,0 16px 26px -16px rgba(60,45,20,.55)}
+.daily::before{content:"";position:absolute;top:-10px;left:50%;width:84px;height:22px;margin-left:-42px;background:rgba(242,226,170,.75);transform:rotate(2deg)}
+.daily .k{display:block;font-family:'Amatic SC',cursive;font-size:32px;line-height:1;color:#C2362C;margin:-6px 0 22px}
+.daily .t{display:block;font-family:'David Libre',serif;font-size:24px;font-weight:700}
+.daily .d{display:block;color:#5D574C;font-size:15.5px;line-height:30px;margin-top:2px}
+.daily .tally{display:flex;align-items:center;gap:8px;margin:10px 0 14px;font-size:14px;color:#5D574C}
+.daily .tally b{font-family:'Amatic SC',cursive;font-size:30px;color:#2B4FA8;letter-spacing:2px;line-height:1}
+.daily button{width:100%;border:0;border-radius:12px;background:#1F1D1A;color:#FFF8E6;font-family:var(--sans);font-weight:700;font-size:17px;padding:13px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -870,7 +878,7 @@ html.clean .vswitch a{color:#8E8E97}
 </div></div>
 <div class="intro sheet warm" id="warmDlg" hidden role="dialog" aria-modal="true" aria-label="חימום"><div class="card" id="warmCard"></div></div>
 <div class="prepv" id="prepVoices" hidden aria-live="polite"><div>
-<svg viewBox="0 0 64 56" width="76" aria-hidden="true"><path d="M26 6h26a4 4 0 0 1 4 4v18c0 12-8 20-17 20S22 40 22 28V10a4 4 0 0 1 4-4z" fill="#E9B444"/><circle cx="33" cy="20" r="2.6" fill="#1A1405"/><circle cx="45" cy="20" r="2.6" fill="#1A1405"/><path d="M32 33q7-6 14 0" stroke="#1A1405" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M8 16h24a4 4 0 0 1 4 4v16c0 11-7 18-16 18S4 47 4 36V20a4 4 0 0 1 4-4z" fill="#F2C55C" stroke="#121214" stroke-width="2"/><circle cx="14" cy="30" r="2.4" fill="#1A1405"/><circle cx="26" cy="30" r="2.4" fill="#1A1405"/><path d="M13 39q7 6 14 0" stroke="#1A1405" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>
+<svg viewBox="0 0 64 64" width="72" aria-hidden="true"><path d="M10 18 H54 a6 6 0 0 1 6 6 V42 a6 6 0 0 1 -6 6 H30 L18 58 V48 H10 a6 6 0 0 1 -6 -6 V24 a6 6 0 0 1 6 -6 Z" fill="#1F1D1A"/><path d="M8 6 L56 6 a4 4 0 0 1 4 4 V14 H4 V10 a4 4 0 0 1 4 -4 Z" fill="#1F1D1A" transform="rotate(-8 32 10)"/><g transform="rotate(-8 32 10)" fill="#F4EEDF"><path d="M12 6 L20 6 L15 14 L7 14 Z"/><path d="M28 6 L36 6 L31 14 L23 14 Z"/><path d="M44 6 L52 6 L47 14 L39 14 Z"/></g><circle cx="22" cy="33" r="3.2" fill="#FFE240"/><circle cx="32" cy="33" r="3.2" fill="#FFE240"/><circle cx="42" cy="33" r="3.2" fill="#FFE240"/></svg>
 <h3>מכין את הקולות…</h3>
 <div class="pbar"><b id="prepPct">0%</b><span><i id="prepFill"></i></span></div>
 <p>מכין את השורות של הפרטנר, כדי שהסצנה תרוץ בלי עיכובים</p>
@@ -1477,13 +1485,11 @@ function renderDaily(){
   const dayNo = Math.floor((now - new Date(2026, 0, 1)) / 864e5);
   const sc = SCENES[((dayNo % SCENES.length) + SCENES.length) % SCENES.length];
   const done = new Set(practiceDays());
-  const start = new Date(now); start.setDate(now.getDate() - now.getDay());
-  const names = ['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'];
-  const wk = names.map((n, k) => { const d = new Date(start); d.setDate(start.getDate() + k); const on = done.has(dayStr(d)), today = k === now.getDay();
-    return `<span class="${on ? 'on' : ''} ${today ? 'today' : ''}"><i>${on ? '✓' : ''}</i>${n}</span>`; }).join('');
-  box.innerHTML = `<div class="top"><span>🔥 ימי חזרות ברצף <b>${streakCount()}</b></span></div>
-    <span class="k">האתגר של היום</span><span class="t">${esc(sc.title)}</span><span class="d">${esc(sc.blurb)}</span>
-    <div class="wk">${wk}</div><button type="button" id="dailyGo">יאללה, לאתגר ▶</button>`;
+  const n = streakCount();
+  const tally = n ? ('𝍸 '.repeat(Math.floor(n / 5)) + '|'.repeat(n % 5)).trim() : '';
+  box.innerHTML = `<span class="k">הסצנה של היום</span><span class="t">${esc(sc.title)}</span><span class="d">${esc(sc.blurb)}</span>
+    <div class="tally">${n ? `<b>${tally}</b> ${n === 1 ? 'יום חזרות אחד' : n + ' ימי חזרות ברצף'}` : 'עוד לא תרגלת היום'}</div>
+    <button type="button" id="dailyGo">לתרגל את זה</button>`;
   box.hidden = false;
   box.querySelector('#dailyGo').onclick = () => loadScene(sc.text, sc.title);
 }
