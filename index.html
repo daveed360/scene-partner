@@ -373,6 +373,21 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 .line.mine.hidden .hw{filter:blur(6px)}
 .line.mine .hw.shown{filter:none}
 
+/* computer: partner + script side by side */
+@media (min-width: 900px){
+  .rehearsing .wrap{max-width:1040px}
+  .rehearsing #screen-rehearse.active{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto 1fr auto auto auto auto;column-gap:18px;align-content:stretch}
+  .rehearsing #screen-rehearse > *{grid-column:1 / -1}
+  .rehearsing #screen-rehearse > #stage{grid-column:1;grid-row:4;display:flex!important;margin-bottom:12px}
+  .rehearsing #screen-rehearse > #feed{grid-column:2;grid-row:4;display:block!important;margin-bottom:12px}
+  .rehearsing #viewBtn{display:none}
+  .rehearsing .deco{display:none}
+  .rehearsing{padding-bottom:0}
+  .keys{display:block!important}
+}
+.keys{display:none;text-align:center;font-size:13px;color:var(--on-stage-dim);margin-top:10px}
+.keys kbd{font-family:var(--sans);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-bottom-width:3px;border-radius:6px;padding:1px 7px;margin:0 2px;color:var(--on-stage)}
+
 /* confetti at the end of a scene */
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:20;overflow:hidden}
 .confetti i{position:absolute;top:-20px;width:10px;height:14px;border-radius:3px;animation:fall linear forwards}
@@ -576,6 +591,7 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 <div class="controls">
 <button class="primary" id="actionBtn">התחל</button>
 </div>
+<div class="keys" aria-hidden="true"><kbd>רווח</kbd> סיימתי / התחל · <kbd>Backspace</kbd> שורה אחורה · <kbd>P</kbd> השהה</div>
 </div>
 
 <!-- SCREEN 4: DONE -->
@@ -2165,35 +2181,39 @@ function wrapLines(ctx, text, maxW, maxLines){
   return lines;
 }
 function drawFrame(ctx, W, H){
-  const top = Math.round(H * 0.42);
-  // partner half
-  const g = ctx.createRadialGradient(W/2, top*0.35, 20, W/2, top*0.4, W*0.75);
+  // portrait: partner on top, you below. landscape (phone turned sideways): partner on the side, you big
+  const land = W > H;
+  const P = land ? {x:0, y:0, w:Math.round(W*0.4), h:H} : {x:0, y:0, w:W, h:Math.round(H*0.42)};
+  const Y = land ? {x:P.w, y:0, w:W-P.w, h:H} : {x:0, y:P.h, w:W, h:H-P.h};
+  const g = ctx.createRadialGradient(P.x+P.w/2, P.y+P.h*0.35, 20, P.x+P.w/2, P.y+P.h*0.4, Math.max(P.w, P.h)*0.75);
   g.addColorStop(0, '#4E3757'); g.addColorStop(1, '#1C1524');
-  ctx.fillStyle = g; ctx.fillRect(0, 0, W, top);
+  ctx.fillStyle = g; ctx.fillRect(P.x, P.y, P.w, P.h);
   const name = stageChar || (runLines.find(l => l.character !== myCharacter) || {}).character;
   if(name){
     const talking = document.getElementById('stage').classList.contains('talking') || (!viewFace && tapeCaption && isPartnerTalking);
     const mouth = talking ? String(lipFrame) : 'rest';
     const img = faceImg(name, partnerMood[name] || 'neutral', mouth);
-    const s = Math.round(top * 0.58);
-    if(img.complete) ctx.drawImage(img, (W - s)/2, Math.round(top*0.06), s, s);
+    const s = Math.round(Math.min(P.w * 0.62, P.h * (land ? 0.46 : 0.58)));
+    const fy = P.y + Math.round(land ? (P.h - s) * 0.3 : P.h * 0.06);
+    if(img.complete) ctx.drawImage(img, P.x + (P.w - s)/2, fy, s, s);
     ctx.direction = 'rtl'; ctx.textAlign = 'center';
-    ctx.fillStyle = '#FFC24B'; ctx.font = '700 ' + Math.round(W*0.042) + 'px Rubik, Assistant, sans-serif';
-    ctx.fillText(name, W/2, Math.round(top*0.06) + s + Math.round(W*0.06));
+    const unit = P.w;
+    ctx.fillStyle = '#FFC24B'; ctx.font = '700 ' + Math.round(unit*0.05) + 'px Rubik, Assistant, sans-serif';
+    ctx.fillText(name, P.x + P.w/2, fy + s + Math.round(unit*0.075));
     if(tapeCaption){
-      ctx.fillStyle = '#F5EEE6'; ctx.font = '500 ' + Math.round(W*0.036) + 'px "Frank Ruhl Libre", serif';
-      const lines = wrapLines(ctx, tapeCaption.text, W*0.86, 2);
-      lines.forEach((l, i) => ctx.fillText(l, W/2, Math.round(top*0.06) + s + Math.round(W*0.11) + i*Math.round(W*0.048)));
+      ctx.fillStyle = '#F5EEE6'; ctx.font = '500 ' + Math.round(unit*0.042) + 'px "Frank Ruhl Libre", serif';
+      const lines = wrapLines(ctx, tapeCaption.text, P.w*0.86, land ? 4 : 2);
+      lines.forEach((l, i) => ctx.fillText(l, P.x + P.w/2, fy + s + Math.round(unit*0.14) + i*Math.round(unit*0.058)));
     }
   }
-  // you
-  ctx.fillStyle = '#000'; ctx.fillRect(0, top, W, H - top);
+  ctx.fillStyle = '#000'; ctx.fillRect(Y.x, Y.y, Y.w, Y.h);
   if(camVid && camVid.videoWidth){
-    const vw = camVid.videoWidth, vh = camVid.videoHeight, bw = W, bh = H - top;
-    const sc = Math.max(bw / vw, bh / vh), sw = bw / sc, sh = bh / sc;
-    ctx.drawImage(camVid, (vw - sw)/2, (vh - sh)/2, sw, sh, 0, top, bw, bh);
+    const vw = camVid.videoWidth, vh = camVid.videoHeight;
+    const sc = Math.max(Y.w / vw, Y.h / vh), sw = Y.w / sc, sh = Y.h / sc;
+    ctx.drawImage(camVid, (vw - sw)/2, (vh - sh)/2, sw, sh, Y.x, Y.y, Y.w, Y.h);
   }
-  ctx.fillStyle = 'rgba(255,194,75,.9)'; ctx.fillRect(0, top - 3, W, 6);
+  ctx.fillStyle = 'rgba(255,194,75,.9)';
+  if(land) ctx.fillRect(P.w - 3, 0, 6, H); else ctx.fillRect(0, P.h - 3, W, 6);
 }
 let isPartnerTalking = false;
 function startRecording(){
@@ -2205,7 +2225,8 @@ function startRecording(){
   camVid.style.cssText = 'position:fixed;width:2px;height:2px;opacity:0;pointer-events:none;left:0;top:0';
   document.body.appendChild(camVid);
   camVid.srcObject = micStream; camVid.play().catch(()=>{});
-  const W = 720, H = 1280;
+  const land = window.innerWidth > window.innerHeight;     // turn the phone sideways for a 16:9 tape
+  const W = land ? 1280 : 720, H = land ? 720 : 1280;
   const canvas = document.createElement('canvas'); canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
   drawTimer = setInterval(() => drawFrame(ctx, W, H), 1000/30);
@@ -2372,6 +2393,17 @@ document.getElementById('pauseBtn').onclick = () => {
   }
 };
 document.getElementById('backLineBtn').onclick = () => jumpTo(cursor - 1);
+document.addEventListener('keydown', e => {
+  if(currentScreen !== 'rehearse' || e.target.closest('input, textarea, select') || !document.getElementById('sayDlg').hidden) return;
+  const act = document.getElementById('actionBtn');
+  if(e.key === ' ' || e.key === 'Enter'){
+    if(act.offsetParent && !act.disabled){ e.preventDefault(); act.click(); }
+  } else if(e.key === 'Backspace'){
+    if(sceneRunning){ e.preventDefault(); document.getElementById('backLineBtn').click(); }
+  } else if(e.key === 'p' || e.key === 'P' || e.key === 'פ'){
+    if(!document.getElementById('minorCtl').hidden){ e.preventDefault(); document.getElementById('pauseBtn').click(); }
+  }
+});
 
 function advance(myRun){
   if(myRun !== runId) return;            // scene was exited/restarted
