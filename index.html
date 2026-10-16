@@ -378,6 +378,68 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 .confetti i{position:absolute;top:-20px;width:10px;height:14px;border-radius:3px;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
 @media (prefers-reduced-motion: reduce){.confetti{display:none}}
+
+/* ===== Feel: transitions, micro-motion, toasts, onboarding ===== */
+.screen.active.enter-fwd{animation:inFwd .42s cubic-bezier(.2,.85,.25,1)}
+.screen.active.enter-back{animation:inBack .42s cubic-bezier(.2,.85,.25,1)}
+@keyframes inFwd{from{opacity:0;transform:translateX(-34px)}}
+@keyframes inBack{from{opacity:0;transform:translateX(34px)}}
+.scenes > *{animation:rise .5s cubic-bezier(.2,.85,.25,1) both;animation-delay:calc(var(--i,0) * 70ms)}
+@keyframes rise{from{opacity:0;transform:translateY(16px) scale(.98)}}
+.bubble.say{animation:say .45s cubic-bezier(.3,1.6,.5,1)}
+@keyframes say{0%{transform:scale(.85);opacity:.3}100%{transform:none;opacity:1}}
+.host-av.say{animation:hop .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes hop{30%{transform:translateY(-8px) rotate(-4deg)}60%{transform:translateY(0) rotate(2deg)}}
+.rolecard.chosen .av{animation:hop .5s cubic-bezier(.3,1.6,.5,1)}
+.chip[aria-pressed="true"]{animation:pop .3s cubic-bezier(.3,1.7,.5,1)}
+@keyframes pop{0%{transform:scale(.94)}100%{transform:none}}
+.line{animation:lineIn .32s cubic-bezier(.2,.85,.25,1)}
+@keyframes lineIn{from{opacity:0;transform:translateY(10px)}}
+.face .av{animation:faceIn .38s cubic-bezier(.3,1.5,.5,1)}
+@keyframes faceIn{from{transform:scale(.88);opacity:.4}}
+.stats div{animation:rise .5s cubic-bezier(.3,1.5,.5,1) both}
+.stats div:nth-child(2){animation-delay:.12s}.stats div:nth-child(3){animation-delay:.24s}
+.donebox > .av{animation:hop .7s .2s cubic-bezier(.3,1.6,.5,1) both}
+
+/* sound switch */
+.soundbtn{position:absolute;top:calc(14px + env(safe-area-inset-top));left:16px;width:42px;height:42px;border-radius:14px;border:2px solid rgba(255,255,255,.18);border-bottom-width:4px;background:rgba(255,255,255,.06);color:var(--on-stage);display:grid;place-items:center;cursor:pointer;z-index:2}
+.soundbtn svg{width:22px;height:22px}
+.soundbtn .off{display:none}
+.soundbtn[aria-pressed="false"] .on{display:none}
+.soundbtn[aria-pressed="false"] .off{display:block}
+.wrap{position:relative}
+.rehearsing .soundbtn{display:none}
+
+/* toast */
+.toast{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top));transform:translate(-50%,-140%);z-index:30;display:flex;align-items:center;gap:10px;
+  background:var(--sheet);color:var(--ink);font-weight:700;font-size:16px;padding:12px 18px;border-radius:18px;border-bottom:4px solid #E7E1D6;box-shadow:0 14px 30px -12px rgba(0,0,0,.5);transition:transform .45s cubic-bezier(.3,1.5,.5,1);max-width:calc(100vw - 32px)}
+.toast.show{transform:translate(-50%,0)}
+.toast .ic{font-size:22px}
+
+/* clapperboard countdown */
+.cd{flex-direction:column}
+.cd .clap{width:150px;height:120px;margin-bottom:6px}
+.cd .clap .top{transform-box:fill-box;transform-origin:8% 100%;transform:rotate(-24deg);transition:transform .12s cubic-bezier(.6,0,.9,.4)}
+.cd.snap .clap .top{transform:rotate(0)}
+.cd{display:flex;align-items:center;justify-content:center}
+
+/* first-run intro */
+.intro{position:fixed;inset:0;z-index:40;background:rgba(18,12,23,.92);display:flex;align-items:center;justify-content:center;padding:20px}
+.intro[hidden]{display:none}
+.intro .card{width:min(420px,100%);background:var(--sheet);color:var(--ink);border-radius:26px;border-bottom:7px solid #E7E1D6;padding:26px 22px 20px;text-align:center;animation:rise .5s cubic-bezier(.3,1.5,.5,1)}
+.intro .card .av{width:130px;height:130px;margin:0 auto 12px;display:block}
+.intro h3{font-family:var(--sans);font-weight:800;font-size:24px;margin:0 0 8px}
+.intro p{font-size:17px;line-height:1.55;margin:0 0 18px;color:#4A4D52}
+.intro .dots{display:flex;direction:rtl;justify-content:center;gap:8px;margin-bottom:16px}
+.intro .dots i{width:10px;height:10px;border-radius:50%;background:#E3DED3;transition:all .3s}
+.intro .dots i.on{background:var(--amber);width:26px;border-radius:6px}
+.intro .slide{animation:inFwd .38s cubic-bezier(.2,.85,.25,1)}
+.intro .skip{background:none;border:none;color:#8A8D92;font-size:15px;margin-top:10px;cursor:pointer;padding:8px}
+
+@media (prefers-reduced-motion: reduce){
+  .screen.active.enter-fwd,.screen.active.enter-back,.scenes > *,.bubble.say,.host-av.say,.rolecard.chosen .av,.chip[aria-pressed="true"],.line,.face .av,.stats div,.donebox > .av,.intro .card,.intro .slide{animation:none}
+  .toast{transition:none}
+}
 </style>
 </head>
 <body>
@@ -387,6 +449,7 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 <div class="deco audience" aria-hidden="true"></div>
 
 <div class="wrap">
+<button type="button" class="soundbtn" id="soundBtn" aria-pressed="true"><svg class="on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg><svg class="off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
 <header>
 <div class="brand">
 <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
@@ -505,7 +568,16 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 
 </div>
 
-<div class="cd" id="countdown" hidden aria-live="assertive"><span id="countNum"></span></div>
+<div class="cd" id="countdown" hidden aria-live="assertive">
+<svg class="clap" viewBox="0 0 64 52" aria-hidden="true">
+  <rect x="4" y="16" width="56" height="34" rx="5" fill="#FFF3D6"/><rect x="4" y="16" width="56" height="9" fill="#2A1E14"/>
+  <g fill="#FFF3D6"><path d="M12 16h7l-4 9H8z"/><path d="M27 16h7l-4 9h-7z"/><path d="M42 16h7l-4 9h-7z"/></g>
+  <text x="32" y="42" text-anchor="middle" font-family="Rubik, sans-serif" font-weight="800" font-size="10" fill="#2A1E14">TAKE</text>
+  <g class="top"><rect x="4" y="5" width="56" height="9" rx="2" fill="#2A1E14"/><g fill="#FFC24B"><path d="M10 5h7l-3 9H7z"/><path d="M25 5h7l-3 9h-7z"/><path d="M40 5h7l-3 9h-7z"/><path d="M55 5h5v9h-7z"/></g></g>
+</svg>
+<span id="countNum"></span></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="intro" id="intro" hidden role="dialog" aria-modal="true" aria-label="ברוכים הבאים"><div class="card"><div class="slide"></div><div class="dots"></div><button type="button" class="primary" id="introNext" style="margin-top:0">הבא</button><button type="button" class="skip" id="introSkip">דלג</button></div></div>
 
 <script>
 const screens = {
@@ -514,9 +586,13 @@ const screens = {
   rehearse: document.getElementById('screen-rehearse'),
   done: document.getElementById('screen-done'),
 };
+const SCREEN_ORDER = ['input', 'roles', 'rehearse', 'done'];
+let currentScreen = 'input';
 function show(name){
-  Object.values(screens).forEach(s=>s.classList.remove('active'));
-  screens[name].classList.add('active');
+  const back = SCREEN_ORDER.indexOf(name) < SCREEN_ORDER.indexOf(currentScreen);
+  currentScreen = name;
+  Object.values(screens).forEach(s=>s.classList.remove('active', 'enter-fwd', 'enter-back'));
+  screens[name].classList.add('active', back ? 'enter-back' : 'enter-fwd');
   document.body.classList.toggle('rehearsing', name === 'rehearse');
   document.body.classList.toggle('is-done', name === 'done');
   if(typeof hostSays === 'function'){
@@ -749,7 +825,112 @@ document.addEventListener('DOMContentLoaded', () => {
 document.getElementById('hostAv').innerHTML = figureSVG(HOST, '#4A3A5C', {gender:'female', style:'bun', beret:true, shirt:'#FFC24B'});
 document.getElementById('doneAv').innerHTML = figureSVG(HOST, '#4A3A5C', {gender:'female', style:'bun', beret:true, shirt:'#FFC24B', mood:'happy'});
 });
-function hostSays(t){ document.getElementById('hostSay').textContent = t; }
+function hostSays(t){
+  const b = document.getElementById('hostSay');
+  if(b.textContent === t) return;
+  b.textContent = t;
+  for(const el of [b, document.getElementById('hostAv')]){ el.classList.remove('say'); void el.offsetWidth; el.classList.add('say'); }
+}
+/* ---- Feel: little sounds and buzzes (made on the fly, no files), toasts, first-run intro ---- */
+let soundOn = lsGet('sp_sound') !== '0';
+let sfxCtx = null;
+function sfxAC(){
+  if(!sfxCtx){ const AC = window.AudioContext || window.webkitAudioContext; if(AC) try{ sfxCtx = new AC(); }catch(e){} }
+  if(sfxCtx && sfxCtx.state === 'suspended') sfxCtx.resume().catch(()=>{});
+  return sfxCtx;
+}
+function tone(freq, dur, type, vol, when, slideTo){
+  const a = sfxAC(); if(!a || !soundOn) return;
+  const t = a.currentTime + (when || 0);
+  const o = a.createOscillator(), g = a.createGain();
+  o.type = type || 'sine'; o.frequency.setValueAtTime(freq, t);
+  if(slideTo) o.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || .06, t + .012); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+  o.connect(g); g.connect(a.destination); o.start(t); o.stop(t + dur + .03);
+}
+function noise(dur, vol, when, freq, q){
+  const a = sfxAC(); if(!a || !soundOn) return;
+  const t = a.currentTime + (when || 0);
+  const len = Math.max(1, Math.floor(a.sampleRate * dur));
+  const buf = a.createBuffer(1, len, a.sampleRate), d = buf.getChannelData(0);
+  for(let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2);
+  const src = a.createBufferSource(); src.buffer = buf;
+  const f = a.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = freq || 2000; f.Q.value = q || .8;
+  const g = a.createGain(); g.gain.value = vol || .2;
+  src.connect(f); f.connect(g); g.connect(a.destination); src.start(t);
+}
+const SFX = {
+  tap:    () => tone(560, .07, 'triangle', .045, 0, 760),
+  on:     () => { tone(660, .08, 'triangle', .055); tone(990, .11, 'triangle', .05, .06); },
+  off:    () => tone(520, .1, 'triangle', .045, 0, 360),
+  select: () => { tone(587, .09, 'sine', .06); tone(880, .14, 'sine', .055, .07); },
+  tick:   () => tone(900, .05, 'square', .025),
+  clap:   () => { noise(.07, .5, 0, 2600, 1.2); tone(150, .08, 'square', .05); },
+  turn:   () => tone(700, .16, 'sine', .045, 0, 940),
+  win:    () => { [523, 659, 784, 1047].forEach((f, i) => tone(f, .24, 'triangle', .06, i * .09)); for(let i = 0; i < 26; i++) noise(.05 + Math.random() * .04, .12 + Math.random() * .12, .35 + Math.random() * 1.6, 1500 + Math.random() * 1800, 1.4); },
+  pop:    () => { tone(420, .06, 'sine', .05, 0, 900); },
+};
+function buzz(ms){ try{ if(navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
+
+// every press gets a tiny click + buzz
+document.addEventListener('pointerdown', e => {
+  const el = e.target.closest('button, .scene, .rolecard, .upload, .secondary-btn');
+  if(!el || el.classList.contains('chip') || el.classList.contains('rolecard')) return;
+  SFX.tap(); buzz(8);
+}, {passive: true});
+
+// sound switch
+(function(){
+  const b = document.getElementById('soundBtn');
+  const sync = () => { b.setAttribute('aria-pressed', String(soundOn)); b.setAttribute('aria-label', soundOn ? 'השתק צלילים' : 'הפעל צלילים'); };
+  b.onclick = () => { soundOn = !soundOn; lsSet('sp_sound', soundOn ? null : '0'); sync(); if(soundOn) SFX.on(); };
+  sync();
+})();
+
+// toasts
+let toastTimer = null;
+function toast(msg, icon){
+  const t = document.getElementById('toast');
+  t.innerHTML = (icon ? `<span class="ic" aria-hidden="true">${icon}</span>` : '') + `<span>${esc(msg)}</span>`;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+// count-up for the end-of-scene numbers
+function countUp(el, to, fmt){
+  const start = performance.now(), dur = 700;
+  const step = now => {
+    const k = Math.min(1, (now - start) / dur), v = Math.round(to * (1 - Math.pow(1 - k, 3)));
+    el.textContent = fmt ? fmt(v) : v;
+    if(k < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+// first-run intro with the host
+const INTRO = [
+  {t: 'היי, אני מאיה', p: 'אני הבמאית שלך. אני משחקת את כל הדמויות בסצנה, ואתה את שלך.', mood: 'happy'},
+  {t: 'מביאים סצנה', p: 'מעלים קובץ Word או PDF, מדביקים טקסט מאתר, או בוחרים סצנה מוכנה. אני מסדרת את הכול.', mood: 'smile'},
+  {t: 'מדברים, וזה ממשיך', p: 'אני מקשיבה לך. כשתסיים משפט ותשתוק רגע, הדמות הבאה עונה לבד. אפשר גם לצלם self-tape.', mood: 'surprised'},
+];
+function showIntro(){
+  const box = document.getElementById('intro');
+  let i = 0;
+  const draw = () => {
+    const s = INTRO[i];
+    box.querySelector('.slide').innerHTML = `<span class="av" style="--ink-c:#4A3A5C">${figureSVG(HOST, '#4A3A5C', {gender:'female', style:'bun', beret:true, shirt:'#FFC24B', mood: s.mood})}</span><h3>${esc(s.t)}</h3><p>${esc(s.p)}</p>`;
+    box.querySelector('.slide').style.animation = 'none'; void box.offsetWidth; box.querySelector('.slide').style.animation = '';
+    box.querySelector('.dots').innerHTML = INTRO.map((_, j) => `<i class="${j === i ? 'on' : ''}"></i>`).join('');
+    document.getElementById('introNext').textContent = i === INTRO.length - 1 ? 'מתחילים!' : 'הבא';
+  };
+  const close = () => { box.hidden = true; lsSet('sp_intro', '1'); };
+  document.getElementById('introNext').onclick = () => { if(i < INTRO.length - 1){ i++; draw(); SFX.pop(); } else { close(); SFX.select(); } };
+  document.getElementById('introSkip').onclick = close;
+  box.hidden = false; draw();
+}
+document.addEventListener('DOMContentLoaded', () => { if(!lsGet('sp_intro') && !location.hash.startsWith('#s=')) showIntro(); });
+
 let pendingTitle = null;
 
 /* ---- my scenes: everything you uploaded or pasted, kept on this device ---- */
@@ -797,6 +978,7 @@ document.getElementById('shareBtn').onclick = async () => {
     if(navigator.share){ await navigator.share({title: 'Audition Partner: ' + sceneTitle, text: 'בוא נתרגל את הסצנה הזו', url}); return; }
     await navigator.clipboard.writeText(url);
     note.textContent = 'הקישור הועתק. אפשר להדביק אותו בוואטסאפ.';
+    toast('הקישור הועתק', '🔗');
   }catch(e){ if(e && e.name === 'AbortError') return; note.textContent = 'לא הצלחתי להעתיק. הקישור: ' + url; }
   note.style.display = 'block';
 };
@@ -858,6 +1040,7 @@ document.addEventListener('DOMContentLoaded', function renderSceneList(){
     const b = document.createElement('button');
     b.className = 'scene';
     b.style.setProperty('--tab', INKS[i % INKS.length]);
+    b.style.setProperty('--i', i);
     b.innerHTML = `<span class="t">${esc(sc.title)}</span><span class="d">${esc(sc.blurb)}</span>
       <span class="m"><span class="cast">${cast.map((c,j)=>avatar(c, INKS[j % INKS.length])).join('')}</span>
       <span>${esc(sc.genre)}, ${cast.length} דמויות, ${lines.length} שורות</span></span>`;
@@ -1134,6 +1317,8 @@ function renderRoles(){
       document.querySelectorAll('.rolecard').forEach(c=>c.classList.remove('chosen'));
       card.classList.add('chosen');
       myCharacter = name;
+      SFX.select(); buzz(15);
+      hostSays('מעולה, אתה ' + name + '. את השאר אני לוקחת.');
     };
     card.onclick = choose;
     card.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); choose(); } };
@@ -1376,6 +1561,7 @@ function stopAudio(){ for(const a of [player, currentAudio]){ try{ if(a){ a.paus
     try{
       const blob = await elFetchAudio('שלום, אני השותף שלך לסצנה.', elVoices[0].voice_id);
       elSetState('עובד ✓ — משמיע דוגמה', true);
+      toast('הקול הטבעי מחובר', '🎙️');
       lsSet('sp_el_lasterr', null);
       const url = URL.createObjectURL(blob); player.src = url; player.play().catch(()=>{});
     }catch(e){
@@ -1662,7 +1848,7 @@ const OPT_KEYS = {face:'sp_o_face', tape:'sp_o_tape', hide:'sp_hide', cue:'sp_o_
 document.querySelectorAll('.chip').forEach(c => {
   const k = c.dataset.opt;
   c.setAttribute('aria-pressed', String(!!OPTS[k]));
-  c.onclick = () => { OPTS[k] = !OPTS[k]; lsSet(OPT_KEYS[k], OPTS[k] ? '1' : null); c.setAttribute('aria-pressed', String(OPTS[k])); };
+  c.onclick = () => { OPTS[k] = !OPTS[k]; lsSet(OPT_KEYS[k], OPTS[k] ? '1' : null); c.setAttribute('aria-pressed', String(OPTS[k])); (OPTS[k] ? SFX.on : SFX.off)(); buzz(12); };
 });
 
 /* ---- face-to-face view ---- */
@@ -1970,6 +2156,7 @@ function countdown(){
       if(i >= steps.length){ box.hidden = true; res(); return; }
       num.textContent = steps[i];
       num.className = (i === steps.length - 1 ? 'word ' : '') + 'pop';
+      if(i === steps.length - 1){ box.classList.add('snap'); SFX.clap(); buzz(40); } else { box.classList.remove('snap'); SFX.tick(); }
       void num.offsetWidth;
       i++;
       setTimeout(tick, i === steps.length ? 700 : 650);
@@ -2018,7 +2205,7 @@ function advance(myRun){
     const el = addLineToFeed(line, true);
     stageShowMine(line);
     if(!viewFace) scheduleNudge(9000);
-    try{ if(navigator.vibrate) navigator.vibrate(35); }catch(e){}
+    SFX.turn(); buzz(35);
     myTurns++;
     const btn = document.getElementById('actionBtn');
 
@@ -2077,8 +2264,14 @@ function finishScene(){
   document.getElementById('stTake').textContent = take;
   document.getElementById('stTime').textContent = Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0');
   document.getElementById('stLines').textContent = runLines.filter(l => l.character === myCharacter).length;
+  const before = streakCount();
   markPracticedToday(); renderStreak();
   const st = streakCount();
+  SFX.win(); buzz([30, 60, 30]);
+  countUp(document.getElementById('stTake'), take);
+  countUp(document.getElementById('stLines'), runLines.filter(l => l.character === myCharacter).length);
+  countUp(document.getElementById('stTime'), secs, v => Math.floor(v/60) + ':' + String(v%60).padStart(2,'0'));
+  if(st > before) setTimeout(() => toast(st === 1 ? 'יום חזרות ראשון. ככה מתחילים!' : st + ' ימי חזרות ברצף!', '🎟️'), 900);
   document.getElementById('doneLine').textContent = st > 1 ? 'סיימת את הסצנה. ' + st + ' ימים ברצף, ככה בונים תפקיד!' : 'סיימת את הסצנה. עוד טייק?';
   setTimeout(confetti, 150);
   stopRecording().then(blob => { closeMic(); showTape(blob, take); });
