@@ -402,6 +402,56 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 .keys{display:none;text-align:center;font-size:13px;color:var(--on-stage-dim);margin-top:10px}
 .keys kbd{font-family:var(--sans);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-bottom-width:3px;border-radius:6px;padding:1px 7px;margin:0 2px;color:var(--on-stage)}
 
+/* theatre dressing: velvet curtains that open on load, chasing marquee bulbs */
+.curtain{position:fixed;top:0;bottom:0;width:clamp(10px,3.2vw,64px);z-index:35;pointer-events:none;
+  background:linear-gradient(90deg,rgba(0,0,0,.35),transparent 40%,rgba(0,0,0,.25)),
+    repeating-linear-gradient(90deg,#5E1026 0,#8E1D3A 7px,#B02A4A 11px,#8E1D3A 15px,#5E1026 22px);
+  box-shadow:0 0 30px rgba(0,0,0,.5);animation:curtainOpen 1.3s cubic-bezier(.6,0,.2,1) .15s both}
+.curtain.l{left:0;border-radius:0 0 40% 0/0 0 6% 0}
+.curtain.r{right:0;border-radius:0 0 0 40%/0 0 0 6%}
+.curtain::after{content:"";position:absolute;left:0;right:0;top:0;height:46px;background:linear-gradient(#3E0A19,transparent)}
+@keyframes curtainOpen{from{width:51vw}to{width:clamp(10px,3.2vw,64px)}}
+.marquee{height:16px;margin:-6px 0 18px;border-radius:999px;position:relative;
+  background:linear-gradient(#3A2A1A,#2A1E14);box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.marquee::before,.marquee::after{content:"";position:absolute;inset:3px 8px;border-radius:999px;
+  background:radial-gradient(circle,#FFE4A0 0 3.2px,rgba(255,200,90,.45) 4px,transparent 6px) 0 50%/22px 10px repeat-x;
+  filter:drop-shadow(0 0 4px rgba(255,190,80,.9));animation:bulbs 1.1s steps(1) infinite}
+.marquee::after{background-position:11px 50%;animation-delay:-.55s}
+@keyframes bulbs{0%{opacity:1}50%{opacity:.18}}
+@media (prefers-reduced-motion:reduce){.curtain{animation:none}.marquee::before,.marquee::after{animation:none}}
+.rehearsing .curtain{opacity:.55}
+
+/* prep tools on the roles screen */
+.prep{display:grid;gap:10px;margin:16px 0 4px}
+.prepbtn{position:relative;display:flex;align-items:center;gap:12px;width:100%;text-align:right;padding:12px 14px;border-radius:18px;
+  border:2px solid rgba(255,255,255,.14);border-bottom-width:5px;background:rgba(255,255,255,.06);color:var(--on-stage);cursor:pointer;font-family:var(--sans)}
+.prepbtn:active{transform:translateY(3px);border-bottom-width:2px}
+.prepbtn .ic{font-size:26px;width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:rgba(255,194,75,.16);flex-shrink:0}
+.prepbtn b{display:block;font-size:17px;font-weight:800}
+.prepbtn small{display:block;font-size:13.5px;opacity:.75;line-height:1.4;margin-top:2px}
+.prepbtn.set{border-color:#FFC24B;background:rgba(255,194,75,.12)}
+.prepbtn.done{border-color:#7BD3A4;background:rgba(123,211,164,.12)}
+.prepbtn input[type=date]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;-webkit-appearance:none}
+.prepbtn .clr{position:relative;z-index:2;margin-inline-start:auto;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:inherit;font-size:18px;cursor:pointer;flex-shrink:0}
+.aud{display:inline-block;margin-inline-start:6px;padding:2px 9px;border-radius:999px;background:#FFC24B;color:#2A1E14;font-size:12.5px;font-weight:800;vertical-align:middle}
+.aud.today{background:#FF7A6B;color:#fff;animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.07)}}
+
+/* warm-up */
+.warm .big{font-size:24px;font-weight:800;line-height:1.5;margin:6px 0 14px;color:var(--ink)}
+.warm .step{font-size:13px;font-weight:800;color:#B07A10;letter-spacing:.3px;margin-bottom:4px}
+.breath{width:150px;height:150px;margin:8px auto 16px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:18px;color:#2A1E14;
+  background:radial-gradient(circle at 40% 35%,#FFE7A8,#FFC24B 60%,#E6A42C);box-shadow:0 0 0 10px rgba(255,194,75,.18);transform:scale(.62);transition:transform 4s ease-in-out}
+.breath.in{transform:scale(1)}
+.breath.out{transform:scale(.62);transition-duration:6s}
+.warm .row2{display:flex;gap:10px}
+.warm .row2 button{flex:1}
+
+/* first-letter memory hints */
+.fl .r{filter:blur(5px);opacity:.55}
+.line.mine.hidden .hw{filter:none}
+.line.mine.hidden .hw:not(.shown) .r{filter:blur(5px);opacity:.55}
+
 /* voice chip + sheet */
 .vchip{display:inline-flex;align-items:center;gap:6px;max-width:150px;min-height:40px;padding:6px 12px;border-radius:999px;border:2px solid #E3DED3;border-bottom-width:4px;background:#fff;color:var(--ink);font-family:var(--sans);font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .vchip .caret{color:#9A9DA2;font-size:11px}
@@ -461,7 +511,7 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 .donebox > .av{animation:hop .7s .2s cubic-bezier(.3,1.6,.5,1) both}
 
 /* sound switch */
-.soundbtn{position:absolute;top:calc(14px + env(safe-area-inset-top));left:16px;width:42px;height:42px;border-radius:14px;border:2px solid rgba(255,255,255,.18);border-bottom-width:4px;background:rgba(255,255,255,.06);color:var(--on-stage);display:grid;place-items:center;cursor:pointer;z-index:2}
+.soundbtn{position:absolute;top:calc(44px + env(safe-area-inset-top));left:16px;width:42px;height:42px;border-radius:14px;border:2px solid rgba(255,255,255,.18);border-bottom-width:4px;background:rgba(255,255,255,.06);color:var(--on-stage);display:grid;place-items:center;cursor:pointer;z-index:2}
 .soundbtn svg{width:22px;height:22px}
 .soundbtn .off{display:none}
 .soundbtn[aria-pressed="false"] .on{display:none}
@@ -536,7 +586,9 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 
 <div class="wrap">
 <button type="button" class="soundbtn" id="soundBtn" aria-pressed="true"><svg class="on" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg><svg class="off" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path d="M16 9l5 6M21 9l-5 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+<div class="curtain l" aria-hidden="true"></div><div class="curtain r" aria-hidden="true"></div>
 <header>
+<div class="marquee" aria-hidden="true"></div>
 <div class="brand">
 <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
   <path d="M10 18 H54 a6 6 0 0 1 6 6 V42 a6 6 0 0 1 -6 6 H30 L18 58 V48 H10 a6 6 0 0 1 -6 -6 V24 a6 6 0 0 1 6 -6 Z" fill="#FFC24B"/>
@@ -599,11 +651,16 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 <div class="chips">
 <button type="button" class="chip" data-opt="face" aria-pressed="false"><b>מול הפרטנר</b><small>במקום לקרוא תסריט, רואים את הדמות שמדברת איתך</small></button>
 <button type="button" class="chip" data-opt="tape" aria-pressed="false"><b>צילום self-tape</b><small>מצלם אותך ואת הדמות יחד. בסוף שומרים סרטון</small></button>
-<button type="button" class="chip" data-opt="hide" aria-pressed="false"><b>הסתר את השורות שלי</b><small>לתרגול זיכרון. נתקעת? נגיעה מגלה מילה</small></button>
+<button type="button" class="chip" data-opt="hide" aria-pressed="false"><b>הסתר את השורות שלי</b><small>לשינון: רואים רק את האות הראשונה של כל מילה. נתקעת? נגיעה מגלה מילה</small></button>
 <button type="button" class="chip" data-opt="cue" aria-pressed="false"><b>רק המשפטים שלי</b><small>מדלגים על השאר: שומעים רק את המשפט שלפניך, ואז אתה עונה</small></button>
 </div>
 <div class="pace" role="group" aria-label="קצב הדיבור של הפרטנרים">
 <button type="button" data-rate="0.85">איטי</button><button type="button" data-rate="1">רגיל</button><button type="button" data-rate="1.15">מהיר</button>
+</div>
+<div class="prep">
+<div class="prepbtn" id="audBtn"><span class="ic" aria-hidden="true">📅</span><span><b id="audTitle">יש לך אודישן?</b><small id="audSub">מוסיפים תאריך, ואני סופרת איתך לאחור</small></span><input type="date" id="audDate" aria-label="תאריך האודישן"><button type="button" class="clr" id="audClr" hidden aria-label="להסיר את התאריך">×</button></div>
+<button type="button" class="prepbtn" id="warmBtn"><span class="ic" aria-hidden="true">🔥</span><span><b>חימום של דקה</b><small>נשימה ותרגילי דיקציה, כמו לפני שעולים לבמה</small></span></button>
+<button type="button" class="prepbtn" id="dlBtn" hidden><span class="ic" aria-hidden="true">⬇️</span><span><b id="dlTitle">להכין את הקולות מראש</b><small id="dlSub">ואז אפשר לתרגל גם בלי אינטרנט, למשל בדרך לאודישן</small></span></button>
 </div>
 <button class="primary" id="startBtn">התחל תרגול</button>
 <button class="secondary" id="backToInput">חזרה</button>
@@ -683,6 +740,7 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 <div class="vlist" id="voiceList"></div>
 <button type="button" class="skip" id="voiceClose">סגור</button>
 </div></div>
+<div class="intro sheet warm" id="warmDlg" hidden role="dialog" aria-modal="true" aria-label="חימום"><div class="card" id="warmCard"></div></div>
 <div class="intro" id="intro" hidden role="dialog" aria-modal="true" aria-label="ברוכים הבאים"><div class="card"><div class="slide"></div><div class="dots"></div><button type="button" class="primary" id="introNext" style="margin-top:0">הבא</button><button type="button" class="skip" id="introSkip">דלג</button></div></div>
 
 <script>
@@ -702,7 +760,7 @@ function show(name){
   document.body.classList.toggle('rehearsing', name === 'rehearse');
   document.body.classList.toggle('is-done', name === 'done');
   if(typeof hostSays === 'function'){
-    if(name === 'input') hostSays('היי! תעלה סצנה או תבחר אחת מוכנה, ואני אשחק את כל השאר.');
+    if(name === 'input'){ const a = nextAudition(); hostSays(a ? (a.n === 0 ? 'היום האודישן של "' + a.title + '"! טייק אחד רגוע ויוצאים. בהצלחה!' : audText(a.n) + ' ("' + a.title + '"). בוא נעשה עוד טייק!') : 'היי! תעלה סצנה או תבחר אחת מוכנה, ואני אשחק את כל השאר.'); }
     if(name === 'roles') hostSays('את מי אתה משחק? את כל השאר אני לוקחת.');
   }
   window.scrollTo(0, 0);
@@ -941,7 +999,13 @@ const CAST = [
   {id:'c1', g:'female', age:'young'}, {id:'c5', g:'female', age:'young'}, {id:'c3', g:'female', age:'mid'}, {id:'c7', g:'female', age:'old'},
   {id:'c2', g:'male',   age:'young'}, {id:'c6', g:'male',   age:'young'}, {id:'c4', g:'male',   age:'mid'}, {id:'c8', g:'male',   age:'old'},
 ];
-const MOOD_FRAME = {neutral:0, smile:0, curious:0, talk:1, happy:2, angry:3, sad:4, surprised:5};
+const MOOD_FRAME = {neutral:0, smile:0, curious:0, talk:1, happy:2, angry:3, sad:4, surprised:5, 'angry-talk':6, 'sad-talk':7, 'happy-shut':8, 'surprised-shut':9};
+// which picture to show for a mood while the mouth is open / closed — the feeling stays on the face while talking
+function talkMood(mood, open){
+  if(mood === 'angry' || mood === 'sad') return open ? mood + '-talk' : mood;
+  if(mood === 'happy' || mood === 'surprised') return open ? mood : mood + '-shut';
+  return open ? 'talk' : mood;
+}
 function ageOf(name){
   const n = (name || '').trim();
   if(/^(סבא|סבתא|זקן|זקנה|הזקן|הזקנה)/.test(n)) return 'old';
@@ -967,7 +1031,7 @@ let castMap = {};
 function setCast(names){
   castMap = assignCast(names);
   // warm up the pictures so nothing blinks in during the scene
-  Object.values(castMap).forEach(id => [0,1,2,3,4,5].forEach(k => { const im = new Image(); im.src = `cast/${id}-${k}.jpg`; }));
+  Object.values(castMap).forEach(id => [0,1,2,3,4,5,6,7,8,9].forEach(k => { const im = new Image(); im.src = `cast/${id}-${k}.jpg`; }));
 }
 function castId(name){ return castMap[name] || assignCast([name])[name]; }
 function portraitSrc(name, mood, id){ return `cast/${name === HOST ? 'host' : (id || castId(name))}-${MOOD_FRAME[mood] ?? 0}.jpg`; }
@@ -1207,7 +1271,7 @@ function renderMyScenes(){
     const b = document.createElement('div');
     b.className = 'scene'; b.setAttribute('role', 'button'); b.tabIndex = 0;
     b.style.setProperty('--tab', '#FFC24B');
-    b.innerHTML = `<span class="t">${esc(sc.title)}</span>
+    b.innerHTML = `<span class="t">${esc(sc.title)}${audBadge(sc.title)}</span>
       <span class="m"><span class="cast">${cast.slice(0, 5).map((c, j) => avatar(c, INKS[j % INKS.length])).join('')}</span>
       <span class="cnt">${cast.length} דמויות, ${lines.length} שורות${takes ? ', ' + takes + ' טייקים' : ''}</span></span>
       <button type="button" class="del" aria-label="מחק את ${esc(sc.title)}">×</button>`;
@@ -1573,14 +1637,14 @@ function renderRoles(){
       document.querySelectorAll('.rolecard').forEach(c=>c.classList.remove('chosen'));
       card.classList.add('chosen');
       myCharacter = name;
-      SFX.select(); buzz(15);
+      SFX.select(); buzz(15); renderDl();
       hostSays('מעולה, אתה ' + name + '. את השאר אני לוקחת. ואם אפשר, מקום שקט, כדי שאשמע אותך טוב.');
     };
     card.onclick = choose;
     card.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); choose(); } };
     roleList.appendChild(card);
   });
-  renderNames();
+  renderNames(); renderAud(); renderDl();
 }
 function renderNames(){
   const box = document.getElementById('namesList');
@@ -2236,20 +2300,19 @@ function lipSync(on){
   const img = document.querySelector('#stageFace img.portrait');
   if(img){
     const mood = stageMood || 'neutral';
-    const calm = !['happy', 'angry', 'sad', 'surprised'].includes(mood);
-    const rest = portraitSrc(stageChar, mood), talk = portraitSrc(stageChar, 'talk');
+    const rest = portraitSrc(stageChar, mood);
     const show = src => { const el = document.querySelector('#stageFace img.portrait'); if(el && !el.src.endsWith(src)) el.src = src; };
-    // emotional lines keep their expression; calm lines move the mouth only while the voice is actually loud
+    // the mouth moves only while the voice is actually loud, and the feeling stays on the face
     const follow = () => {
       const a = currentAudio;
       if(!mouthEnv || !a || a.paused){ show(rest); lipTimer = setTimeout(follow, 60); return; }
       const v = mouthEnv[Math.floor(a.currentTime / 0.04)] || 0;
       const open = v > .28;
       lipFrame = open ? 1 : 0;
-      show(calm && open ? talk : rest);
+      show(portraitSrc(stageChar, talkMood(mood, open)));
       lipTimer = setTimeout(follow, 45);
     };
-    if(on && calm) follow(); else { lipFrame = 0; show(rest); }
+    if(on) follow(); else { lipFrame = 0; show(rest); }
     return;
   }
   const pick = () => {
@@ -2300,6 +2363,8 @@ function stageShowPartner(line, still){
   box.scrollTop = 0;
   tapeCaption = {who: line.character, text: line.text};
 }
+// first letter of a word (skipping a leading quote or bracket)
+function firstOf(w){ const m = w.match(/^[^\p{L}\p{N}]*[\p{L}\p{N}]/u); return m ? m[0] : w.slice(0, 1); }
 function stageShowMine(line){
   const st = document.getElementById('stage');
   if(stageChar) setStageFace(stageChar, reactionTo(line, partnerMood[stageChar]));
@@ -2309,7 +2374,7 @@ function stageShowMine(line){
   const words = line.text.trim().split(/\s+/);
   let n = hideMine ? 1 : words.length;
   const draw = () => {
-    box.innerHTML = `<mark>${esc(words.slice(0, n).join(' '))}${n < words.length ? ' …' : ''}</mark>` + (n < words.length ? '<span class="tap">נגיעה לרמז, מילה אחרי מילה</span>' : '');
+    box.innerHTML = `<mark>${words.map((w, i) => i < n ? esc(w) : `<span class="fl">${esc(firstOf(w))}<span class="r">${esc(w.slice(firstOf(w).length))}</span></span>`).join(' ')}</mark>` + (n < words.length ? '<span class="tap">נגיעה מגלה מילה</span>' : '');
   };
   box.onclick = () => { if(n < words.length){ n++; draw(); } };
   fitLine(box, line.text);
@@ -2325,8 +2390,7 @@ function faceImg(name, mood, mouth){
   const k = name + '|' + mood + '|' + mouth;
   if(!faceImgs[k]){
     const img = new Image();
-    const calm = !['happy', 'angry', 'sad', 'surprised'].includes(mood);
-    img.src = portraitSrc(name, mouth !== 'rest' && calm && (+mouth % 2 === 1) ? 'talk' : mood);
+    img.src = portraitSrc(name, talkMood(mood, mouth !== 'rest' && (+mouth % 2 === 1)));
     faceImgs[k] = img;
   }
   return faceImgs[k];
@@ -2469,7 +2533,7 @@ function addLineToFeed(line, isMine){
     const words = line.text.trim().split(/\s+/);
     if(hideMine && words.length > 1){
       div.classList.add('hidden');
-      txt = `<mark>${esc(words[0])} ${words.slice(1).map(w => `<span class="hw">${esc(w)}</span>`).join(' ')}</mark><span class="reveal">נגיעה לרמז, מילה אחרי מילה</span>`;
+      txt = `<mark>${esc(words[0])} ${words.slice(1).map(w => `<span class="hw">${esc(firstOf(w))}<span class="r">${esc(w.slice(firstOf(w).length))}</span></span>`).join(' ')}</mark><span class="reveal">נגיעה מגלה מילה</span>`;
       div.onclick = () => {
         const next = div.querySelector('.hw:not(.shown)');
         if(next) next.classList.add('shown');
@@ -2655,7 +2719,9 @@ function finishScene(){
   countUp(document.getElementById('stLines'), runLines.filter(l => l.character === myCharacter).length);
   countUp(document.getElementById('stTime'), secs, v => Math.floor(v/60) + ':' + String(v%60).padStart(2,'0'));
   if(st > before) setTimeout(() => toast(st === 1 ? 'יום חזרות ראשון. ככה מתחילים!' : st + ' ימי חזרות ברצף!', '🎟️'), 900);
-  document.getElementById('doneLine').textContent = st > 1 ? 'סיימת את הסצנה. ' + st + ' ימים ברצף, ככה בונים תפקיד!' : 'סיימת את הסצנה. עוד טייק?';
+  const an = audDays(sceneTitle);
+  document.getElementById('doneLine').textContent = an !== null ? (an === 0 ? 'מוכן לאודישן. תנשום, תיהנה, ותזכור מה הדמות רוצה. בהצלחה!' : 'עוד ' + (an === 1 ? 'יום אחד' : an + ' ימים') + ' לאודישן, וכבר ' + take + ' טייקים. ממשיכים ככה!')
+    : st > 1 ? 'סיימת את הסצנה. ' + st + ' ימים ברצף, ככה בונים תפקיד!' : 'סיימת את הסצנה. עוד טייק?';
   setTimeout(confetti, 150);
   stopRecording().then(blob => { closeMic(); showTape(blob, take); });
   allowScreenOff();
@@ -2664,12 +2730,110 @@ function finishScene(){
   show('done');
 }
 
+/* ---- audition countdown ---- */
+function audDays(title){
+  const v = lsGet('sp_aud_' + title); if(!v) return null;
+  const d = new Date(v + 'T00:00'), t = new Date(); t.setHours(0, 0, 0, 0);
+  const n = Math.round((d - t) / 864e5);
+  return n >= 0 ? n : null;
+}
+function audText(n){ return n === 0 ? 'האודישן היום!' : n === 1 ? 'האודישן מחר' : 'האודישן בעוד ' + n + ' ימים'; }
+function audBadge(title){ const n = audDays(title); return n === null ? '' : `<span class="aud ${n === 0 ? 'today' : ''}">🎬 ${n === 0 ? 'היום!' : n === 1 ? 'מחר' : 'עוד ' + n + ' ימים'}</span>`; }
+function nextAudition(){
+  let best = null;
+  myScenes().forEach(sc => { const n = audDays(sc.title); if(n !== null && (!best || n < best.n)) best = {n, title: sc.title}; });
+  return best;
+}
+function renderAud(){
+  const n = audDays(sceneTitle), btn = document.getElementById('audBtn');
+  const takes = parseInt(lsGet('sp_takes_' + sceneTitle) || '0', 10) || 0;
+  btn.classList.toggle('set', n !== null);
+  document.getElementById('audClr').hidden = n === null;
+  document.getElementById('audTitle').textContent = n === null ? 'יש לך אודישן?' : audText(n);
+  document.getElementById('audSub').textContent = n === null ? 'מוסיפים תאריך, ואני סופרת איתך לאחור'
+    : n === 0 ? 'טייק אחד רגוע לחימום, ולא יותר. אתה מוכן.' : (takes ? takes + ' טייקים עד עכשיו. ' : '') + 'כדאי 2–3 טייקים ביום עד אז.';
+  document.getElementById('audDate').value = lsGet('sp_aud_' + sceneTitle) || '';
+}
+document.getElementById('audDate').onchange = e => {
+  if(e.target.value){
+    lsSet('sp_aud_' + sceneTitle, e.target.value);
+    if(!myScenes().some(x => x.title === sceneTitle)) saveMyScene(sceneTitle, toCleanScript(parsedLines));
+    const n = audDays(sceneTitle);
+    SFX.on(); toast(n === null ? 'התאריך כבר עבר' : audText(n) + '. בהצלחה!', '🎬');
+  }
+  renderAud(); renderMyScenes();
+};
+document.getElementById('audClr').onclick = e => { e.stopPropagation(); try{ localStorage.removeItem('sp_aud_' + sceneTitle); }catch(_){} renderAud(); renderMyScenes(); };
+
+/* ---- one-minute warm-up ---- */
+const WARM = [
+  {s:'נשימה', breath:true},
+  {s:'דיקציה', t:'שרה שרה שיר שמח, שיר שמח שרה שרה', h:'3 פעמים, כל פעם קצת יותר מהר. בלי לבלוע הברות.'},
+  {s:'דיקציה', t:'גנן גידל דגן בגן, דגן גדול גדל בגן', h:'מגזימים עם השפתיים והלשון. ככה הפה מתעורר.'},
+  {s:'קול', t:'מממממ… מנמוך לגבוה', h:'מזמזמים עם שפתיים סגורות, 10 שניות. מרגישים רטט בשפתיים ובאף.'},
+  {s:'הדמות', t:'מה הדמות שלך רוצה בסצנה?', h:'אומרים את זה בקול, במשפט אחד, בגוף ראשון: "אני רוצה ש…". זה מה שמוביל כל שורה.'}
+];
+let warmTimer = null;
+function openWarm(){
+  const dlg = document.getElementById('warmDlg'), card = document.getElementById('warmCard');
+  let i = 0;
+  const close = () => { clearTimeout(warmTimer); dlg.hidden = true; };
+  const draw = () => {
+    clearTimeout(warmTimer);
+    const w = WARM[i], last = i === WARM.length - 1;
+    card.innerHTML = `<div class="step">${i + 1} / ${WARM.length} · ${w.s}</div>
+      ${w.breath ? `<div class="breath" id="breath">מוכנים?</div><p>שואפים 4 שניות, נושפים 6. שלוש פעמים, לאט.</p>` : `<div class="big">${esc(w.t)}</div><p>${esc(w.h)}</p>`}
+      <div class="row2"><button type="button" class="primary" id="warmNext">${last ? 'אני מוכן! 🎬' : 'הבא'}</button></div>
+      <button type="button" class="skip" id="warmSkip">סגור</button>`;
+    card.querySelector('#warmNext').onclick = () => { SFX.tap(); if(last){ close(); confetti(); toast('מחומם ומוכן לעלות', '🔥'); } else { i++; draw(); } };
+    card.querySelector('#warmSkip').onclick = close;
+    if(w.breath){
+      const b = card.querySelector('#breath'); let k = 0;
+      const cycle = () => {
+        if(k >= 6){ b.textContent = '👍'; b.className = 'breath'; return; }
+        const inhale = k % 2 === 0; k++;
+        b.className = 'breath ' + (inhale ? 'in' : 'out'); b.textContent = inhale ? 'שואפים' : 'נושפים';
+        warmTimer = setTimeout(cycle, inhale ? 4000 : 6000);
+      };
+      warmTimer = setTimeout(cycle, 600);
+    }
+  };
+  draw(); dlg.hidden = false;
+}
+document.getElementById('warmBtn').onclick = () => { SFX.tap(); openWarm(); };
+
+/* ---- get every partner line ready on the device, for practice without internet ---- */
+function renderDl(){
+  const b = document.getElementById('dlBtn');
+  b.hidden = !elOn();
+  if(b.dataset.busy) return;
+  const done = !!myCharacter && lsGet('sp_dl_' + sceneTitle + '|' + myCharacter) === '1';
+  b.classList.toggle('done', done);
+  document.getElementById('dlTitle').textContent = done ? 'הקולות מוכנים במכשיר' : 'להכין את הקולות מראש';
+  document.getElementById('dlSub').textContent = done ? 'אפשר לתרגל את הסצנה הזו גם בלי אינטרנט' : 'ואז אפשר לתרגל גם בלי אינטרנט, למשל בדרך לאודישן';
+}
+document.getElementById('dlBtn').onclick = async () => {
+  if(!myCharacter){ toast('קודם בוחרים את מי אתה משחק', '👆'); return; }
+  const b = document.getElementById('dlBtn'); if(b.dataset.busy) return; b.dataset.busy = '1';
+  const lines = parsedLines.filter(l => l.character !== myCharacter);
+  let ok = 0;
+  for(const l of lines){
+    document.getElementById('dlTitle').textContent = 'מכין קולות… ' + ok + ' / ' + lines.length;
+    try{ await elGet(spokenOf(l), elVoiceOf(l.character), emoTag(l.dir)); ok++; }
+    catch(e){ toast(elErrorText(e), '⚠️'); break; }
+  }
+  delete b.dataset.busy;
+  if(ok === lines.length){ lsSet('sp_dl_' + sceneTitle + '|' + myCharacter, '1'); SFX.win(); toast('כל הקולות שמורים במכשיר', '✅'); }
+  renderDl();
+};
+
 document.getElementById('exitBtn').onclick = () => {
   stopEverything();
   show('roles');
 };
 document.getElementById('againBtn').onclick = () => { setupRehearsal(); show('rehearse'); };
 document.getElementById('newSceneBtn').onclick = () => { show('input'); };
+if('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(()=>{});
 </script>
 </body>
 </html>
