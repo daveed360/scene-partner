@@ -423,6 +423,21 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 .cd.snap .clap .top{transform:rotate(0)}
 .cd{display:flex;align-items:center;justify-content:center}
 
+/* pronunciation fix */
+.sayfix{display:inline-flex;align-items:center;gap:4px;margin-top:8px;padding:4px 10px;border-radius:10px;border:1.5px solid #E3DED3;background:transparent;color:#6E7177;font-size:13px;font-family:var(--sans);font-weight:600;cursor:pointer}
+.stage .sayfix{display:flex;margin:10px auto 0;border-color:rgba(255,255,255,.2);color:var(--on-stage-dim)}
+.saycard{text-align:right}
+.saycard h3{text-align:center}
+.sayhelp{font-size:15px!important;margin-bottom:12px!important}
+.sayorig{background:#F4F0E6;border-radius:12px;padding:10px 12px;font-family:var(--serif);font-size:17px;margin-bottom:10px}
+#sayText{min-height:90px;font-size:19px}
+.sayrow{display:flex;gap:8px;margin-top:10px}
+.sayrow .secondary-btn{color:var(--ink);border-color:#E3DED3;min-height:44px;font-size:14px}
+.sayrow .secondary-btn:disabled{opacity:.5}
+.niq{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.niq[hidden]{display:none}
+.niq button{padding:6px 9px;border-radius:10px;border:1.5px solid #E3DED3;background:#fff;color:var(--ink);font-size:14px;cursor:pointer}
+
 /* first-run intro */
 .intro{position:fixed;inset:0;z-index:40;background:rgba(18,12,23,.92);display:flex;align-items:center;justify-content:center;padding:20px}
 .intro[hidden]{display:none}
@@ -577,6 +592,16 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 </svg>
 <span id="countNum"></span></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="intro" id="sayDlg" hidden role="dialog" aria-modal="true" aria-label="תיקון הגייה"><div class="card saycard">
+<h3>איך להגיד את זה?</h3>
+<p class="sayhelp">כתוב את המשפט כמו שהוא צריך להישמע. אפשר להוסיף ניקוד במילה הבעייתית (שָׁם במקום שם, אֵלַיִךְ במקום אלייך), או לכתוב אותה כמו שהיא נשמעת. מה שמופיע על המסך לא משתנה.</p>
+<div class="sayorig"><b id="sayWho"></b>: <span id="sayOrig"></span></div>
+<textarea id="sayText" dir="rtl" rows="3"></textarea>
+<div class="sayrow"><button type="button" class="secondary-btn" id="sayNiq">ניקוד</button><button type="button" class="secondary-btn" id="sayPlay">▶ השמע</button><button type="button" class="secondary-btn" id="sayReset">איפוס</button></div>
+<div class="niq" id="niqRow" hidden></div>
+<button type="button" class="primary" id="saySave">שמור</button>
+<button type="button" class="skip" id="sayClose">ביטול</button>
+</div></div>
 <div class="intro" id="intro" hidden role="dialog" aria-modal="true" aria-label="ברוכים הבאים"><div class="card"><div class="slide"></div><div class="dots"></div><button type="button" class="primary" id="introNext" style="margin-top:0">הבא</button><button type="button" class="skip" id="introSkip">דלג</button></div></div>
 
 <script>
@@ -673,6 +698,7 @@ function figureSVG(name, ink, opts){
     surprised:['M35 34.5 Q40.5 30.5 46 33.5', 'M54 33.5 Q59.5 30.5 65 34.5'],
     sad:      ['M35 39 Q41 37 46 34.8', 'M54 34.8 Q59 37 65 39'],
     angry:    ['M35 35 Q41 36.5 46 39.6', 'M54 39.6 Q59 36.5 65 35'],
+    curious:  ['M35 38 Q40.5 37 46 38', 'M54 35 Q59.5 31.8 65 34.6'],
   }[mood] || ['M35 38 Q40.5 36.8 46 37.8', 'M54 37.8 Q59.5 36.8 65 38'];
   const lip = '#7A3328';
   const mouthRest = {
@@ -682,6 +708,7 @@ function figureSVG(name, ink, opts){
     surprised:`<ellipse cx="50" cy="61.5" rx="3.4" ry="4" fill="${lip}"/>`,
     sad:      `<path d="M45 63 Q50 59 55 63" stroke="${lip}" stroke-width="2.3" fill="none" stroke-linecap="round"/>`,
     angry:    `<path d="M45 62 Q50 59.8 55 62" stroke="${lip}" stroke-width="2.7" fill="none" stroke-linecap="round"/>`,
+    curious:  `<path d="M45.5 61.6 Q49 61 54.5 60.4" stroke="${lip}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`,
   }[mood];
   const VIS = [
     `<path d="M45.2 59.6 Q50 58.4 54.8 59.6 Q55.4 64.6 50 65.4 Q44.6 64.6 45.2 59.6 Z" fill="${lip}"/><path d="M46.6 63.4 Q50 65.2 53.4 63.4" fill="#E9897A"/>`,   // ah
@@ -731,6 +758,28 @@ function figureSVG(name, ink, opts){
         <g class="mouth">${mouth}</g>
       </g>
     </g></svg>`;
+}
+const MOOD_WORDS = {
+  angry:    /(^|\s)(די|תפסיק|תפסיקי|שתוק|שתקי|שקרן|שקרנית|מטומטם|מטומטמת|אידיוט|עזוב|עזבי|נמאס|דפוק|דפוקה|אל תעז|אל תעזי|איך יכולת|איך יכולת|אני שונא|אני שונאת|לך מפה|לכי מפה|צא מפה|צאי מפה|מה הבעיה שלך)(?=$|[\s!?.,])/,
+  sad:      /(סליחה|מצטער|מצטערת|מתגעגע|מתגעגעת|עצוב|עצובה|כואב לי|בוכה|נפרדנו|נפטר|נפטרה|לבד|אין לי כוח|נשבר|נשברתי|פחדתי|מפחד|מפחדת|לא יודע מה לעשות|לא יודעת מה לעשות|חבל|התגעגעתי)/,
+  happy:    /(חחח|תודה|איזה כיף|מדהים|מעולה|אוהב אותך|אוהבת אותך|יש!|הצלחתי|שמח|שמחה|יופי|כל הכבוד|מזל טוב|איזה יופי|סוף סוף)/,
+  surprised:/(באמת\?|מה\?!|וואו|לא יכול להיות|ברצינות\?|אתה רציני|את רצינית|מה אתה אומר|מה את אומרת|\?!|!\?)/,
+};
+function moodOfText(text){
+  const t = ' ' + (text || '') + ' ';
+  for(const m of ['angry', 'sad', 'surprised', 'happy']) if(MOOD_WORDS[m].test(t)) return m;
+  if((t.match(/!/g) || []).length >= 2 && /(^|\s)(לא|אל)(\s|!)/.test(t)) return 'angry';
+  if(/\?\s*$/.test(t.trim())) return 'curious';
+  return 'neutral';
+}
+function moodOfLine(line){
+  const d = line.dir ? moodOf(line.dir) : 'neutral';
+  return d !== 'neutral' ? d : moodOfText(line.text);
+}
+// how the partner's face reacts while YOU are talking
+function reactionTo(myLine, partnerLast){
+  const m = moodOfLine(myLine);
+  return {angry:'surprised', sad:'sad', happy:'smile', surprised:'surprised', curious:'curious'}[m] || partnerLast || 'neutral';
 }
 // Mood for a line, from its stage direction (בכעס, בוכה, צוחק...)
 function moodOf(dir){
@@ -831,6 +880,73 @@ function hostSays(t){
   b.textContent = t;
   for(const el of [b, document.getElementById('hostAv')]){ el.classList.remove('say'); void el.offsetWidth; el.classList.add('say'); }
 }
+/* ---- Pronunciation fixes. Hebrew without vowels is ambiguous (שם = shem / sham, אליך = elecha / elayich).
+   Any partner line can get a "how to say it" version (with niqqud or spelled the way it sounds). Saved on this device. */
+let sayMap = {}; try{ sayMap = JSON.parse(lsGet('sp_say') || '{}'); }catch(e){}
+// words ending in "you" are written the same for a man and a woman; add vowels by who's being spoken to
+const YOU_WORDS = {
+  'לך':    ['לְךָ', 'לָךְ'],          'שלך':   ['שֶׁלְּךָ', 'שֶׁלָּךְ'],      'אותך':  ['אוֹתְךָ', 'אוֹתָךְ'],
+  'אליך':  ['אֵלֶיךָ', 'אֵלַיִךְ'],     'אלייך': ['אֵלֶיךָ', 'אֵלַיִךְ'],     'עליך':  ['עָלֶיךָ', 'עָלַיִךְ'],
+  'עלייך': ['עָלֶיךָ', 'עָלַיִךְ'],     'איתך':  ['אִתְּךָ', 'אִתָּךְ'],       'אתך':   ['אִתְּךָ', 'אִתָּךְ'],
+  'בשבילך':['בִּשְׁבִילְךָ', 'בִּשְׁבִילֵךְ'], 'אצלך': ['אֶצְלְךָ', 'אֶצְלֵךְ'],   'ממך':   ['מִמְּךָ', 'מִמֵּךְ'],
+  'בך':    ['בְּךָ', 'בָּךְ'],          'אחריך': ['אַחֲרֶיךָ', 'אַחֲרַיִךְ'],   'לפניך': ['לְפָנֶיךָ', 'לְפָנַיִךְ'],
+  'כמוך':  ['כָּמוֹךָ', 'כָּמוֹךְ'],     'עליך.': null,
+};
+function addresseeOf(line){
+  const i = runLines.indexOf(line);
+  const prev = i > 0 ? runLines[i-1] : null, next = runLines[i+1];
+  if(prev && prev.character !== line.character) return prev.character;
+  if(next && next.character !== line.character) return next.character;
+  return myCharacter;
+}
+function genderYou(text, addressee){
+  const fem = guessGender(addressee) === 'female' ? 1 : 0;
+  let first = true;
+  return text.replace(/(^|[\s"'(])([ושה]?)([א-ת]+)(?=$|[\s.,!?;:"')…-])/g, (m, pre, pfx, word, off) => {
+    const wasFirst = first || /[.!?]\s*$/.test(text.slice(0, off));
+    first = false;
+    const forms = YOU_WORDS[word];
+    if(!forms) return m;
+    if(word === 'לך' && !pfx && wasFirst) return m;          // "לך הביתה!" = go home, not "to you"
+    return pre + pfx + forms[fem];
+  });
+}
+function spokenOf(line){ return sayMap[line.text] || genderYou(line.text, addresseeOf(line)); }
+function openSayEditor(line){
+  const dlg = document.getElementById('sayDlg'), ta = document.getElementById('sayText');
+  document.getElementById('sayWho').textContent = line.character;
+  document.getElementById('sayOrig').textContent = line.text;
+  ta.value = spokenOf(line);
+  dlg.hidden = false; setTimeout(() => ta.focus(), 50);
+  const play = async () => {
+    const txt = ta.value.trim(); if(!txt) return;
+    const b = document.getElementById('sayPlay'); b.disabled = true;
+    try{
+      if(elOn()){ const blob = await elGet(txt, elVoiceOf(line.character), emoTag(line.dir)); player.src = URL.createObjectURL(blob); player.playbackRate = speechRate; await player.play(); }
+      else { const u = new SpeechSynthesisUtterance(txt); u.lang = 'he-IL'; speechSynthesis.cancel(); speechSynthesis.speak(u); }
+    }catch(e){ toast('לא הצלחתי להשמיע: ' + elErrorText(e), '⚠️'); }
+    b.disabled = false;
+  };
+  document.getElementById('sayPlay').onclick = play;
+  document.getElementById('sayNiq').onclick = () => {
+    // insert a vowel mark after the cursor's letter
+    const marks = {'קמץ (אָ)':'ָ','פתח (אַ)':'ַ','סגול (אֶ)':'ֶ','צירה (אֵ)':'ֵ','חיריק (אִ)':'ִ','חולם (אֹ)':'ֹ','שורוק (אוּ)':'ּ','שווא (אְ)':'ְ','שי"ן ימנית (שׁ)':'ׁ','שי"ן שמאלית (שׂ)':'ׂ'};
+    const box = document.getElementById('niqRow');
+    box.hidden = !box.hidden;
+    if(!box.innerHTML) box.innerHTML = Object.entries(marks).map(([k, m]) => `<button type="button" data-m="${m}">${k}</button>`).join('');
+    box.onclick = e => { const m = e.target.dataset && e.target.dataset.m; if(!m) return; const p = ta.selectionStart || 0; ta.value = ta.value.slice(0, p) + m + ta.value.slice(p); ta.focus(); ta.selectionStart = ta.selectionEnd = p + 1; };
+  };
+  document.getElementById('saySave').onclick = () => {
+    const txt = ta.value.trim();
+    if(!txt || txt === line.text) delete sayMap[line.text]; else sayMap[line.text] = txt;
+    lsSet('sp_say', JSON.stringify(sayMap));
+    dlg.hidden = true; document.getElementById('niqRow').hidden = true;
+    toast('נשמר. מעכשיו זה יישמע ככה', '✅');
+  };
+  document.getElementById('sayReset').onclick = () => { ta.value = line.text; };
+  document.getElementById('sayClose').onclick = () => { dlg.hidden = true; document.getElementById('niqRow').hidden = true; };
+}
+
 /* ---- Feel: little sounds and buzzes (made on the fly, no files), toasts, first-run intro ---- */
 let soundOn = lsGet('sp_sound') !== '0';
 let sfxCtx = null;
@@ -913,6 +1029,7 @@ const INTRO = [
   {t: 'היי, אני מאיה', p: 'אני הבמאית שלך. אני משחקת את כל הדמויות בסצנה, ואתה את שלך.', mood: 'happy'},
   {t: 'מביאים סצנה', p: 'מעלים קובץ Word או PDF, מדביקים טקסט מאתר, או בוחרים סצנה מוכנה. אני מסדרת את הכול.', mood: 'smile'},
   {t: 'מדברים, וזה ממשיך', p: 'אני מקשיבה לך. כשתסיים משפט ותשתוק רגע, הדמות הבאה עונה לבד. אפשר גם לצלם self-tape.', mood: 'surprised'},
+  {t: 'טיפ אחד חשוב', p: 'תתאמן במקום שקט, והטלפון קרוב אליך. רעש ברקע (טלוויזיה, מזגן, אנשים מדברים) מבלבל אותי ואני עלולה לחשוב שעוד לא סיימת.', mood: 'smile'},
 ];
 function showIntro(){
   const box = document.getElementById('intro');
@@ -1318,7 +1435,7 @@ function renderRoles(){
       card.classList.add('chosen');
       myCharacter = name;
       SFX.select(); buzz(15);
-      hostSays('מעולה, אתה ' + name + '. את השאר אני לוקחת.');
+      hostSays('מעולה, אתה ' + name + '. את השאר אני לוקחת. ואם אפשר, מקום שקט, כדי שאשמע אותך טוב.');
     };
     card.onclick = choose;
     card.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); choose(); } };
@@ -1480,7 +1597,7 @@ function elPrefetchFrom(idx){
   let n = 0;
   for(let i = idx; i < runLines.length && n < 2; i++){
     const l = runLines[i];
-    if(l.character !== myCharacter){ elGet(l.text, elVoiceOf(l.character), emoTag(l.dir)).catch(()=>{}); n++; }
+    if(l.character !== myCharacter){ elGet(spokenOf(l), elVoiceOf(l.character), emoTag(l.dir)).catch(()=>{}); n++; }
   }
 }
 
@@ -1669,6 +1786,7 @@ function speakBrowser(text, character, cb){
 /* ---- Voice input: detect when you start and stop talking by mic volume ----
    No speech recognition, so no "beep" each time and works the same in any language.
    The mic is opened once per scene and kept open. */
+let noiseWarned = false;
 let micAvailable = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
 let micStream = null, audioCtx = null, analyser = null, levelBuf = null;
 let recog = null; // current listener for this turn
@@ -1725,7 +1843,7 @@ function listenForLine(expectedLine, onDone, onLevel){
     if(finished) return;
     const lvl = micLevel();
     // First ~300ms: measure the room's background noise
-    if(calibN < 6){ calib += lvl; calibN++; floor = calib/calibN; return; }
+    if(calibN < 6){ calib += lvl; calibN++; floor = calib/calibN; if(calibN === 6 && floor > 0.025 && !noiseWarned){ noiseWarned = true; toast('יש רעש ברקע. במקום שקט אשמע אותך הרבה יותר טוב', '🤫'); } return; }
     const threshold = Math.max(0.018, floor * 2.5);
     if(onLevel) onLevel(Math.min(1, lvl / (threshold*3)), lvl > threshold);
     if(lvl > threshold){
@@ -1821,11 +1939,12 @@ function setupRehearsal(){
   notice.style.display = 'block';
   document.getElementById('minorCtl').hidden = true;
   paused = false;
+  noiseWarned = false;
   notice.textContent = (elOn()
       ? 'קול: ElevenLabs (טבעי). '
       : 'קול: הקול המובנה של הטלפון, כי אין מפתח ElevenLabs שמור בדפדפן הזה. ')
     + (micAvailable
-      ? 'כשתסיים משפט ותשתוק רגע, הסצנה ממשיכה לבד.'
+      ? 'כשתסיים משפט ותשתוק רגע, הסצנה ממשיכה לבד. הכי טוב במקום שקט.'
       : 'בתור שלך לחץ "סיימתי — הבא".');
   if(!elOn()) notice.classList.add('bad');
   setStatus('מוכן להתחיל', false);
@@ -1928,7 +2047,7 @@ function fitLine(box, text){
 }
 function stageShowPartner(line, still){
   const st = document.getElementById('stage');
-  const mood = moodOf(line.dir);
+  const mood = moodOfLine(line);
   partnerMood[line.character] = mood;
   setStageFace(line.character, mood);
   st.classList.remove('listening');
@@ -1936,13 +2055,15 @@ function stageShowPartner(line, still){
   document.getElementById('stageWho').textContent = line.character;
   const box = document.getElementById('stageLine');
   box.onclick = null;
-  box.innerHTML = esc(line.text) + (line.dir ? `<span class="tap">(${esc(line.dir)})</span>` : '');
+  box.innerHTML = esc(line.text) + (line.dir ? `<span class="tap">(${esc(line.dir)})</span>` : '') + `<button type="button" class="sayfix">🗣️ תיקון הגייה</button>`;
+  box.querySelector('.sayfix').onclick = e => { e.stopPropagation(); openSayEditor(line); };
   fitLine(box, line.text);
   box.scrollTop = 0;
   tapeCaption = {who: line.character, text: line.text};
 }
 function stageShowMine(line){
   const st = document.getElementById('stage');
+  if(stageChar) setStageFace(stageChar, reactionTo(line, partnerMood[stageChar]));
   st.classList.remove('talking'); st.classList.add('listening'); lipSync(false);
   document.getElementById('stageWho').textContent = 'התור שלך';
   const box = document.getElementById('stageLine');
@@ -2110,8 +2231,10 @@ function addLineToFeed(line, isMine){
     }
   }
   const dir = line.dir ? `<span class="dir">(${esc(line.dir)})</span>` : '';
-  const lineMood = isMine ? 'neutral' : moodOf(line.dir);
-  div.innerHTML = `<span class="av" style="--ink-c:${ink}">${figureSVG(line.character, ink, {mood: lineMood})}</span><div class="body"><span class="who">${esc(line.character)}</span><span class="txt">${txt}</span>${dir}</div>`;
+  const lineMood = moodOfLine(line);
+  const fix = isMine ? '' : `<button type="button" class="sayfix" aria-label="תיקון הגייה">🗣️ תיקון הגייה</button>`;
+  div.innerHTML = `<span class="av" style="--ink-c:${ink}">${figureSVG(line.character, ink, {mood: lineMood})}</span><div class="body"><span class="who">${esc(line.character)}</span><span class="txt">${txt}</span>${dir}${fix}</div>`;
+  if(!isMine) div.querySelector('.sayfix').onclick = e => { e.stopPropagation(); openSayEditor(line); };
   feed.appendChild(div);
   // Scroll only the script box, not the whole page (scrollIntoView jumps the page on phones)
   feed.scrollTo({top: feed.scrollHeight, behavior:'smooth'});
@@ -2241,7 +2364,7 @@ function advance(myRun){
     speakDir = line.dir || '';
     stageShowPartner(line);
     isPartnerTalking = true;
-    speak(line.text, line.character, () => {
+    speak(spokenOf(line), line.character, () => {
       document.getElementById('stage').classList.remove('talking');
       lipSync(false);
       isPartnerTalking = false;
