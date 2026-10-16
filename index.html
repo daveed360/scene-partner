@@ -938,7 +938,11 @@ function applyWords(text){
     return w;
   });
 }
-function spokenOf(line){ return sayMap[line.text] || applyWords(genderYou(line.text, addresseeOf(line))); }
+function spokenOf(line){
+  // an old whole-sentence fix (with vowel marks) no longer overrides: names and words fixes always apply
+  const base = sayMap[line.text] ? sayMap[line.text].replace(/[\u0591-\u05C7]/g, '') : line.text;
+  return applyWords(genderYou(base, addresseeOf(line)));
+}
 function openSayEditor(line){
   const dlg = document.getElementById('sayDlg');
   const words = [...new Set((line.text.match(/[א-ת'׳]+/g) || []).filter(w => w.length > 1))];
