@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#241B2E">
-<script>try{if(localStorage.getItem('sp_clean')==='1'||/[?&]clean\b/.test(location.search))document.querySelector('meta[name=theme-color]').content='#F4EEDF'}catch(e){}</script>
+
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-title" content="Audition Partner">
@@ -12,12 +12,17 @@
 <meta name="mobile-web-app-capable" content="yes">
 <title>Audition Partner</title>
 <script>
-// clean version: ?clean turns it on (remembered on this device), ?full turns it off
-try{ const q = location.search;
-  if(/[?&]clean\b/.test(q)) localStorage.setItem('sp_clean', '1');
-  if(/[?&]full\b/.test(q)) localStorage.removeItem('sp_clean');
-  if(localStorage.getItem('sp_clean') === '1') document.documentElement.classList.add('clean');
-}catch(e){}
+// the script-page design is the app. ?full opens the old illustrated version (remembered), ?clean returns. ?pro unlocks the full plan on this device.
+try{ const q = location.search, L = localStorage;
+  if(/[?&]full\b/.test(q)) L.setItem('sp_full', '1');
+  if(/[?&]clean\b/.test(q)) L.removeItem('sp_full');
+  if(/[?&]pro\b/.test(q)) L.setItem('sp_pro', '1');
+  if(L.getItem('sp_full') !== '1'){
+    document.documentElement.classList.add('clean');
+    const t = L.getItem('sp_theme');
+    if(t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) document.documentElement.classList.add('dark');
+  }
+}catch(e){ document.documentElement.classList.add('clean'); }
 </script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Assistant:wght@400;500;600;700&family=Rubik:wght@500;600;700;800&family=David+Libre:wght@400;500;700&family=Amatic+SC:wght@700&display=swap');
@@ -592,7 +597,7 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 .moretoggle,.vswitch.tofull{display:none}
 .vswitch.toclean{display:block;text-align:center;margin:24px 0 0;font-size:14px}
 .vswitch.toclean a{color:var(--on-stage-dim)}
-html.clean{--paper:#F4EEDF;--sheet:#FFFDF7;--ink:#1F1D1A;--pencil:#6E675B;--rule:#E6DDCB;--hl:rgba(255,226,64,.75);--pen:#2B4FA8;--red:#C2362C;
+html.clean{--paper:#F8F6F0;--sheet:#FFFFFF;--ink:#1F1D1A;--pencil:#6E675B;--rule:#E6E0D3;--hl:rgba(255,226,64,.75);--pen:#2B4FA8;--red:#C2362C;--lines:#DCE6F3;--margin:#F0A8A0;--shadow:rgba(60,45,20,.35);
   --typed:'David Libre','Frank Ruhl Libre',serif;--hand:'Amatic SC',cursive;background:var(--paper)}
 html.clean .vswitch.toclean{display:none}
 html.clean body{background:var(--paper);color:var(--ink)}
@@ -605,7 +610,7 @@ html.clean .wrap{padding-top:calc(16px + env(safe-area-inset-top))}
 html.clean header{margin-bottom:6px}
 html.clean .brand{justify-content:flex-start;direction:rtl;gap:8px}
 html.clean .logo{display:block!important;width:30px;height:30px;filter:none}
-html.clean .lockup{flex-direction:row;align-items:baseline;gap:10px;direction:ltr}
+html.clean .lockup{flex-direction:row;align-items:baseline;gap:10px;direction:ltr;white-space:nowrap}
 html.clean header h1{font-family:var(--typed);font-size:22px;font-weight:700;letter-spacing:0;color:var(--ink)}
 html.clean header h1 br{display:none}
 html.clean .lockup .sub{font-family:var(--hand);font-size:22px;color:var(--red);margin:0;letter-spacing:0}
@@ -684,8 +689,69 @@ html.clean .toast{background:var(--ink);color:#FFF8E6;border-bottom:0}
 html.clean .intro .card{background:var(--sheet);border-radius:6px}
 html.clean .vswitch{display:block;text-align:center;margin:28px 0 0;font-size:14px}
 html.clean .vswitch a{color:var(--pencil)}
+/* dark: a black notebook, chalk-white text, the same highlighter */
+html.clean.dark{--paper:#0E0E0F;--sheet:#18181A;--ink:#ECE9E2;--pencil:#9C968B;--rule:#2A2A2D;--hl:rgba(255,214,0,.32);--pen:#8FB0FF;--red:#FF7A6E;--lines:#232529;--margin:#5A2D2B;--shadow:rgba(0,0,0,.6)}
+html.clean.dark button.primary{background:#ECE9E2;color:#111}
+html.clean.dark .pace button[aria-pressed=true]{background:#ECE9E2;color:#111}
+html.clean.dark .scene::after{background:linear-gradient(45deg,transparent 50%,#2A2A2D 50%)}
+html.clean.dark textarea{box-shadow:none}
+html.clean.dark .prepv{background:#0E0E0F;color:#ECE9E2}
+html.clean.dark .prepv .pbar i{background:#ECE9E2}
+html.clean.dark .toast{background:#ECE9E2;color:#111}
+/* the script page is a ruled notebook sheet with a red margin */
+html.clean .feed{background-color:var(--sheet);background-image:linear-gradient(to left,transparent 18px,var(--margin) 18px,var(--margin) 19.5px,transparent 19.5px),repeating-linear-gradient(transparent 0 33px,var(--lines) 33px 34px);background-attachment:local;padding-right:30px}
+html.clean textarea{background-image:linear-gradient(to left,transparent 14px,var(--margin) 14px,var(--margin) 15.5px,transparent 15.5px),linear-gradient(transparent calc(1.7em - 1px),var(--lines) 0);background-size:100% 100%,100% 1.7em;padding-right:26px}
+/* sticky header that tucks away when you scroll */
+html.clean header{position:sticky;top:0;z-index:20;background:var(--paper);margin:0 -16px 6px;padding:8px 16px 8px;transition:none}
+html.clean header.compact{box-shadow:0 6px 14px -12px var(--shadow)}
+html.clean header.compact .lockup .sub{display:none}
+html.clean header.compact .logo{width:24px;height:24px}
+html.clean .rehearsing header{display:none}
+.themebtn{display:none}
+html.clean .themebtn{display:grid;place-items:center;margin-inline-start:auto;width:38px;height:38px;border-radius:50%;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);font-size:17px;cursor:pointer}
+/* library by level */
+.lib-tabs{display:none}
+html.clean .lib-tabs{display:flex;gap:6px;margin:4px 0 12px}
+.lib-tabs button{flex:1;padding:9px 6px;border-radius:999px;border:1px solid var(--rule);background:transparent;color:var(--ink);font-family:var(--sans);font-weight:700;font-size:15px;cursor:pointer}
+.lib-tabs button[aria-pressed=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+html.clean .scene .meta2{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;margin-top:8px;font-size:13px;color:var(--pencil)}
+html.clean .lvl{font-family:var(--hand);font-size:20px;line-height:1;color:var(--pen)}
+html.clean .lvl.l3{color:var(--red)}
+html.clean .scene.locked .t::after{content:" 🔒";font-size:15px}
+html.clean .scene.locked{opacity:.78}
+/* my scenes / my takes */
+.mytabs{display:none}
+html.clean .mytabs{display:flex;gap:8px;margin:20px 0 10px}
+.mytabs button{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 8px;border-radius:12px;border:1.5px solid var(--rule);background:var(--sheet);color:var(--ink);font-family:var(--sans);font-weight:700;font-size:15px;cursor:pointer}
+.mytabs button[aria-pressed=true]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+html.clean #myBox h2.sec{display:none}
+html.clean #myBox[hidden]{display:block!important}
+.takes{display:grid;gap:10px}
+.take{display:flex;gap:12px;align-items:center;padding:10px;background:var(--sheet);border:1px solid var(--rule);border-radius:6px}
+.take video{width:84px;height:84px;object-fit:cover;border-radius:4px;background:#000;flex-shrink:0}
+.take .ti{flex:1;min-width:0}
+.take .ti b{display:block;font-family:var(--typed);font-size:18px}
+.take .ti small{color:var(--pencil)}
+.take .acts{display:flex;flex-direction:column;gap:6px}
+.take .acts a,.take .acts button{font:inherit;font-size:13px;padding:6px 10px;border-radius:8px;border:1px solid var(--rule);background:transparent;color:var(--ink);text-decoration:none;text-align:center;cursor:pointer}
+.empty{padding:22px 12px;text-align:center;color:var(--pencil);border:1.5px dashed var(--rule);border-radius:8px;font-size:15px;line-height:1.6}
+/* weekly allowance + full plan */
+.quota{display:none}
+html.clean .quota:not([hidden]){display:flex;align-items:center;gap:10px;margin:10px 2px 0;font-size:14px;color:var(--pencil)}
+.quota .bar{flex:1;height:4px;background:var(--rule);border-radius:9px;overflow:hidden}
+.quota .bar i{display:block;height:100%;background:var(--ink)}
+.quota button{border:0;background:none;color:var(--pen);font:inherit;font-weight:700;cursor:pointer;padding:4px}
+.pro .card{text-align:right}
+.pro h3{font-family:'David Libre',serif;font-size:26px;margin:0 0 4px}
+.pro ul{list-style:none;padding:0;margin:14px 0 18px;display:grid;gap:10px}
+.pro li{display:flex;gap:10px;align-items:flex-start;font-size:16px;line-height:1.5}
+.pro li span{font-size:18px}
+.pro .price{font-family:'Amatic SC',cursive;font-size:30px;color:#C2362C;margin:0 0 12px}
+html.clean.dark .intro .card{background:#18181A;color:#ECE9E2}
+html.clean.dark .intro p{color:#B8B2A6}
+
 /* preparing voices */
-.prepv{position:fixed;inset:0;z-index:45;background:#F4EEDF;display:grid;place-items:center;text-align:center;color:#1F1D1A;padding:24px}
+.prepv{position:fixed;inset:0;z-index:45;background:#F8F6F0;display:grid;place-items:center;text-align:center;color:#1F1D1A;padding:24px}
 .prepv[hidden]{display:none}
 .prepv h3{font-family:'David Libre',serif;font-size:26px;font-weight:700;margin:16px 0 14px}
 .prepv .pbar{display:flex;align-items:center;gap:12px;width:min(300px,80vw);margin:0 auto 14px;direction:ltr}
@@ -695,8 +761,8 @@ html.clean .vswitch a{color:var(--pencil)}
 .prepv p{color:#6E675B;font-size:15px;margin:0}
 /* "today's scene" — an index card pinned to the page */
 .daily{display:none}
-html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6px;padding:22px 20px 18px 20px;color:var(--ink);transform:rotate(-.6deg);
-  background:#FFFEFA linear-gradient(transparent 46px,#F0A8A0 46px,#F0A8A0 47.5px,transparent 47.5px),#FFFEFA;
+html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6px;padding:22px 20px 18px 20px;color:#1F1D1A;transform:rotate(-.6deg);
+  background-color:#FFFEFA;
   background-image:linear-gradient(transparent 58px,#EDA49B 58px,#EDA49B 59.5px,transparent 59.5px),repeating-linear-gradient(transparent 0 29px,#D7E2F2 29px 30px);
   background-position:0 0,0 60px;border-radius:2px;box-shadow:0 2px 0 #E4DACA,0 16px 26px -16px rgba(60,45,20,.55)}
 .daily::before{content:"";position:absolute;top:-10px;left:50%;width:84px;height:22px;margin-left:-42px;background:rgba(242,226,170,.75);transform:rotate(2deg)}
@@ -727,6 +793,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
   <circle cx="22" cy="33" r="3.2" fill="#2A1E14"/><circle cx="32" cy="33" r="3.2" fill="#2A1E14"/><circle cx="42" cy="33" r="3.2" fill="#2A1E14"/>
 </svg>
 <div class="lockup"><h1>Audition<br> Partner</h1><span class="sub">שותף לתפקיד</span></div>
+<button type="button" class="themebtn" id="themeBtn" aria-label="מסך כהה או בהיר">🌙</button>
 </div>
 <p class="tagline">מתרגלים סצנה לבד, כאילו יש מולך שחקן. האפליקציה משחקת את כל שאר הדמויות בקול, ומחכה לך בתור שלך.</p>
 <div style="text-align:right"><span class="streak" id="streak" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z" fill="#FFC24B"/><path d="M9 5v12" stroke="#7A4E00" stroke-width="1.6" stroke-dasharray="2 2"/></svg><span id="streakTxt"></span></span></div>
@@ -739,6 +806,13 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <!-- SCREEN 1: CHOOSE A SCENE -->
 <div class="screen active" id="screen-input">
 <div class="daily" id="daily" hidden></div>
+<div class="quota" id="quota" hidden></div>
+<div class="mytabs" role="tablist"><button type="button" id="tabMine" aria-pressed="true">📄 הסצנות שלי</button><button type="button" id="tabTakes" aria-pressed="false">🎬 הטייקים שלי</button></div>
+<div id="myBox" hidden>
+<h2 class="sec">הסצנות שלי</h2>
+<div class="scenes" id="myList"></div>
+</div>
+<div id="takesBox" hidden><div class="takes" id="takesList"></div></div>
 <h2 class="sec">הסצנה שלך</h2>
 <label class="upload" id="uploadBox">
 <input type="file" id="fileInput" accept=".docx,.pdf,.txt,.rtf,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
@@ -751,11 +825,8 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <div id="inputErr" class="err" style="display:none"></div>
 <button class="primary" id="analyzeBtn">המשך לבחירת תפקיד</button>
 
-<div id="myBox" hidden>
-<h2 class="sec">הסצנות שלי</h2>
-<div class="scenes" id="myList"></div>
-</div>
 <h2 class="sec">או סצנה מוכנה לתרגול</h2>
+<div class="lib-tabs" id="libTabs"><button type="button" data-l="1" aria-pressed="true">קל</button><button type="button" data-l="2" aria-pressed="false">בינוני</button><button type="button" data-l="3" aria-pressed="false">מאתגר</button></div>
 <div class="scenes" id="sceneList"></div>
 
 <details class="voicebox" id="voiceBox">
@@ -769,8 +840,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 </div>
 <div class="vstate" id="elState"></div>
 </details>
-<p class="vswitch tofull"><a href="?full">לגרסה המלאה, עם הדמויות</a></p>
-<p class="vswitch toclean"><a href="?clean">לגרסה הנקייה (רק תסריט)</a></p>
+
 </div>
 
 <!-- SCREEN 2: ROLE PICK -->
@@ -882,6 +952,18 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <h3>מכין את הקולות…</h3>
 <div class="pbar"><b id="prepPct">0%</b><span><i id="prepFill"></i></span></div>
 <p>מכין את השורות של הפרטנר, כדי שהסצנה תרוץ בלי עיכובים</p>
+</div></div>
+<div class="intro sheet pro" id="proDlg" hidden role="dialog" aria-modal="true" aria-label="הגרסה המלאה"><div class="card">
+<h3 id="proTitle">הגרסה המלאה</h3>
+<p id="proWhy" style="margin:0">בגרסה החינמית יש 5 חזרות בשבוע והסצנות הקלות.</p>
+<ul>
+<li><span>♾️</span>חזרות בלי הגבלה, כל יום</li>
+<li><span>📚</span>כל ספריית הסצנות, כולל הבינוניות והמאתגרות, וסצנות חדשות כל שבוע</li>
+<li><span>🎬</span>הטייקים נשמרים אצלך באפליקציה</li>
+<li><span>🎙️</span>קולות טבעיים לכל הדמויות</li>
+</ul>
+<button type="button" class="primary" id="proGo">אני רוצה את הגרסה המלאה</button>
+<button type="button" class="skip" id="proClose">לא עכשיו</button>
 </div></div>
 <div class="intro" id="intro" hidden role="dialog" aria-modal="true" aria-label="ברוכים הבאים"><div class="card"><div class="slide"></div><div class="dots"></div><button type="button" class="primary" id="introNext" style="margin-top:0">הבא</button><button type="button" class="skip" id="introSkip">דלג</button></div></div>
 
@@ -1070,7 +1152,185 @@ function moodOf(dir){
 
 /* ---- Ready-made scenes ---- */
 const SCENES = [
- {title:'המפתחות', genre:'קומדיה', blurb:'זוג נעול מחוץ לבית. אחד מהם היה אמור להביא מפתחות.', text:
+ {title:'טסט', genre:'קומדיה', level:1, blurb:'טסט שלישי, בוחן עייף, ותלמידה שבטוחה שהפעם זה שלה.', text:
+`בוחן: תתחילי כשאת מוכנה.
+שני: אני מוכנה. אני מאוד מוכנה. זה הטסט השלישי שלי.
+בוחן: אני יודע. הייתי בשניים הקודמים.
+שני: באמת? לא זיהיתי אותך.
+בוחן: היית עסוקה בלעלות על המדרכה.
+שני: זה היה פעם אחת.
+בוחן: פעמיים.
+שני: בפעם השנייה המדרכה הייתה ממש נמוכה.
+(שתיקה)
+בוחן: מראה.
+שני: מה איתה?
+בוחן: תסתכלי בה.
+שני: אה. כן. אני רואה את עצמי. אני נראית לחוצה?
+בוחן: את נראית כמו מישהי שעוד לא התניעה.
+שני: (מתניעה) הנה. התנעתי. תרשום את זה.
+בוחן: רשמתי.
+שני: מה רשמת? זה היה טוב, לא?
+בוחן: רשמתי שהתנעת.
+שני: אתה תמיד ככה, או רק איתי?
+בוחן: רק בשישי בבוקר. ימינה בכיכר.
+שני: איזה ימינה? הימינה שלי או הימינה שלך?
+בוחן: יש רק ימינה אחת, שני.
+שני: אוקיי. נושמת. ימינה. אני נוסעת ימינה. תראה אותי נוסעת ימינה!
+בוחן: (בשקט) תראי את הכביש.`},
+ {title:'שותפים', genre:'קומדיה', level:1, blurb:'כיור מלא כלים, שני שותפים, ופתק אחד על המקרר שאף אחד לא כתב.', text:
+`עידו: ראית את הפתק על המקרר?
+מאיה: איזה פתק?
+עידו: "מי שמשאיר כלים בכיור, היקום רואה אותו."
+מאיה: יפה. מי כתב?
+עידו: חשבתי שאת.
+מאיה: אני? אני לא כותבת פתקים. אני מדברת.
+עידו: אז את מודה שיש כלים בכיור.
+מאיה: אני מודה שיש כיור.
+עידו: מאיה, יש שם סיר מיום שלישי.
+מאיה: זה סיר במנוחה. הוא משרה.
+עידו: הוא משרה כבר ארבעה ימים. הוא פיתח אישיות.
+מאיה: (צוחקת) טוב, אולי הוא קצת שלי.
+עידו: קצת?
+מאיה: הסיר שלי. הצלחות שלך.
+עידו: אין לי צלחות בכיור.
+מאיה: יש שלוש. ספרתי. בגלל זה כתבתי את הפתק.
+עידו: אז כן כתבת!
+מאיה: אמרתי שאני לא כותבת פתקים. לא אמרתי שאני לא כותבת את הפתק הזה.
+עידו: אני שוטף את שלי, את שוטפת את הסיר. עסקה?
+מאיה: עסקה. ואת הפתק משאירים. שהיקום ימשיך לראות.`},
+ {title:'המכתב', genre:'דרמה', level:2, blurb:'שתי אחיות מפנות ארון, ונופל ממנו מכתב שאבא שלהן לא שלח.', text:
+`נועה: תראי מה נפל מהמדף העליון.
+דנה: עוד קבלה מ־1998?
+נועה: מכתב. בכתב יד של אבא. כתוב עליו "לדנה".
+דנה: (מתקרבת) תני לי לראות.
+נועה: הוא אף פעם לא שלח אותו. יש בול, אבל אין חותמת.
+דנה: מתי זה נכתב?
+נועה: יש תאריך. שבוע אחרי שעזבת לחו"ל.
+(שתיקה)
+דנה: תקראי לי.
+נועה: את בטוחה? זה שלך. אולי את רוצה לבד.
+דנה: אם אקרא לבד אני אתחיל לבכות באמצע ולא אגמור. תקראי.
+נועה: "דנה. אני לא טוב במילים, את יודעת. אמא תמיד דיברה בשבילי."
+דנה: זה נכון. הוא היה שותק שעות.
+נועה: "אמרתי לך בשדה התעופה שאת עושה טעות. זאת הייתה הטעות שלי, לא שלך."
+דנה: (בשקט) הוא אמר את זה ליד כולם. בקול.
+נועה: "אני גאה בך. אני פשוט לא יודע איך אומרים את זה בלי שיישמע כמו פרידה."
+דנה: ולמה הוא לא שלח?
+נועה: אולי חשב שיגיד לך את זה כשתחזרי.
+דנה: חזרתי אחרי שלוש שנים. הוא שאל אותי אם אכלתי.
+נועה: זאת הייתה הדרך שלו להגיד את זה.
+דנה: (צוחקת דרך הדמעות) "אכלת?" זה "אני גאה בך"?
+נועה: אצל אבא? כן. זה כל המכתב הזה, במילה אחת.`},
+ {title:'ראיון עבודה', genre:'דרמה', level:2, blurb:'ראיון שהולך מצוין, עד ששואלים למה עזבת את המקום הקודם.', text:
+`מראיינת: קורות החיים שלך מרשימים. חמש שנים באותה חברה.
+אלון: תודה. למדתי שם המון.
+מראיינת: ולמה עזבת?
+אלון: חיפשתי אתגר חדש.
+מראיינת: כולם אומרים את זה. מה התשובה האמיתית?
+(שתיקה)
+אלון: את רוצה את התשובה האמיתית?
+מראיינת: אני מראיינת שבעה אנשים היום. האמת תעזור לך לבלוט.
+אלון: פיטרו את המנהלת שלי. היא לקחה אשמה על טעות שלי.
+מראיינת: ואתה שתקת.
+אלון: שתקתי שבוע. ואז הלכתי למנכ"ל וסיפרתי. הוא אמר שזה כבר לא משנה.
+מראיינת: ואז התפטרת.
+אלון: לא יכולתי להמשיך לשבת בכיסא שלה, ולהעמיד פנים שזה בסדר.
+מראיינת: זה לא נשמע כמו "אתגר חדש".
+אלון: לא. זה נשמע כמו מישהו שעשה טעות ולא רוצה לעשות אותה שוב.
+מראיינת: יודע מה מדהים? היא ממליצה עליך.
+אלון: מי?
+מראיינת: המנהלת הקודמת שלך. היא עובדת אצלנו כבר חצי שנה. היא זו שהעבירה לי את קורות החיים.
+אלון: (המום) היא... היא לא אמרה לי כלום.
+מראיינת: היא אמרה שתגיד בדיוק את מה שאמרת עכשיו. ושאם תגיד "אתגר חדש", לא לקבל אותך.`},
+ {title:'משמרת לילה', genre:'דרמה', level:2, blurb:'שלוש בלילה במיון. אחות עייפה ובחור שמחכה לשמוע על אבא שלו.', text:
+`תום: סליחה. אני מחכה כבר שלוש שעות. אף אחד לא אומר לי כלום.
+אחות: אתה הבן של יוסף לוי?
+תום: כן. הוא בסדר?
+אחות: הוא יציב. הרופא יבוא לדבר איתך כשיסיים ניתוח אחר.
+תום: "יציב". זה טוב או רע?
+אחות: זה אומר שכרגע אין הפתעות. בשלוש בלילה, זה טוב.
+תום: אני לא מכיר אותו בכלל, את יודעת. לא דיברנו שש שנים.
+אחות: ועדיין באת באמצע הלילה.
+תום: השכנה התקשרה. אמרה שאני הטלפון היחיד שרשום אצלו.
+(שתיקה)
+אחות: אז אתה עדיין הטלפון היחיד שלו.
+תום: לא יודע מה להגיד לו כשהוא יתעורר.
+אחות: אפשר להתחיל ב"שלום". אחרי שש שנים, זה כבר נאום.
+תום: (מחייך חלש) את תמיד ככה מצחיקה בשלוש בלילה?
+אחות: רק כשהקפה עובד. רוצה? הוא נורא, אבל חם.
+תום: כן. תודה.
+אחות: והוא שאל עליך. לפני ההרדמה. שאל אם התקשרו אליך.
+תום: (בשקט) מה אמרת לו?
+אחות: שאתה בדרך. לא ידעתי אם זה נכון. שמחה שזה היה נכון.`},
+ {title:'הבית של סבתא', genre:'דרמה', level:3, blurb:'אח ואחות בבית ריק של סבתא. קונה מגיע מחר, ורק אחד מהם רוצה למכור.', text:
+`רוני: הקונה מגיע מחר בעשר. אני צריך שתחתמי היום.
+הדס: אני לא חותמת.
+רוני: הדס, דיברנו על זה. אף אחד מאיתנו לא יכול להחזיק את הבית הזה.
+הדס: אתה דיברת. אני הקשבתי. זה לא אותו דבר.
+רוני: (בכעס) יש פה רטיבות בכל קיר! הגג דולף! את רוצה לגור פה?
+הדס: אני רוצה שיהיה מקום אחד בעולם שעוד מריח כמוה!
+(שתיקה)
+רוני: זה לא מריח כמוה. זה מריח כמו טחב.
+הדס: תעמוד במטבח. ליד החלון. תגיד לי שאתה לא מריח את הקוגל.
+רוני: הדס...
+הדס: תעמוד שם, רוני!
+רוני: (עומד ליד החלון. שתיקה ארוכה) ...אני מריח.
+הדס: אתה זוכר שהיא הייתה מחביאה לנו סוכריות בקופסת הכפתורים?
+רוני: והיית אוכלת את שלי.
+הדס: כי אתה תמיד הלכת לשחק בחוץ ושכחת. מישהו היה צריך לשמור עליהן.
+רוני: את חושבת שאני לא מתגעגע? אני פשוט לא יכול לבוא לפה כל שבוע ולראות את זה מתפרק.
+הדס: אז אל תבוא כל שבוע. תבוא פעם אחת. איתי. לפני שאתה מוכר.
+רוני: (בשקט) אני אדחה את הקונה בשבוע.
+הדס: שבוע?
+רוני: שבוע. נבשל פה קוגל אחד. אם הבית יחזיק מעמד, נדבר.
+הדס: הוא יחזיק. הוא תמיד החזיק.`},
+ {title:'הודאה', genre:'דרמה', level:3, blurb:'חברים מילדות. אחד מהם בא להודות במשהו שהוא מסתיר כבר שנה.', text:
+`אסף: תודה שבאת. ידעתי שאם אגיד בטלפון, תנתק.
+עמית: נשמע דרמטי. מה קרה? מישהו מת?
+אסף: לא. אבל אתה תרצה שמישהו ימות.
+עמית: (צוחק) אסף, תדבר.
+אסף: ההשקעה בעסק של אחי. שאמרתי לך שהוא פשט רגל ולא נשאר כלום.
+עמית: כן. הפסדתי שם שמונים אלף. אני עדיין משלם.
+אסף: הוא לא פשט רגל. הוא סגר את העסק ופתח אותו מחדש. בשם אחר. וידעתי.
+(שתיקה)
+עמית: ממתי ידעת?
+אסף: מההתחלה.
+עמית: מההתחלה. ישבת איתי בפאב. נתת לי לבכות על זה. שילמת על הבירה.
+אסף: כן.
+עמית: (בכעס) שילמת על הבירה, אסף! עם הכסף שלי?
+אסף: לא. עם הכסף שלי. אני יודע שזה לא משנה.
+עמית: למה אתה מספר לי עכשיו? כי הוא תפס אותך? כי מצפון?
+אסף: כי אני לא מסוגל להסתכל עליך יותר. ובגלל זה. (מניח מעטפה) זה עשרים אלף. אחזיר את השאר עד הקיץ.
+עמית: אני לא רוצה את הכסף שלך.
+אסף: אז מה אתה רוצה?
+עמית: אני רוצה את השנה הזאת בחזרה. את השנה שבה חשבתי שאתה החבר היחיד שלא שיקר לי.
+אסף: את זה אני לא יכול להחזיר.
+עמית: (לוקח את המעטפה. שתיקה) תשאיר את הבירה הבאה עליי.
+אסף: יש בירה הבאה?
+עמית: לא יודע. אבל אם תהיה, אני משלם. ככה לפחות אדע שהכסף נקי.`},
+ {title:'הצעת נישואין', genre:'קומדיה', level:3, blurb:'הכל מוכן: טבעת, נוף, נאום. רק שהיא חושבת שהוא בא להיפרד.', text:
+`יואב: את זוכרת את הספסל הזה?
+ליאת: ברור. פה נפגשנו. למה הבאת אותי לפה, יואב?
+יואב: כי יש לי משהו חשוב להגיד, ורציתי להגיד אותו במקום שבו הכל התחיל.
+ליאת: (נבהלת) לא. לא, לא, לא. אתה עושה את זה פה? במקום שבו הכל התחיל?
+יואב: עושה מה?
+ליאת: נפרד ממני! זה מה שעושים! חוזרים למקום שבו הכל התחיל כדי לסגור מעגל!
+יואב: ליאת, רגע—
+ליאת: ידעתי. כל השבוע אתה מתנהג מוזר. לחשת בטלפון עם אחותי!
+יואב: כי היא עזרה לי לבחור—
+ליאת: מה? מישהי אחרת?
+יואב: טבעת!
+(שתיקה)
+ליאת: ...מה?
+יואב: היא עזרה לי לבחור טבעת. ועכשיו הנאום שלי הלך, כי כתבתי אותו בדיוק לשנייה הזאת והוא התחיל במילים "את זוכרת את הספסל הזה".
+ליאת: (מכסה את הפה) אלוהים. אתה...
+יואב: הייתי. אני. אני עדיין. אם את עדיין רוצה שאני אהיה.
+ליאת: תתחיל מהתחלה.
+יואב: מהתחלה?
+ליאת: מ"את זוכרת את הספסל הזה". והפעם אני אגיד "כן" ואשתוק עד הסוף.
+יואב: (כורע על ברך) את זוכרת את הספסל הזה?
+ליאת: כן. (שתיקה) ...אני שותקת. תמשיך. אני שותקת עכשיו כל כך חזק.`},
+ {title:'המפתחות', level:1, genre:'קומדיה', blurb:'זוג נעול מחוץ לבית. אחד מהם היה אמור להביא מפתחות.', text:
 `יעל: הבאת את המפתחות?
 אורי: איזה מפתחות?
 יעל: אורי. אמרתי לך שלוש פעמים הבוקר.
@@ -1083,7 +1343,7 @@ const SCENES = [
 יעל: זה ממש לא מצחיק.
 אורי: קצת מצחיק.
 יעל: טוב. קצת.`},
- {title:'תחנה אחרונה', genre:'דרמה', blurb:'רציף, עשר דקות לפני רכבת. מישהו מחכה שיבקשו ממנו להישאר.', text:
+ {title:'תחנה אחרונה', level:2, genre:'דרמה', blurb:'רציף, עשר דקות לפני רכבת. מישהו מחכה שיבקשו ממנו להישאר.', text:
 `רונית: הרכבת יוצאת בעוד עשר דקות.
 אבי: אני יודע. ראיתי את הלוח.
 רונית: אז למה אתה עדיין עומד פה?
@@ -1095,7 +1355,7 @@ const SCENES = [
 (שתיקה)
 רונית: תישאר.
 אבי: זה היה דווקא די יפה.`},
- {title:'חדר האודישן', genre:'קומדיה', blurb:'שחקן לחוץ, במאית סבלנית, ומישהו מאחור שכותב כל הזמן.', text:
+ {title:'חדר האודישן', level:1, genre:'קומדיה', blurb:'שחקן לחוץ, במאית סבלנית, ומישהו מאחור שכותב כל הזמן.', text:
 `גלית: שם, ומה הבאת לנו היום?
 נדב: נדב. הבאתי מונולוג, אבל אני קצת לחוץ.
 גלית: כולם לחוצים. זה סימן שאכפת לך.
@@ -1107,7 +1367,7 @@ const SCENES = [
 גלית: נדב, תנשום. אף אחד פה לא נגדך.
 נדב: גם לא האיש מאחור שכותב כל הזמן?
 גלית: הוא עושה רשימת קניות.`},
- {title:'ארוחת שישי', genre:'משפחה', blurb:'ארבעה סביב שולחן, סלט שאף אחד לא מעביר, וסוד אחד.', text:
+ {title:'ארוחת שישי', level:2, genre:'משפחה', blurb:'ארבעה סביב שולחן, סלט שאף אחד לא מעביר, וסוד אחד.', text:
 `אמא: מי מעביר לי את הסלט?
 יונתן: מיכל, תעבירי לאמא את הסלט.
 מיכל: למה אני? אתה יותר קרוב.
@@ -1120,7 +1380,7 @@ const SCENES = [
 אבא: אז מי מעביר את הסלט?
 אמא: אבא שלך, תמיד יודע מה להגיד.
 מיכל: תודה, אבא.`},
- {title:'חדר המתנה', genre:'דרמה', blurb:'מסדרון בבית חולים. שניים מפחדים, אחת כבר ראתה הכול.', text:
+ {title:'חדר המתנה', level:2, genre:'דרמה', blurb:'מסדרון בבית חולים. שניים מפחדים, אחת כבר ראתה הכול.', text:
 `אחות: איתי לוי? הרופא יקרא לך עוד כמה דקות.
 איתי: אמרת את זה לפני שעה.
 אחות: ואגיד את זה שוב בעוד שעה, אם תמשיך לשאול.
@@ -1407,6 +1667,7 @@ function saveMyScene(title, text){
 function renderMyScenes(){
   const list = myScenes(), box = document.getElementById('myBox'), el = document.getElementById('myList');
   box.hidden = !list.length; el.innerHTML = '';
+  if(CLEAN && !list.length) el.innerHTML = '<div class="empty">עוד אין כאן סצנות. מעלים קובץ או מדביקים טקסט למטה, והסצנה נשמרת כאן.</div>';
   list.forEach((sc, i) => {
     const lines = parseScript(sc.text) || [];
     const cast = [...new Set(lines.map(l => l.character))];
@@ -1512,22 +1773,113 @@ function confetti(){
   setTimeout(() => box.remove(), 4000);
 }
 
-document.addEventListener('DOMContentLoaded', function renderSceneList(){
+/* ---- library: ready scenes, by level; the full plan opens the medium and hard ones ---- */
+const FREE_WEEK = 5;
+function isPro(){ return lsGet('sp_pro') === '1'; }
+function sceneSecs(text){ const w = (text.match(/\S+/g) || []).length; return Math.round(w / 2.2 + (text.match(/\n/g) || []).length * 0.8); }
+function isLocked(sc){ if(!CLEAN || isPro()) return false; const lv = sc.level || 1; if(lv === 1) return false; return !(lv === 2 && SCENES.filter(x => (x.level || 1) === 2)[0] === sc); }
+let libLevel = 1;
+function renderSceneList(){
   const list = document.getElementById('sceneList');
+  list.innerHTML = '';
   SCENES.forEach((sc, i) => {
+    if(CLEAN && (sc.level || 1) !== libLevel) return;
     const lines = parseScript(sc.text);
     const cast = [...new Set(lines.map(l=>l.character))];
+    const secs = sceneSecs(sc.text), lv = sc.level || 1;
     const b = document.createElement('button');
-    b.className = 'scene';
+    b.className = 'scene' + (isLocked(sc) ? ' locked' : '');
     b.style.setProperty('--tab', INKS[i % INKS.length]);
     b.style.setProperty('--i', i);
     b.innerHTML = `<span class="t">${esc(sc.title)}</span><span class="d">${esc(sc.blurb)}</span>
       <span class="m"><span class="cast">${(m => cast.map((c,j)=>avatar(c, INKS[j % INKS.length], m[c])).join(''))(assignCast(cast))}</span>
-      <span>${esc(sc.genre)}, ${cast.length} דמויות, ${lines.length} שורות</span></span>`;
-    b.onclick = () => loadScene(sc.text, sc.title);
+      <span>${esc(sc.genre)}, ${cast.length} דמויות, ${lines.length} שורות</span></span>
+      <span class="meta2"><span class="lvl l${lv}">${['', 'קל', 'בינוני', 'מאתגר'][lv]}</span><span>⏱ ${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, '0')}</span><span>${cast.map(esc).join(' · ')}</span></span>`;
+    b.onclick = () => { if(isLocked(sc)){ openPro('הסצנה "' + sc.title + '" היא חלק מהגרסה המלאה.'); return; } loadScene(sc.text, sc.title); };
     list.appendChild(b);
   });
+}
+document.addEventListener('DOMContentLoaded', () => {
+  renderSceneList();
+  document.querySelectorAll('#libTabs button').forEach(t => t.onclick = () => {
+    libLevel = +t.dataset.l;
+    document.querySelectorAll('#libTabs button').forEach(x => x.setAttribute('aria-pressed', String(x === t)));
+    renderSceneList();
+  });
 });
+
+/* ---- weekly allowance ---- */
+function weekKey(){ const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() - d.getDay()); return 'sp_week_' + dayStr(d); }
+function weekUsed(){ return parseInt(lsGet(weekKey()) || '0', 10) || 0; }
+function renderQuota(){
+  const q = document.getElementById('quota');
+  if(!CLEAN || isPro()){ q.hidden = true; return; }
+  const u = Math.min(weekUsed(), FREE_WEEK);
+  q.innerHTML = `<span>השבוע: ${u} מתוך ${FREE_WEEK} חזרות</span><span class="bar"><i style="width:${u / FREE_WEEK * 100}%"></i></span><button type="button" id="quotaPro">לגרסה המלאה</button>`;
+  q.hidden = false;
+  q.querySelector('#quotaPro').onclick = () => openPro('');
+}
+function openPro(why){
+  document.getElementById('proWhy').textContent = why || ('בגרסה החינמית יש ' + FREE_WEEK + ' חזרות בשבוע, הסצנות הקלות וסצנה בינונית אחת.');
+  document.getElementById('proDlg').hidden = false;
+}
+document.getElementById('proClose').onclick = () => { document.getElementById('proDlg').hidden = true; };
+document.getElementById('proGo').onclick = () => { document.getElementById('proDlg').hidden = true; lsSet('sp_pro_interest', '1'); toast('תודה! התשלום עוד לא פתוח. נעדכן כשהגרסה המלאה תעלה', '✨'); };
+document.addEventListener('DOMContentLoaded', renderQuota);
+
+/* ---- my scenes / my takes ---- */
+function myTab(which){
+  document.getElementById('tabMine').setAttribute('aria-pressed', String(which === 'mine'));
+  document.getElementById('tabTakes').setAttribute('aria-pressed', String(which === 'takes'));
+  document.getElementById('myList').hidden = which !== 'mine';
+  document.getElementById('takesBox').hidden = which !== 'takes';
+  if(which === 'takes') renderTakes();
+  if(which === 'mine' && !myScenes().length) document.getElementById('myList').innerHTML = '<div class="empty">עוד אין כאן סצנות. מעלים קובץ או מדביקים טקסט למטה, והסצנה נשמרת כאן.</div>';
+}
+document.getElementById('tabMine').onclick = () => myTab('mine');
+document.getElementById('tabTakes').onclick = () => myTab('takes');
+async function takesIndex(){ return (await idbGet('takes')) || []; }
+async function saveTake(blob, title, take){
+  if(!blob || !blob.size) return;
+  try{
+    const id = 'take_' + Date.now();
+    await idbSet(id, blob);
+    const idx = await takesIndex();
+    idx.unshift({id, title, take, t: Date.now(), type: blob.type});
+    while(idx.length > 12){ const old = idx.pop(); await idbSet(old.id, null); }   // keep the latest 12
+    await idbSet('takes', idx);
+  }catch(e){}
+}
+async function renderTakes(){
+  const box = document.getElementById('takesList');
+  const idx = await takesIndex();
+  if(!idx.length){ box.innerHTML = '<div class="empty">עוד אין טייקים. בבחירת התפקיד, ב"עוד אפשרויות", מדליקים "צילום self-tape", והסרטונים נשמרים כאן.</div>'; return; }
+  box.innerHTML = '';
+  for(const it of idx){
+    const blob = await idbGet(it.id); if(!blob) continue;
+    const url = URL.createObjectURL(blob), ext = /mp4/.test(it.type) ? 'mp4' : 'webm';
+    const d = new Date(it.t);
+    const row = document.createElement('div'); row.className = 'take';
+    row.innerHTML = `<video src="${url}#t=0.5" playsinline controls preload="metadata"></video><span class="ti"><b>${esc(it.title)}</b><small>טייק ${it.take} · ${d.getDate()}/${d.getMonth() + 1} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}</small></span>
+      <span class="acts"><a href="${url}" download="${esc(it.title)} - טייק ${it.take}.${ext}">שמור</a><button type="button">מחק</button></span>`;
+    row.querySelector('button').onclick = async () => { await idbSet(it.id, null); await idbSet('takes', (await takesIndex()).filter(x => x.id !== it.id)); renderTakes(); };
+    box.appendChild(row);
+  }
+}
+document.addEventListener('DOMContentLoaded', () => { if(CLEAN) myTab('mine'); });
+
+/* ---- header tucks away on scroll; light / dark ---- */
+addEventListener('scroll', () => { const h = document.querySelector('header'); if(h) h.classList.toggle('compact', scrollY > 30); }, {passive: true});
+function syncTheme(){
+  const dark = document.documentElement.classList.contains('dark');
+  document.getElementById('themeBtn').textContent = dark ? '☀️' : '🌙';
+  const m = document.querySelector('meta[name=theme-color]'); if(m && CLEAN) m.content = dark ? '#0E0E0F' : '#F8F6F0';
+}
+document.getElementById('themeBtn').onclick = () => {
+  const dark = document.documentElement.classList.toggle('dark');
+  lsSet('sp_theme', dark ? 'dark' : 'light'); syncTheme();
+};
+document.addEventListener('DOMContentLoaded', syncTheme);
 
 let parsedLines = [];
 let characters = [];
@@ -1865,6 +2217,7 @@ document.getElementById('startBtn').onclick = () => {
     setTimeout(()=>{ rl.style.outline=''; }, 1200);
     return;
   }
+  if(CLEAN && !isPro() && weekUsed() >= FREE_WEEK){ openPro('השבוע כבר עשית ' + FREE_WEEK + ' חזרות, וזה כל מה שיש בגרסה החינמית. החזרות מתחדשות ביום ראשון.'); return; }
   document.getElementById('roleLabel').innerHTML = avatar(myCharacter, inkOf(myCharacter)) + esc(myCharacter);
 
   setupRehearsal();
@@ -1971,8 +2324,8 @@ function elGet(text, voiceId, tag){
   return elPending[k];
 }
 // Guess a Hebrew character's gender from the name, to pick a matching default voice
-const HE_FEMALE = ['יעל','מיכל','רחל','אביגיל','שירן','שיר','ענבל','הדס','אורית','רוני','נועם','גל','שחר','מור','ליאור','סיון','רונית','נוי','אלה','מאיה','שני','קרן','אסתר','רות','לאה','מרים','דנה','עדי','אמא','סבתא','דודה','אחות','מורה'];
-const HE_MALE = ['משה','שלמה','יונה','אריה','יהודה','נתנאל','אבא','סבא','דוד','אח','מורה'];
+const HE_FEMALE = ['מראיינת','ליאת','נועה','שני','יעל','מיכל','רחל','אביגיל','שירן','שיר','ענבל','הדס','אורית','רוני','נועם','גל','שחר','מור','ליאור','סיון','רונית','נוי','אלה','מאיה','שני','קרן','אסתר','רות','לאה','מרים','דנה','עדי','אמא','סבתא','דודה','אחות','מורה'];
+const HE_MALE = ['עמית','אסף','יואב','אלון','תום','עידו','בוחן','רוני','משה','שלמה','יונה','אריה','יהודה','נתנאל','אבא','סבא','דוד','אח','מורה'];
 function guessGender(name){
   const n = (name||'').trim().split(/\s+/)[0];
   if(['אבא','סבא','דוד','אח'].includes(n) || HE_MALE.includes(n) && !HE_FEMALE.includes(n)) return 'male';
@@ -2909,6 +3262,7 @@ function finishScene(){
   document.getElementById('stLines').textContent = runLines.filter(l => l.character === myCharacter).length;
   const before = streakCount();
   markPracticedToday(); renderStreak(); renderDaily();
+  if(!isPro()){ lsSet(weekKey(), String(weekUsed() + 1)); renderQuota(); }
   const st = streakCount();
   SFX.win(); buzz([30, 60, 30]);
   countUp(document.getElementById('stTake'), take);
@@ -2919,7 +3273,7 @@ function finishScene(){
   document.getElementById('doneLine').textContent = an !== null ? (an === 0 ? 'מוכן לאודישן. תנשום, תיהנה, ותזכור מה הדמות רוצה. בהצלחה!' : 'עוד ' + (an === 1 ? 'יום אחד' : an + ' ימים') + ' לאודישן, וכבר ' + take + ' טייקים. ממשיכים ככה!')
     : st > 1 ? 'סיימת את הסצנה. ' + st + ' ימים ברצף, ככה בונים תפקיד!' : 'סיימת את הסצנה. עוד טייק?';
   setTimeout(confetti, 150);
-  stopRecording().then(blob => { closeMic(); showTape(blob, take); });
+  stopRecording().then(blob => { closeMic(); showTape(blob, take); saveTake(blob, sceneTitle, take); });
   allowScreenOff();
   document.getElementById('progressFill').style.width = '100%';
   setStatus('הסתיים', false);
