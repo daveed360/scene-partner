@@ -10,6 +10,14 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>Audition Partner</title>
+<script>
+// clean version: ?clean turns it on (remembered on this device), ?full turns it off
+try{ const q = location.search;
+  if(/[?&]clean\b/.test(q)) localStorage.setItem('sp_clean', '1');
+  if(/[?&]full\b/.test(q)) localStorage.removeItem('sp_clean');
+  if(localStorage.getItem('sp_clean') === '1') document.documentElement.classList.add('clean');
+}catch(e){}
+</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Assistant:wght@400;500;600;700&family=Rubik:wght@500;600;700;800&display=swap');
 
@@ -578,6 +586,75 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
   .screen.active.enter-fwd,.screen.active.enter-back,.scenes > *,.bubble.say,.host-av.say,.rolecard.chosen .av,.chip[aria-pressed="true"],.line,.face .av,.stats div,.donebox > .av,.intro .card,.intro .slide{animation:none}
   .toast{transition:none}
 }
+
+/* ================= CLEAN VERSION: a quiet script, nothing else ================= */
+.moretoggle,.vswitch.tofull{display:none}
+.vswitch.toclean{display:block;text-align:center;margin:24px 0 0;font-size:14px}
+.vswitch.toclean a{color:var(--on-stage-dim)}
+html.clean .vswitch.toclean{display:none}
+html.clean{background:#111114}
+html.clean body{background:#111114;color:#ECECEF}
+html.clean body::before,html.clean body::after,html.clean .curtain,html.clean .marquee,html.clean .host,html.clean .streak,
+html.clean .soundbtn,html.clean #viewBtn,html.clean .scene .cast,html.clean .rolecard .av,html.clean .line .av,html.clean #doneAv,
+html.clean .scene::before,html.clean .chip[data-opt=face],html.clean .keys,html.clean .logo{display:none!important}
+html.clean *,html.clean *::before,html.clean *::after{animation:none!important;transition:none!important}
+html.clean .wrap{padding-top:calc(18px + env(safe-area-inset-top))}
+html.clean header{margin-bottom:8px}
+html.clean .brand{justify-content:flex-start;direction:rtl}
+html.clean header h1{font-family:var(--sans);font-size:20px;font-weight:800;letter-spacing:0;color:#fff}
+html.clean header h1 br{display:none}
+html.clean .lockup{flex-direction:row;align-items:baseline;gap:10px;direction:ltr}
+html.clean .lockup .sub{font-size:13px;margin:0}
+html.clean .tagline{font-size:15px;color:#9A9AA3;margin-top:8px}
+html.clean h2.sec,html.clean .scene-title{font-size:17px;font-weight:700;color:#C9C9CF;margin:22px 0 10px}
+html.clean .upload{border:1px dashed #3A3A42;background:#18181C;border-radius:14px;padding:14px 16px}
+html.clean textarea{background:#18181C;color:#ECECEF;border:1px solid #2C2C33;border-radius:14px;font-family:var(--sans);font-size:16px}
+html.clean textarea::placeholder{color:#6E6E77}
+html.clean .or,html.clean .hint{color:#8A8A93}
+html.clean button.primary{border-radius:14px;border-bottom:0;box-shadow:none;transform:none}
+html.clean button.secondary,html.clean .share{border:1px solid #33333B;border-bottom-width:1px;border-radius:14px;background:transparent;color:#ECECEF;transform:none}
+html.clean .scene,html.clean .rolecard{background:#1A1A1F;color:#ECECEF;border:1px solid #2A2A31;border-bottom-width:1px;border-radius:14px;box-shadow:none;transform:none}
+html.clean .scene .t,html.clean .rolecard .name{color:#ECECEF;font-size:17px}
+html.clean .scene .d,html.clean .scene .cnt,html.clean .rolecard .count{color:#8E8E97}
+html.clean .rolecard.chosen{border-color:#FFC24B;background:#22201A}
+html.clean .rolecard .me{color:#FFC24B}
+html.clean label{color:#B4B4BC}
+html.clean .vchip{background:#24242A;color:#ECECEF;border:1px solid #34343C;border-bottom-width:1px}
+html.clean .voicepick .play{background:#24242A;color:#ECECEF;border:1px solid #34343C}
+html.clean .names summary{color:#8E8E97}
+html.clean .moretoggle{display:flex;flex-direction:column;align-items:flex-start;width:100%;margin:16px 0 4px;padding:12px 14px;border-radius:14px;border:1px solid #2A2A31;background:#16161A;color:#ECECEF;font-family:var(--sans);font-size:16px;font-weight:700;cursor:pointer;text-align:right}
+html.clean .moretoggle small{font-weight:400;color:#8E8E97;font-size:13px;margin-top:2px}
+html.clean .moretoggle::after{content:"▾";position:absolute;left:28px;color:#8E8E97}
+html.clean .moretoggle{position:relative}
+html.clean .opts{display:none}
+html.clean .showmore .opts{display:block}
+html.clean .showmore .moretoggle::after{content:"▴"}
+html.clean .chip,html.clean .prepbtn,html.clean .pace button{background:#1A1A1F;border:1px solid #2A2A31;border-bottom-width:1px;color:#ECECEF;transform:none}
+html.clean .chip[aria-pressed=true]{border-color:#FFC24B;background:#22201A}
+html.clean .pace button[aria-pressed=true]{background:#FFC24B;color:#1A1405;border-color:#FFC24B}
+/* rehearsal = teleprompter */
+html.clean .progress{height:3px;background:#24242A}
+html.clean .notice{background:#18181C;border-color:#26262C;color:#9A9AA3}
+html.clean .feed{background:transparent;border:0;color:#ECECEF;padding:0 2px}
+html.clean .line{border-bottom:1px solid #222228;padding:16px 0}
+html.clean .line .who{color:#7E7E87!important;font-size:13px;font-weight:700;letter-spacing:.2px}
+html.clean .line .txt{font-family:var(--sans);font-size:21px;line-height:1.55}
+html.clean .line.other .txt{color:#C9C9CF}
+html.clean .line.mine .txt mark{background:none;color:#FFD27A;font-weight:600}
+html.clean .line.mine.current{background:rgba(255,194,75,.07);border-right:3px solid #FFC24B;margin:0 -10px;padding:16px 10px;border-radius:0}
+html.clean .line.mine.current .who{color:#FFC24B!important}
+html.clean .line.past{opacity:.38}
+html.clean .line .dir{color:#7E7E87}
+html.clean .line .sayfix{opacity:.55;font-size:12px;background:transparent;border-color:#34343C;color:#B4B4BC}
+html.clean .status{color:#B4B4BC}
+html.clean .meter{background:#24242A}
+html.clean .cd{background:rgba(10,10,12,.92)}
+html.clean .cd .clap{display:none}
+html.clean .donebox h2{font-family:var(--sans);font-size:30px;color:#fff}
+html.clean .toast{background:#24242A;color:#ECECEF;border-bottom:0}
+html.clean #roleLabel .av,html.clean.is-done .tagline,html.clean .is-done .tagline{display:none!important}
+html.clean .vswitch{display:block;text-align:center;margin:28px 0 0;font-size:14px}
+html.clean .vswitch a{color:#8E8E97}
 </style>
 </head>
 <body>
@@ -598,7 +675,7 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
   <g transform="rotate(-8 32 10)" fill="#2A1E14"><path d="M12 6 L20 6 L15 14 L7 14 Z"/><path d="M28 6 L36 6 L31 14 L23 14 Z"/><path d="M44 6 L52 6 L47 14 L39 14 Z"/></g>
   <circle cx="22" cy="33" r="3.2" fill="#2A1E14"/><circle cx="32" cy="33" r="3.2" fill="#2A1E14"/><circle cx="42" cy="33" r="3.2" fill="#2A1E14"/>
 </svg>
-<div class="lockup"><h1>Audition<br>Partner</h1><span class="sub">שותף לתפקיד</span></div>
+<div class="lockup"><h1>Audition<br> Partner</h1><span class="sub">שותף לתפקיד</span></div>
 </div>
 <p class="tagline">מתרגלים סצנה לבד, כאילו יש מולך שחקן. האפליקציה משחקת את כל שאר הדמויות בקול, ומחכה לך בתור שלך.</p>
 <div style="text-align:right"><span class="streak" id="streak" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a2 2 0 0 0 0 4v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 0 0-4z" fill="#FFC24B"/><path d="M9 5v12" stroke="#7A4E00" stroke-width="1.6" stroke-dasharray="2 2"/></svg><span id="streakTxt"></span></span></div>
@@ -640,6 +717,8 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 </div>
 <div class="vstate" id="elState"></div>
 </details>
+<p class="vswitch tofull"><a href="?full">לגרסה המלאה, עם הדמויות</a></p>
+<p class="vswitch toclean"><a href="?clean">לגרסה הנקייה (רק תסריט)</a></p>
 </div>
 
 <!-- SCREEN 2: ROLE PICK -->
@@ -649,6 +728,8 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 <label>את מי אתה משחק?</label>
 <div id="roleList"></div>
 <details class="names" id="namesBox"><summary>שם נשמע לא נכון? תקן כאן</summary><div id="namesList"></div></details>
+<button type="button" class="moretoggle" id="moreBtn"><span>עוד אפשרויות</span><small>צילום, הסתרת שורות, קצב, אודישן</small></button>
+<div class="opts">
 <label>איך מתרגלים?</label>
 <div class="chips">
 <button type="button" class="chip" data-opt="face" aria-pressed="false"><b>מול הפרטנר</b><small>במקום לקרוא תסריט, רואים את הדמות שמדברת איתך</small></button>
@@ -663,6 +744,7 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 <div class="prepbtn" id="audBtn" role="button" tabindex="0"><span class="ic" aria-hidden="true">📅</span><span><b id="audTitle">יש לך אודישן?</b><small id="audSub">מוסיפים תאריך, ואני סופרת איתך לאחור</small></span><input type="date" id="audDate" aria-label="תאריך האודישן"><button type="button" class="clr" id="audClr" hidden aria-label="להסיר את התאריך">×</button></div>
 <button type="button" class="prepbtn" id="warmBtn"><span class="ic" aria-hidden="true">🔥</span><span><b>חימום של דקה</b><small>נשימה ותרגילי דיקציה, כמו לפני שעולים לבמה</small></span></button>
 <button type="button" class="prepbtn" id="dlBtn" hidden><span class="ic" aria-hidden="true">⬇️</span><span><b id="dlTitle">להכין את הקולות מראש</b><small id="dlSub">ואז אפשר לתרגל גם בלי אינטרנט, למשל בדרך לאודישן</small></span></button>
+</div>
 </div>
 <button class="primary" id="startBtn">התחל תרגול</button>
 <button class="secondary" id="backToInput">חזרה</button>
@@ -1153,7 +1235,8 @@ function openSayEditor(line){
 }
 
 /* ---- Feel: little sounds and buzzes (made on the fly, no files), toasts, first-run intro ---- */
-let soundOn = lsGet('sp_sound') !== '0';
+const CLEAN = document.documentElement.classList.contains('clean');
+let soundOn = !CLEAN && lsGet('sp_sound') !== '0';
 let sfxCtx = null;
 function sfxAC(){
   if(!sfxCtx){ const AC = window.AudioContext || window.webkitAudioContext; if(AC) try{ sfxCtx = new AC(); }catch(e){} }
@@ -1251,7 +1334,7 @@ function showIntro(){
   document.getElementById('introSkip').onclick = close;
   box.hidden = false; draw();
 }
-document.addEventListener('DOMContentLoaded', () => { if(!lsGet('sp_intro') && !location.hash.startsWith('#s=')) showIntro(); });
+document.addEventListener('DOMContentLoaded', () => { if(!CLEAN && !lsGet('sp_intro') && !location.hash.startsWith('#s=')) showIntro(); });
 
 let pendingTitle = null;
 
@@ -1339,6 +1422,7 @@ function renderStreak(){
 document.addEventListener('DOMContentLoaded', renderStreak);
 
 function confetti(){
+  if(CLEAN) return;
   const box = document.createElement('div'); box.className = 'confetti';
   const colors = ['#FFC24B','#7BD3A4','#FF8FA3','#8FB8FF','#FFFFFF','#C9A2FF'];
   for(let i = 0; i < 70; i++){
@@ -2206,7 +2290,7 @@ function setupRehearsal(){
   stopEverything();
   runLines = buildRun();
   hideMine = OPTS.hide;
-  setView(OPTS.face);
+  setView(!CLEAN && OPTS.face);
   const firstOther = runLines.find(l => l.character !== myCharacter);
   if(firstOther){ setStageFace(firstOther.character); document.getElementById('stageWho').textContent = firstOther.character; }
   document.getElementById('stageLine').innerHTML = OPTS.tape ? 'כשתלחץ "התחל" המצלמה תתחיל לצלם.' : 'מוכן? לחץ "התחל".';
@@ -2589,7 +2673,7 @@ async function beginScene(){
   await countdown();
   if(myRun !== runId) return;
   startRecording();
-  if(!viewFace) scheduleNudge(4000);
+  if(!viewFace && !CLEAN) scheduleNudge(4000);
   sceneRunning = true;
   sceneStart = Date.now(); myTurns = 0;
   document.getElementById('minorCtl').hidden = false;
@@ -2848,6 +2932,7 @@ document.getElementById('dlBtn').onclick = async () => {
   renderDl();
 };
 
+document.getElementById('moreBtn').onclick = () => document.getElementById('screen-roles').classList.toggle('showmore');
 document.getElementById('exitBtn').onclick = () => {
   stopEverything();
   show('roles');
