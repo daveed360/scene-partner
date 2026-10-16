@@ -429,8 +429,20 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 .saycard{text-align:right}
 .saycard h3{text-align:center}
 .sayhelp{font-size:15px!important;margin-bottom:12px!important}
+.names{margin-top:6px}
+.names summary{cursor:pointer;color:var(--on-stage-dim);font-size:15px;font-weight:600;padding:8px 0;list-style:none}
+.names summary::-webkit-details-marker{display:none}
+.names .nrow{display:flex;align-items:center;gap:8px;margin:8px 0}
+.names .nrow b{min-width:70px;font-family:var(--serif);font-size:18px}
+.names .nrow input{flex:1;min-width:0;padding:10px;font-size:17px;border-radius:12px;border:2px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:var(--on-stage)}
+.names .nrow button{width:44px;height:44px;border-radius:12px;border:2px solid rgba(255,255,255,.2);border-bottom-width:4px;background:transparent;color:var(--on-stage);cursor:pointer}
+.wordchips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;direction:rtl}
+.wordchips button{font-family:var(--serif);font-size:19px;padding:6px 12px;border-radius:12px;border:2px solid #E3DED3;border-bottom-width:4px;background:#fff;color:var(--ink);cursor:pointer}
+.wordchips button.fixed{border-color:#7BD3A4;background:#EAF8F0}
+.wordchips button.on{border-color:var(--amber);background:#FFF6CC}
+#sayText{width:100%;padding:12px;font-size:19px;border:2px solid #E3DED3;border-radius:12px;background:#fff;color:var(--ink);font-family:var(--serif);min-height:auto}
 .sayorig{background:#F4F0E6;border-radius:12px;padding:10px 12px;font-family:var(--serif);font-size:17px;margin-bottom:10px}
-#sayText{min-height:90px;font-size:19px}
+.saycard label{color:#6E7177;text-align:right}
 .sayrow{display:flex;gap:8px;margin-top:10px}
 .sayrow .secondary-btn{color:var(--ink);border-color:#E3DED3;min-height:44px;font-size:14px}
 .sayrow .secondary-btn:disabled{opacity:.5}
@@ -523,6 +535,7 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 <div class="err" id="shareNote" style="display:none;color:#7BD3A4"></div>
 <label>את מי אתה משחק?</label>
 <div id="roleList"></div>
+<details class="names" id="namesBox"><summary>שם נשמע לא נכון? תקן כאן</summary><div id="namesList"></div></details>
 <label>איך מתרגלים?</label>
 <div class="chips">
 <button type="button" class="chip" data-opt="face" aria-pressed="false"><b>מול הפרטנר</b><small>במקום לקרוא תסריט, רואים את הדמות שמדברת איתך</small></button>
@@ -593,14 +606,16 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 <span id="countNum"></span></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="intro" id="sayDlg" hidden role="dialog" aria-modal="true" aria-label="תיקון הגייה"><div class="card saycard">
-<h3>איך להגיד את זה?</h3>
-<p class="sayhelp">כתוב את המשפט כמו שהוא צריך להישמע. אפשר להוסיף ניקוד במילה הבעייתית (שָׁם במקום שם, אֵלַיִךְ במקום אלייך), או לכתוב אותה כמו שהיא נשמעת. מה שמופיע על המסך לא משתנה.</p>
-<div class="sayorig"><b id="sayWho"></b>: <span id="sayOrig"></span></div>
-<textarea id="sayText" dir="rtl" rows="3"></textarea>
-<div class="sayrow"><button type="button" class="secondary-btn" id="sayNiq">ניקוד</button><button type="button" class="secondary-btn" id="sayPlay">▶ השמע</button><button type="button" class="secondary-btn" id="sayReset">איפוס</button></div>
-<div class="niq" id="niqRow" hidden></div>
+<h3>איזו מילה נשמעת לא נכון?</h3>
+<p class="sayhelp">לוחצים על המילה, וכותבים איך היא נשמעת. בלי ניקוד: אותיות כמו שאומרים (ג'לאל), או באנגלית (Jalal). התיקון יעבוד בכל הסצנות.</p>
+<div class="wordchips" id="sayWords"></div>
+<div id="sayEdit" hidden>
+<label for="sayText" style="margin-top:12px">איך אומרים "<span id="sayWord"></span>"?</label>
+<input id="sayText" type="text" dir="auto" autocomplete="off" placeholder="למשל: ג'לאל או Jalal">
+<div class="sayrow"><button type="button" class="secondary-btn" id="sayPlay">▶ לשמוע</button><button type="button" class="secondary-btn" id="sayReset">בטל תיקון</button></div>
 <button type="button" class="primary" id="saySave">שמור</button>
-<button type="button" class="skip" id="sayClose">ביטול</button>
+</div>
+<button type="button" class="skip" id="sayClose">סגור</button>
 </div></div>
 <div class="intro" id="intro" hidden role="dialog" aria-modal="true" aria-label="ברוכים הבאים"><div class="card"><div class="slide"></div><div class="dots"></div><button type="button" class="primary" id="introNext" style="margin-top:0">הבא</button><button type="button" class="skip" id="introSkip">דלג</button></div></div>
 
@@ -911,15 +926,37 @@ function genderYou(text, addressee){
     return pre + pfx + forms[fem];
   });
 }
-function spokenOf(line){ return sayMap[line.text] || genderYou(line.text, addresseeOf(line)); }
+let sayWords = {}; try{ sayWords = JSON.parse(lsGet('sp_words') || '{}'); }catch(e){}
+function applyWords(text){
+  const keys = Object.keys(sayWords);
+  if(!keys.length) return text;
+  return text.replace(/[א-ת'׳"״]+/g, w => {
+    const bare = w.replace(/["״]/g, '');
+    if(sayWords[bare]) return sayWords[bare];
+    const m = bare.match(/^([ובהלמכש])(.+)$/);           // "וג'לל", "לג'לל"
+    if(m && sayWords[m[2]]) return m[1] + sayWords[m[2]];
+    return w;
+  });
+}
+function spokenOf(line){ return sayMap[line.text] || applyWords(genderYou(line.text, addresseeOf(line))); }
 function openSayEditor(line){
-  const dlg = document.getElementById('sayDlg'), ta = document.getElementById('sayText');
-  document.getElementById('sayWho').textContent = line.character;
-  document.getElementById('sayOrig').textContent = line.text;
-  ta.value = spokenOf(line);
-  dlg.hidden = false; setTimeout(() => ta.focus(), 50);
-  const play = async () => {
-    const txt = ta.value.trim(); if(!txt) return;
+  const dlg = document.getElementById('sayDlg');
+  const words = [...new Set((line.text.match(/[א-ת'׳]+/g) || []).filter(w => w.length > 1))];
+  const chips = document.getElementById('sayWords'), edit = document.getElementById('sayEdit'), inp = document.getElementById('sayText');
+  let cur = null;
+  const draw = () => {
+    chips.innerHTML = words.map(w => `<button type="button" class="${sayWords[w] ? 'fixed' : ''} ${w === cur ? 'on' : ''}">${esc(w)}</button>`).join('');
+    chips.querySelectorAll('button').forEach((b, i) => b.onclick = () => {
+      cur = words[i]; draw();
+      document.getElementById('sayWord').textContent = cur;
+      inp.value = sayWords[cur] || cur;
+      edit.hidden = false; inp.focus(); inp.select();
+    });
+  };
+  const sample = () => line.text.replace(new RegExp(cur.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), inp.value.trim() || cur);
+  document.getElementById('sayPlay').onclick = async () => {
+    if(!cur) return;
+    const txt = applyWords(genderYou(sample(), addresseeOf(line)));
     const b = document.getElementById('sayPlay'); b.disabled = true;
     try{
       if(elOn()){ const blob = await elGet(txt, elVoiceOf(line.character), emoTag(line.dir)); player.src = URL.createObjectURL(blob); player.playbackRate = speechRate; await player.play(); }
@@ -927,24 +964,19 @@ function openSayEditor(line){
     }catch(e){ toast('לא הצלחתי להשמיע: ' + elErrorText(e), '⚠️'); }
     b.disabled = false;
   };
-  document.getElementById('sayPlay').onclick = play;
-  document.getElementById('sayNiq').onclick = () => {
-    // insert a vowel mark after the cursor's letter
-    const marks = {'קמץ (אָ)':'ָ','פתח (אַ)':'ַ','סגול (אֶ)':'ֶ','צירה (אֵ)':'ֵ','חיריק (אִ)':'ִ','חולם (אֹ)':'ֹ','שורוק (אוּ)':'ּ','שווא (אְ)':'ְ','שי"ן ימנית (שׁ)':'ׁ','שי"ן שמאלית (שׂ)':'ׂ'};
-    const box = document.getElementById('niqRow');
-    box.hidden = !box.hidden;
-    if(!box.innerHTML) box.innerHTML = Object.entries(marks).map(([k, m]) => `<button type="button" data-m="${m}">${k}</button>`).join('');
-    box.onclick = e => { const m = e.target.dataset && e.target.dataset.m; if(!m) return; const p = ta.selectionStart || 0; ta.value = ta.value.slice(0, p) + m + ta.value.slice(p); ta.focus(); ta.selectionStart = ta.selectionEnd = p + 1; };
-  };
   document.getElementById('saySave').onclick = () => {
-    const txt = ta.value.trim();
-    if(!txt || txt === line.text) delete sayMap[line.text]; else sayMap[line.text] = txt;
-    lsSet('sp_say', JSON.stringify(sayMap));
-    dlg.hidden = true; document.getElementById('niqRow').hidden = true;
-    toast('נשמר. מעכשיו זה יישמע ככה', '✅');
+    const v = inp.value.trim();
+    if(!cur) return;
+    if(!v || v === cur) delete sayWords[cur]; else sayWords[cur] = v;
+    lsSet('sp_words', JSON.stringify(sayWords));
+    delete sayMap[line.text]; lsSet('sp_say', JSON.stringify(sayMap));      // old per-sentence fixes give way to word fixes
+    toast('נשמר. "' + cur + '" יישמע ככה בכל מקום', '✅');
+    edit.hidden = true; cur = null; draw();
   };
-  document.getElementById('sayReset').onclick = () => { ta.value = line.text; };
-  document.getElementById('sayClose').onclick = () => { dlg.hidden = true; document.getElementById('niqRow').hidden = true; };
+  document.getElementById('sayReset').onclick = () => { if(!cur) return; delete sayWords[cur]; lsSet('sp_words', JSON.stringify(sayWords)); inp.value = cur; draw(); };
+  document.getElementById('sayClose').onclick = () => { dlg.hidden = true; edit.hidden = true; };
+  edit.hidden = true; draw();
+  dlg.hidden = false;
 }
 
 /* ---- Feel: little sounds and buzzes (made on the fly, no files), toasts, first-run intro ---- */
@@ -1440,6 +1472,25 @@ function renderRoles(){
     card.onclick = choose;
     card.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); choose(); } };
     roleList.appendChild(card);
+  });
+  renderNames();
+}
+function renderNames(){
+  const box = document.getElementById('namesList');
+  box.innerHTML = characters.map((n, i) => `<div class="nrow"><b>${esc(n)}</b><input data-i="${i}" dir="auto" placeholder="איך אומרים (למשל ג'לאל / Jalal)" value="${esc(sayWords[n] || '')}"><button type="button" data-i="${i}" aria-label="לשמוע">▶</button></div>`).join('');
+  box.querySelectorAll('input').forEach(inp => inp.onchange = () => {
+    const n = characters[+inp.dataset.i], v = inp.value.trim();
+    if(!v || v === n) delete sayWords[n]; else sayWords[n] = v;
+    lsSet('sp_words', JSON.stringify(sayWords));
+    toast('נשמר: ' + n, '✅');
+  });
+  box.querySelectorAll('button').forEach(b => b.onclick = async () => {
+    const n = characters[+b.dataset.i], v = box.querySelector(`input[data-i="${b.dataset.i}"]`).value.trim() || n;
+    const voiceOf = characters.find(c => c !== n) || n;
+    try{
+      if(elOn()){ const blob = await elGet(v + '?', elVoiceOf(voiceOf)); player.src = URL.createObjectURL(blob); await player.play(); }
+      else { const u = new SpeechSynthesisUtterance(v); u.lang = 'he-IL'; speechSynthesis.cancel(); speechSynthesis.speak(u); }
+    }catch(e){ toast('לא הצלחתי להשמיע', '⚠️'); }
   });
 }
 function alertInline(msg){
