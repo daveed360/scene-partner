@@ -605,7 +605,7 @@ html.clean header h1{font-family:var(--sans);font-size:20px;font-weight:800;lett
 html.clean header h1 br{display:none}
 html.clean .lockup{flex-direction:row;align-items:baseline;gap:10px;direction:ltr}
 html.clean .lockup .sub{font-size:13px;margin:0}
-html.clean .tagline{font-size:15px;color:#9A9AA3;margin-top:8px}
+html.clean .tagline{display:none}
 html.clean h2.sec,html.clean .scene-title{font-size:17px;font-weight:700;color:#C9C9CF;margin:22px 0 10px}
 html.clean .upload{border:1px dashed #3A3A42;background:#18181C;border-radius:14px;padding:14px 16px}
 html.clean textarea{background:#18181C;color:#ECECEF;border:1px solid #2C2C33;border-radius:14px;font-family:var(--sans);font-size:16px}
@@ -632,21 +632,64 @@ html.clean .showmore .moretoggle::after{content:"▴"}
 html.clean .chip,html.clean .prepbtn,html.clean .pace button{background:#1A1A1F;border:1px solid #2A2A31;border-bottom-width:1px;color:#ECECEF;transform:none}
 html.clean .chip[aria-pressed=true]{border-color:#FFC24B;background:#22201A}
 html.clean .pace button[aria-pressed=true]{background:#FFC24B;color:#1A1405;border-color:#FFC24B}
-/* rehearsal = teleprompter */
+/* rehearsal: one card per line, colour stripe per character, the live line glows gold */
+html.clean{--gold:#E9B444}
 html.clean .progress{height:3px;background:#24242A}
+html.clean .progress-fill{background:var(--gold)}
 html.clean .notice{background:#18181C;border-color:#26262C;color:#9A9AA3}
 html.clean .feed{background:transparent;border:0;color:#ECECEF;padding:0 2px}
-html.clean .line{border-bottom:1px solid #222228;padding:16px 0}
-html.clean .line .who{color:#7E7E87!important;font-size:13px;font-weight:700;letter-spacing:.2px}
+html.clean .line{background:#1A1B20;border:1px solid #25262D;border-right:4px solid var(--ink-c);border-radius:18px;padding:16px 18px;margin-bottom:12px}
+html.clean .line:last-child{border-bottom:1px solid #25262D}
+html.clean .line .who{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--ink-c)!important;font-size:14px;font-weight:800;letter-spacing:.6px;margin-bottom:6px}
 html.clean .line .txt{font-family:var(--sans);font-size:21px;line-height:1.55}
-html.clean .line.other .txt{color:#C9C9CF}
-html.clean .line.mine .txt mark{background:none;color:#FFD27A;font-weight:600}
-html.clean .line.mine.current{background:rgba(255,194,75,.07);border-right:3px solid #FFC24B;margin:0 -10px;padding:16px 10px;border-radius:0}
-html.clean .line.mine.current .who{color:#FFC24B!important}
-html.clean .line.past{opacity:.38}
+html.clean .line.other .txt{color:#E6E6EA}
+html.clean .line.mine .txt mark{background:none;color:#FFFFFF;font-weight:600}
+html.clean .line.past{opacity:.4}
+html.clean .line.speaking{background:#2A2416;border-color:#4A3D1C;border-right-color:var(--gold)}
+html.clean .line.speaking .who{color:var(--gold)!important}
+html.clean .line.speaking .who::after,html.clean .line.mine.current .who::after{content:"מדבר/ת";background:var(--gold);color:#1A1405;border-radius:999px;padding:3px 10px;font-size:12px;letter-spacing:.4px}
+html.clean .line.mine.current{background:#16241F;border-color:#24443A;border-right-color:#3FC1A9;margin:0 0 12px;padding:16px 18px;border-radius:18px}
+html.clean .line.mine.current .who{color:#3FC1A9!important}
+html.clean .line.mine.current .who::after{content:"התור שלך";background:#3FC1A9}
 html.clean .line .dir{color:#7E7E87}
-html.clean .line .sayfix{opacity:.55;font-size:12px;background:transparent;border-color:#34343C;color:#B4B4BC}
+html.clean .line .sayfix{opacity:.5;font-size:12px;background:transparent;border-color:#34343C;color:#B4B4BC;margin-top:8px}
+/* home: script library cards */
+html.clean #sceneList .scene{background:linear-gradient(135deg,#7A1F2E,#4B1420);border:1px solid #8A3242;color:#fff}
+html.clean #sceneList .scene .d,html.clean #sceneList .scene .cnt{color:#E8C9CE}
+html.clean #sceneList .scene::after{content:"התחל ▶";position:absolute;left:14px;bottom:14px;background:var(--gold);color:#1A1405;font-weight:800;font-size:14px;padding:7px 14px;border-radius:999px}
+html.clean #sceneList .scene{position:relative;padding-bottom:58px}
+html.clean #myList .scene{border-color:#5A4718;background:#1E1B13}
+html.clean .upload{border:1.5px dashed #6B5520;background:#1A1812}
+html.clean button.primary{background:var(--gold);color:#1A1405;border-radius:999px}
+html.clean h2.sec{letter-spacing:.8px;font-size:14px;color:var(--gold);text-transform:uppercase}
+html.clean .logo{display:block!important;width:30px;height:30px;filter:none}
+html.clean .brand{gap:8px}
 html.clean .status{color:#B4B4BC}
+html.clean #micNotice:not(.bad){display:none!important}
+/* preparing voices */
+.prepv{position:fixed;inset:0;z-index:45;background:#121214;display:grid;place-items:center;text-align:center;color:#ECECEF;padding:24px}
+.prepv[hidden]{display:none}
+.prepv h3{font-family:var(--sans);font-size:24px;font-weight:800;margin:18px 0 18px}
+.prepv .pbar{display:flex;align-items:center;gap:12px;width:min(300px,80vw);margin:0 auto 14px;direction:ltr}
+.prepv .pbar b{color:#E9B444;font-size:18px;min-width:48px;text-align:left}
+.prepv .pbar span{flex:1;height:10px;border-radius:99px;background:#2A2A31;overflow:hidden}
+.prepv .pbar i{display:block;height:100%;width:0;background:#E9B444;border-radius:99px;transition:width .3s}
+.prepv p{color:#9A9AA3;font-size:15px;margin:0}
+/* daily challenge (clean version) */
+.daily{display:none}
+html.clean .daily:not([hidden]){display:block;margin:6px 0 4px;padding:18px;border-radius:20px;color:#fff;
+  background:linear-gradient(140deg,#7C2131,#4A1220);border:1px solid #8E3445}
+.daily .top{display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#F3D9A0;font-weight:700}
+.daily .top b{font-size:20px;color:#fff;margin-inline-start:4px}
+.daily .k{display:block;margin:12px 0 4px;color:#E9B444;font-weight:800;font-size:13px;letter-spacing:.8px}
+.daily .t{display:block;font-size:22px;font-weight:800}
+.daily .d{display:block;color:#EBC9CF;font-size:15px;line-height:1.5;margin-top:4px}
+.daily .wk{display:flex;justify-content:space-between;margin:16px 2px}
+.daily .wk span{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:#E8C9CE}
+.daily .wk i{width:30px;height:30px;border-radius:50%;background:#2A1218;border:2px solid transparent;display:grid;place-items:center;font-style:normal;font-size:14px;color:#1A1405}
+.daily .wk .on i{background:#E9B444}
+.daily .wk .today i{border-color:#E9B444}
+.daily button{width:100%;border:0;border-radius:999px;background:#E9B444;color:#1A1405;font-family:var(--sans);font-weight:800;font-size:18px;padding:13px;cursor:pointer}
 html.clean .meter{background:#24242A}
 html.clean .cd{background:rgba(10,10,12,.92)}
 html.clean .cd .clap{display:none}
@@ -687,6 +730,7 @@ html.clean .vswitch a{color:#8E8E97}
 
 <!-- SCREEN 1: CHOOSE A SCENE -->
 <div class="screen active" id="screen-input">
+<div class="daily" id="daily" hidden></div>
 <h2 class="sec">הסצנה שלך</h2>
 <label class="upload" id="uploadBox">
 <input type="file" id="fileInput" accept=".docx,.pdf,.txt,.rtf,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
@@ -825,6 +869,12 @@ html.clean .vswitch a{color:#8E8E97}
 <button type="button" class="skip" id="voiceClose">סגור</button>
 </div></div>
 <div class="intro sheet warm" id="warmDlg" hidden role="dialog" aria-modal="true" aria-label="חימום"><div class="card" id="warmCard"></div></div>
+<div class="prepv" id="prepVoices" hidden aria-live="polite"><div>
+<svg viewBox="0 0 64 56" width="76" aria-hidden="true"><path d="M26 6h26a4 4 0 0 1 4 4v18c0 12-8 20-17 20S22 40 22 28V10a4 4 0 0 1 4-4z" fill="#E9B444"/><circle cx="33" cy="20" r="2.6" fill="#1A1405"/><circle cx="45" cy="20" r="2.6" fill="#1A1405"/><path d="M32 33q7-6 14 0" stroke="#1A1405" stroke-width="2.6" fill="none" stroke-linecap="round"/><path d="M8 16h24a4 4 0 0 1 4 4v16c0 11-7 18-16 18S4 47 4 36V20a4 4 0 0 1 4-4z" fill="#F2C55C" stroke="#121214" stroke-width="2"/><circle cx="14" cy="30" r="2.4" fill="#1A1405"/><circle cx="26" cy="30" r="2.4" fill="#1A1405"/><path d="M13 39q7 6 14 0" stroke="#1A1405" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>
+<h3>מכין את הקולות…</h3>
+<div class="pbar"><b id="prepPct">0%</b><span><i id="prepFill"></i></span></div>
+<p>מכין את השורות של הפרטנר, כדי שהסצנה תרוץ בלי עיכובים</p>
+</div></div>
 <div class="intro" id="intro" hidden role="dialog" aria-modal="true" aria-label="ברוכים הבאים"><div class="card"><div class="slide"></div><div class="dots"></div><button type="button" class="primary" id="introNext" style="margin-top:0">הבא</button><button type="button" class="skip" id="introSkip">דלג</button></div></div>
 
 <script>
@@ -1075,7 +1125,7 @@ const SCENES = [
 שירה: שאני פה, איתך. זה מה שזה אומר.
 אחות: איתי לוי, אתה יכול להיכנס.`},
 ];
-const INKS = ['#2F5DA8','#2E7D5B','#8A4FA8','#B23A3A','#A8661F','#2F7C8C','#5A5F66'];
+const INKS = document.documentElement.classList.contains('clean') ? ['#E3B341','#3FC1A9','#7FB2F0','#C792EA','#FF8A7A','#8FD18F','#A9AEB8'] : ['#2F5DA8','#2E7D5B','#8A4FA8','#B23A3A','#A8661F','#2F7C8C','#5A5F66'];
 let sceneTitle = 'הסצנה שלך';
 function inkOf(name){ const i = characters.indexOf(name); return INKS[(i < 0 ? 0 : i) % INKS.length]; }
 /* ---- The cast: 8 illustrated actors (+ Maya the director), each in 6 expressions ---- */
@@ -1420,6 +1470,24 @@ function renderStreak(){
   document.getElementById('streakTxt').textContent = n === 1 ? 'יום חזרות אחד' : n + ' ימי חזרות ברצף';
 }
 document.addEventListener('DOMContentLoaded', renderStreak);
+function renderDaily(){
+  const box = document.getElementById('daily');
+  if(!CLEAN){ box.hidden = true; return; }
+  const now = new Date();
+  const dayNo = Math.floor((now - new Date(2026, 0, 1)) / 864e5);
+  const sc = SCENES[((dayNo % SCENES.length) + SCENES.length) % SCENES.length];
+  const done = new Set(practiceDays());
+  const start = new Date(now); start.setDate(now.getDate() - now.getDay());
+  const names = ['א׳','ב׳','ג׳','ד׳','ה׳','ו׳','ש׳'];
+  const wk = names.map((n, k) => { const d = new Date(start); d.setDate(start.getDate() + k); const on = done.has(dayStr(d)), today = k === now.getDay();
+    return `<span class="${on ? 'on' : ''} ${today ? 'today' : ''}"><i>${on ? '✓' : ''}</i>${n}</span>`; }).join('');
+  box.innerHTML = `<div class="top"><span>🔥 ימי חזרות ברצף <b>${streakCount()}</b></span></div>
+    <span class="k">האתגר של היום</span><span class="t">${esc(sc.title)}</span><span class="d">${esc(sc.blurb)}</span>
+    <div class="wk">${wk}</div><button type="button" id="dailyGo">יאללה, לאתגר ▶</button>`;
+  box.hidden = false;
+  box.querySelector('#dailyGo').onclick = () => loadScene(sc.text, sc.title);
+}
+document.addEventListener('DOMContentLoaded', renderDaily);
 
 function confetti(){
   if(CLEAN) return;
@@ -2652,6 +2720,28 @@ function addLineToFeed(line, isMine){
   return div;
 }
 
+// fetch every partner line before the scene, with a progress screen, so nothing waits mid-scene
+async function prepareVoices(myRun){
+  if(!elOn()) return;
+  const lines = runLines.filter(l => l.character !== myCharacter);
+  if(!lines.length) return;
+  const box = document.getElementById('prepVoices'), pct = document.getElementById('prepPct'), fill = document.getElementById('prepFill');
+  let done = 0, failed = false;
+  const shown = setTimeout(() => { box.hidden = false; }, 350);   // already cached: no flash
+  const bump = () => { done++; const v = Math.round(done / lines.length * 100); pct.textContent = v + '%'; fill.style.width = v + '%'; };
+  pct.textContent = '0%'; fill.style.width = '0';
+  let i = 0;
+  const worker = async () => {
+    while(i < lines.length && !failed && myRun === runId){
+      const l = lines[i++];
+      try{ await elGet(spokenOf(l), elVoiceOf(l.character), emoTag(l.dir)); bump(); }
+      catch(e){ failed = true; toast(elErrorText(e), '⚠️'); }
+    }
+  };
+  await Promise.all([worker(), worker(), worker()]);
+  clearTimeout(shown);
+  if(!box.hidden){ await new Promise(r => setTimeout(r, 250)); box.hidden = true; }
+}
 async function beginScene(){
   const btn = document.getElementById('actionBtn');
   btn.onclick = null;
@@ -2669,6 +2759,8 @@ async function beginScene(){
       document.getElementById('micNotice').textContent = 'אין אישור למיקרופון — בתור שלך לחץ "סיימתי — הבא". (אפשר לאשר בהגדרות האתר בדפדפן)';
     }
   }
+  await prepareVoices(myRun);
+  if(myRun !== runId) return;
   if(OPTS.tape && tapeFailed) document.getElementById('micNotice').textContent = 'אין גישה למצלמה, אז הסצנה רצה בלי צילום. אפשר לאשר מצלמה בהגדרות האתר בדפדפן.';
   await countdown();
   if(myRun !== runId) return;
@@ -2810,7 +2902,7 @@ function finishScene(){
   document.getElementById('stTime').textContent = Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0');
   document.getElementById('stLines').textContent = runLines.filter(l => l.character === myCharacter).length;
   const before = streakCount();
-  markPracticedToday(); renderStreak();
+  markPracticedToday(); renderStreak(); renderDaily();
   const st = streakCount();
   SFX.win(); buzz([30, 60, 30]);
   countUp(document.getElementById('stTake'), take);
