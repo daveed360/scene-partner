@@ -208,12 +208,26 @@ button.secondary{
 
 /* ===== Playful layer: chunky, pressable, bright — like a game, not a form ===== */
 :root{ --sans:'Rubik','Assistant',system-ui,sans-serif; --amber-d:#C98A12; --plum-d:#160F1C; }
-body{
+body{background:#1E1628;position:relative;isolation:isolate}
+/* the stage: two warm spotlights from above, a soft floor glow, slow drifting bokeh */
+body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
   background:
-    radial-gradient(120% 55% at 50% -12%, rgba(255,200,120,.20) 0%, transparent 45%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cg fill='%23FFE7B0'%3E%3Cpath d='M30 20l2 6 6 2-6 2-2 6-2-6-6-2 6-2z' opacity='.28'/%3E%3Ccircle cx='120' cy='40' r='1.6' opacity='.35'/%3E%3Ccircle cx='80' cy='120' r='1.2' opacity='.3'/%3E%3Cpath d='M150 130l1.5 4.5 4.5 1.5-4.5 1.5-1.5 4.5-1.5-4.5-4.5-1.5 4.5-1.5z' opacity='.22'/%3E%3Ccircle cx='20' cy='150' r='1.4' opacity='.3'/%3E%3C/g%3E%3C/svg%3E"),
-    linear-gradient(180deg, #34264A 0%, #241B2E 45%, #1C1524 100%) fixed;
-}
+    radial-gradient(60% 42% at 50% 104%, rgba(255,170,90,.20) 0%, transparent 70%),
+    conic-gradient(from 168deg at 18% -6%, transparent 0deg, rgba(255,214,150,.13) 9deg, rgba(255,214,150,.05) 19deg, transparent 26deg),
+    conic-gradient(from 166deg at 84% -6%, transparent 0deg, rgba(196,170,255,.11) 10deg, rgba(196,170,255,.04) 20deg, transparent 27deg),
+    radial-gradient(90% 50% at 50% -10%, rgba(140,96,190,.38) 0%, transparent 60%),
+    linear-gradient(180deg, #2E2142 0%, #231A31 48%, #1A1322 100%)}
+body::after{content:"";position:fixed;inset:-10%;z-index:-1;pointer-events:none;opacity:.55;
+  background:
+    radial-gradient(circle at 12% 22%, rgba(255,205,140,.22) 0 7px, transparent 8px),
+    radial-gradient(circle at 78% 14%, rgba(205,180,255,.20) 0 11px, transparent 12px),
+    radial-gradient(circle at 88% 58%, rgba(255,190,120,.14) 0 16px, transparent 17px),
+    radial-gradient(circle at 24% 72%, rgba(190,170,255,.14) 0 13px, transparent 14px),
+    radial-gradient(circle at 52% 38%, rgba(255,230,180,.12) 0 5px, transparent 6px),
+    radial-gradient(circle at 66% 86%, rgba(255,205,140,.14) 0 9px, transparent 10px);
+  filter:blur(3px);animation:bokeh 38s ease-in-out infinite alternate}
+@keyframes bokeh{from{transform:translate3d(0,0,0)}to{transform:translate3d(-3%,-4%,0)}}
+@media (prefers-reduced-motion:reduce){body::after{animation:none}}
 h1, h2, .scene .t, .rolecard .name, .donebox h2, button{font-family:var(--sans)}
 header h1{font-weight:800;letter-spacing:-.5px}
 h2.sec{font-family:var(--sans);font-weight:800;font-size:20px}
@@ -388,6 +402,21 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 .keys{display:none;text-align:center;font-size:13px;color:var(--on-stage-dim);margin-top:10px}
 .keys kbd{font-family:var(--sans);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-bottom-width:3px;border-radius:6px;padding:1px 7px;margin:0 2px;color:var(--on-stage)}
 
+/* voice chip + sheet */
+.vchip{display:inline-flex;align-items:center;gap:6px;max-width:150px;min-height:40px;padding:6px 12px;border-radius:999px;border:2px solid #E3DED3;border-bottom-width:4px;background:#fff;color:var(--ink);font-family:var(--sans);font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vchip .caret{color:#9A9DA2;font-size:11px}
+.intro.sheet{align-items:flex-end;padding:0}
+.intro.sheet .card{width:min(520px,100%);border-radius:26px 26px 0 0;max-height:82vh;display:flex;flex-direction:column;padding-bottom:calc(14px + env(safe-area-inset-bottom))}
+.vlist{overflow-y:auto;margin:0 -8px;padding:0 8px;text-align:right}
+.vhead{font-size:13px;font-weight:800;color:#8A8D92;margin:12px 4px 6px}
+.vrow{display:grid;grid-template-columns:1fr auto auto;grid-template-areas:"name play check" "tags play check";align-items:center;gap:2px 10px;padding:10px 12px;border-radius:16px;border:2px solid #EEE9DF;border-bottom-width:4px;margin-bottom:8px;cursor:pointer;background:#fff}
+.vrow.on{border-color:#7BD3A4;background:#EAF8F0}
+.vname{grid-area:name;font-weight:800;font-size:17px;color:var(--ink)}
+.vtags{grid-area:tags;font-size:12.5px;color:#7A7D82;direction:auto}
+.vplay{grid-area:play;width:40px;height:40px;border-radius:50%;border:2px solid #E3DED3;background:#FBF8F1;color:var(--ink);cursor:pointer}
+.vcheck{grid-area:check;color:#2E7D5B;font-weight:900;visibility:hidden}
+.vrow.on .vcheck{visibility:visible}
+
 /* illustrated cast */
 .av img.portrait{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;-webkit-user-drag:none;user-select:none}
 .av:has(img.portrait){box-shadow:0 0 0 2.5px var(--ink-c);background:#3A2D4A}
@@ -441,9 +470,9 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 .rehearsing .soundbtn{display:none}
 
 /* toast */
-.toast{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top));transform:translate(-50%,-140%);z-index:30;display:flex;align-items:center;gap:10px;
-  background:var(--sheet);color:var(--ink);font-weight:700;font-size:16px;padding:12px 18px;border-radius:18px;border-bottom:4px solid #E7E1D6;box-shadow:0 14px 30px -12px rgba(0,0,0,.5);transition:transform .45s cubic-bezier(.3,1.5,.5,1);max-width:calc(100vw - 32px)}
-.toast.show{transform:translate(-50%,0)}
+.toast{position:fixed;left:50%;top:calc(16px + env(safe-area-inset-top));transform:translate(-50%,-140%);visibility:hidden;z-index:30;display:flex;align-items:center;gap:10px;
+  background:var(--sheet);color:var(--ink);font-weight:700;font-size:16px;padding:12px 18px;border-radius:18px;border-bottom:4px solid #E7E1D6;box-shadow:0 14px 30px -12px rgba(0,0,0,.5);transition:transform .45s cubic-bezier(.3,1.5,.5,1),visibility .45s;max-width:calc(100vw - 32px)}
+.toast.show{transform:translate(-50%,0);visibility:visible}
 .toast .ic{font-size:22px}
 
 /* clapperboard countdown */
@@ -647,6 +676,12 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 <button type="button" class="primary" id="saySave">שמור</button>
 </div>
 <button type="button" class="skip" id="sayClose">סגור</button>
+</div></div>
+<div class="intro sheet" id="voiceDlg" hidden role="dialog" aria-modal="true" aria-label="בחירת קול"><div class="card">
+<h3>הקול של <span id="voiceFor"></span></h3>
+<p class="sayhelp">בוחרים קול. ▶ משמיע דוגמה קצרה (באנגלית, בחינם). אחרי הבחירה, ▶ בכרטיס הדמות משמיע את השורה שלה בעברית.</p>
+<div class="vlist" id="voiceList"></div>
+<button type="button" class="skip" id="voiceClose">סגור</button>
 </div></div>
 <div class="intro" id="intro" hidden role="dialog" aria-modal="true" aria-label="ברוכים הבאים"><div class="card"><div class="slide"></div><div class="dots"></div><button type="button" class="primary" id="introNext" style="margin-top:0">הבא</button><button type="button" class="skip" id="introSkip">דלג</button></div></div>
 
@@ -1511,28 +1546,27 @@ function renderRoles(){
     if(elOn()){
       const pick = document.createElement('span');
       pick.className = 'voicepick';
-      const sel = document.createElement('select');
-      sel.setAttribute('aria-label', 'קול עבור ' + name);
-      const cur = elVoiceFor[name] || defaultVoiceFor(name);
-      elVoices.forEach(v => { const o = document.createElement('option'); o.value = v.voice_id; o.textContent = v.name; if(v.voice_id===cur) o.selected = true; sel.appendChild(o); });
-      sel.onclick = e => e.stopPropagation();
-      sel.onchange = () => { elVoiceFor[name] = sel.value; lsSet('sp_el_voices2', JSON.stringify(elVoiceFor)); };
+      const chip = document.createElement('button');
+      chip.type = 'button'; chip.className = 'vchip';
+      const drawChip = () => { chip.innerHTML = `<span aria-hidden="true">🎙️</span> ${esc(voiceShort(voiceInfo(elVoiceOf(name))))} <span class="caret" aria-hidden="true">▾</span>`; chip.setAttribute('aria-label', 'הקול של ' + name + ': ' + voiceShort(voiceInfo(elVoiceOf(name))) + '. לשנות'); };
+      drawChip();
+      chip.onclick = e => { e.stopPropagation(); openVoiceSheet(name, () => drawChip()); };
       const play = document.createElement('button');
       play.className = 'play';
-      play.setAttribute('aria-label', 'השמע את הקול של ' + name);
+      play.setAttribute('aria-label', 'לשמוע את ' + name + ' אומר את השורה הראשונה');
       play.textContent = '▶';
       play.onclick = async (e) => {
         e.stopPropagation();
         const first = parsedLines.find(l => l.character === name);
         play.classList.add('busy');
         try{
-          const blob = await elGet(first ? first.text : 'שלום', sel.value);
+          const blob = await elGet(first ? first.text : 'שלום', elVoiceOf(name));
           player.src = URL.createObjectURL(blob);
           await player.play();
         }catch(err){ alertInline(elErrorText(err)); }
         play.classList.remove('busy');
       };
-      pick.appendChild(sel); pick.appendChild(play);
+      pick.appendChild(chip); pick.appendChild(play);
       card.appendChild(pick);
     }
     const choose = () => {
@@ -1565,6 +1599,30 @@ function renderNames(){
       else { const u = new SpeechSynthesisUtterance(v); u.lang = 'he-IL'; speechSynthesis.cancel(); speechSynthesis.speak(u); }
     }catch(e){ toast('לא הצלחתי להשמיע', '⚠️'); }
   });
+}
+function openVoiceSheet(name, done){
+  const dlg = document.getElementById('voiceDlg'), list = document.getElementById('voiceList');
+  document.getElementById('voiceFor').textContent = name;
+  const g = guessGender(name) === 'female' ? 'female' : 'male';
+  const all = elVoices.length ? elVoices : EL_FALLBACK_VOICES;
+  const mine = all.filter(v => voiceGender(v) === g), rest = all.filter(v => voiceGender(v) !== g);
+  const cur = elVoiceOf(name);
+  const row = v => `<div class="vrow ${v.voice_id === cur ? 'on' : ''}" data-id="${v.voice_id}" role="button" tabindex="0">
+      <span class="vname">${esc(voiceShort(v))}</span><span class="vtags">${esc(voiceTags(v))}</span>
+      ${v.preview ? `<button type="button" class="vplay" data-p="${esc(v.preview)}" aria-label="לשמוע דוגמה">▶</button>` : ''}
+      <span class="vcheck" aria-hidden="true">✓</span></div>`;
+  list.innerHTML = (mine.length ? `<div class="vhead">${g === 'female' ? 'קולות של נשים' : 'קולות של גברים'}</div>` + mine.map(row).join('') : '')
+    + (rest.length ? `<div class="vhead">עוד קולות</div>` + rest.map(row).join('') : '');
+  list.onclick = e => {
+    const p = e.target.closest('.vplay');
+    if(p){ e.stopPropagation(); player.src = p.dataset.p; player.play().catch(()=>{}); return; }
+    const r = e.target.closest('.vrow'); if(!r) return;
+    elVoiceFor[name] = r.dataset.id; lsSet('sp_el_voices2', JSON.stringify(elVoiceFor));
+    SFX.select(); dlg.hidden = true; done && done();
+    toast(name + ' מדבר/ת עכשיו בקול של ' + voiceShort(voiceInfo(r.dataset.id)), '🎙️');
+  };
+  document.getElementById('voiceClose').onclick = () => { dlg.hidden = true; try{ player.pause(); }catch(e){} };
+  dlg.hidden = false;
 }
 function alertInline(msg){
   let el = document.getElementById('roleErr');
@@ -1631,7 +1689,8 @@ async function elLoadVoices(){
     if(!r.ok) return false;
     const j = await r.json();
     if(j.voices && j.voices.length){
-      elVoices = j.voices.map(v => ({voice_id:v.voice_id, name:v.name, gender:((v.labels||{}).gender||'').toLowerCase()}));
+      elVoices = j.voices.map(v => ({voice_id:v.voice_id, name:v.name, gender:((v.labels||{}).gender||'').toLowerCase(),
+        age:((v.labels||{}).age||'').toLowerCase().replace(/[\s-]+/g, '_'), accent:(v.labels||{}).accent||'', preview:v.preview_url||''}));
       lsSet('sp_el_voicelist2', JSON.stringify(elVoices));
     }
     return true;
@@ -1712,9 +1771,28 @@ function defaultVoiceFor(name){
   return list[sameGenderBefore % list.length].voice_id;
 }
 
+// every actor in the cast has their own voice, matched by gender and age
+function castVoice(id){
+  const c = CAST.find(x => x.id === id);
+  if(!c || !elVoices.length) return null;
+  const want = {young:['young'], mid:['middle_aged', 'middle'], old:['old']}[c.age];
+  const pool = elVoices.filter(v => voiceGender(v) === c.g);
+  const exact = pool.filter(v => want.includes(v.age));
+  const peers = CAST.filter(x => x.g === c.g && (exact.length ? x.age === c.age : true));
+  const list = exact.length ? exact : (pool.length ? pool : elVoices);
+  return list[Math.max(0, peers.indexOf(c)) % list.length].voice_id;
+}
 function elVoiceOf(character){
   if(elVoiceFor[character]) return elVoiceFor[character];
-  return defaultVoiceFor(character);
+  return castVoice(castId(character)) || defaultVoiceFor(character);
+}
+function voiceInfo(id){ return elVoices.find(v => v.voice_id === id) || EL_FALLBACK_VOICES.find(v => v.voice_id === id) || {name:'קול'}; }
+function voiceShort(v){ return (v.name || '').split(/\s*[-–(]\s*/)[0]; }
+function voiceTags(v){
+  const g = voiceGender(v) === 'female' ? 'אישה' : voiceGender(v) === 'male' ? 'גבר' : '';
+  const a = {young:'צעיר', middle_aged:'בגיל הביניים', old:'מבוגר'}[v.age] || '';
+  const desc = (v.name || '').split(/\s*-\s*/).slice(1).join(' ');
+  return [g, a, desc].filter(Boolean).join(' · ');
 }
 function elPrefetchFrom(idx){
   if(!elOn()) return;
@@ -1738,7 +1816,25 @@ function elFallbackVoice(character){
   const pool = EL_FALLBACK_VOICES.filter(v => voiceGender(v) === g);
   return (pool[0] || EL_FALLBACK_VOICES[0]).voice_id;
 }
+let mouthEnv = null;
+async function buildEnvelope(ab){
+  mouthEnv = null;
+  try{
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ac = buildEnvelope.ac || (buildEnvelope.ac = new AC());
+    const buf = await new Promise((res, rej) => { const p = ac.decodeAudioData(ab, res, rej); if(p && p.then) p.then(res, rej); });
+    const d = buf.getChannelData(0), step = Math.floor(buf.sampleRate * 0.04), env = [];
+    let max = 0;
+    for(let i = 0; i < d.length; i += step){
+      let sum = 0, n = 0;
+      for(let j = i; j < Math.min(i + step, d.length); j += 4){ sum += d[j] * d[j]; n++; }
+      const v = Math.sqrt(sum / (n || 1)); env.push(v); if(v > max) max = v;
+    }
+    mouthEnv = env.map(v => max ? v / max : 0);
+  }catch(e){ mouthEnv = null; }
+}
 async function playBlob(blob, onEnd){
+  try{ await Promise.race([blob.arrayBuffer().then(buildEnvelope), new Promise(r => setTimeout(r, 400))]); }catch(e){ mouthEnv = null; }
   const url = URL.createObjectURL(blob);
   const attempt = async (el) => {
     el.onended = () => { URL.revokeObjectURL(url); onEnd(); };
@@ -2141,13 +2237,19 @@ function lipSync(on){
   if(img){
     const mood = stageMood || 'neutral';
     const calm = !['happy', 'angry', 'sad', 'surprised'].includes(mood);
-    const flap = () => {
-      const open = Math.random() < .62;
+    const rest = portraitSrc(stageChar, mood), talk = portraitSrc(stageChar, 'talk');
+    const show = src => { const el = document.querySelector('#stageFace img.portrait'); if(el && !el.src.endsWith(src)) el.src = src; };
+    // emotional lines keep their expression; calm lines move the mouth only while the voice is actually loud
+    const follow = () => {
+      const a = currentAudio;
+      if(!mouthEnv || !a || a.paused){ show(rest); lipTimer = setTimeout(follow, 60); return; }
+      const v = mouthEnv[Math.floor(a.currentTime / 0.04)] || 0;
+      const open = v > .28;
       lipFrame = open ? 1 : 0;
-      img.src = portraitSrc(stageChar, calm && open ? 'talk' : mood);
-      lipTimer = setTimeout(flap, open ? 110 + Math.random() * 120 : 70 + Math.random() * 90);
+      show(calm && open ? talk : rest);
+      lipTimer = setTimeout(follow, 45);
     };
-    if(on) flap(); else { lipFrame = 0; img.src = portraitSrc(stageChar, mood); }
+    if(on && calm) follow(); else { lipFrame = 0; show(rest); }
     return;
   }
   const pick = () => {
