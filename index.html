@@ -641,8 +641,26 @@ html.clean .names summary{color:var(--pen)}
 html.clean .moretoggle{display:flex;flex-direction:column;align-items:flex-start;width:100%;margin:16px 0 4px;padding:12px 14px;font-family:var(--sans);font-size:16px;font-weight:700;cursor:pointer;text-align:right;position:relative}
 html.clean .moretoggle small{font-weight:400;color:var(--pencil);font-size:13px;margin-top:2px}
 html.clean .moretoggle::after{content:"▾";position:absolute;left:18px;top:16px;color:var(--pencil)}
-html.clean .opts{display:none}
-html.clean .showmore .opts{display:block}
+html.clean .opts{display:block}
+html.clean .opts > label,html.clean .opts .pace,html.clean .opts .prep{display:none}
+html.clean .showmore .opts .pace,html.clean .showmore .opts .prep{display:grid}
+html.clean .showmore .opts .pace{display:flex}
+html.clean .chips{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+html.clean .chip{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 14px;min-height:0;padding:14px 16px;text-align:right}
+html.clean .chip b{grid-column:1;font-size:16px}
+html.clean .chip small{grid-column:1;font-size:13px}
+html.clean .chip::after{content:"";grid-column:2;grid-row:1/span 2;width:46px;height:28px;border-radius:99px;background:var(--rule);
+  box-shadow:inset 0 0 0 2px var(--rule);background-image:radial-gradient(circle at 14px 50%,var(--sheet) 0 10px,transparent 11px)}
+html.clean .chip[aria-pressed=true]::after{background-color:#3FAE62;background-image:radial-gradient(circle at 32px 50%,#fff 0 10px,transparent 11px);box-shadow:none}
+html.clean .chip[aria-pressed=true] b{background:none!important}
+html.clean .chip[aria-pressed=true]{border-color:var(--rule)!important;box-shadow:0 1px 0 #E2D8C4,0 8px 18px -14px var(--shadow)!important}
+html.clean #dlBtn{display:none!important}
+/* scene context card at the top of the script page */
+.ctxcard{display:none}
+html.clean .ctxcard{display:block;text-align:right;margin:8px 0 6px;padding:14px 16px;border:1.5px dashed var(--rule);border-radius:6px;background:var(--paper)}
+.ctxcard .k{font-family:'Amatic SC',cursive;font-size:24px;color:var(--red);line-height:1}
+.ctxcard b{display:block;font-family:var(--typed);font-size:20px;margin:4px 0}
+.ctxcard p{margin:0;color:var(--pencil);line-height:1.6;font-size:15px}
 html.clean .showmore .moretoggle::after{content:"▴"}
 html.clean .chip small,html.clean .prepbtn small{color:var(--pencil)}
 html.clean .chip[aria-pressed=true]{border-color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
@@ -887,12 +905,12 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <label>את מי אתה משחק?</label>
 <div id="roleList"></div>
 <details class="names" id="namesBox"><summary>שם נשמע לא נכון? תקן כאן</summary><div id="namesList"></div></details>
-<button type="button" class="moretoggle" id="moreBtn"><span>עוד אפשרויות</span><small>צילום, הסתרת שורות, קצב, אודישן</small></button>
+<button type="button" class="moretoggle" id="moreBtn"><span>עוד אפשרויות</span><small>קצב הדיבור, תאריך אודישן, חימום</small></button>
 <div class="opts">
 <label>איך מתרגלים?</label>
 <div class="chips">
 <button type="button" class="chip" data-opt="face" aria-pressed="false"><b>מול הפרטנר</b><small>במקום לקרוא תסריט, רואים את הדמות שמדברת איתך</small></button>
-<button type="button" class="chip" data-opt="tape" aria-pressed="false"><b>צילום self-tape</b><small>מצלם אותך ואת הדמות יחד. בסוף שומרים סרטון</small></button>
+<button type="button" class="chip" data-opt="tape" aria-pressed="false"><b>צילום self-tape</b><small>מצלם אותך בזמן הסצנה, עם הקול של הקורא ברקע. הסרטון נשמר ב"הטייקים שלי"</small></button>
 <button type="button" class="chip" data-opt="hide" aria-pressed="false"><b>הסתר את השורות שלי</b><small>לשינון: רואים רק את האות הראשונה של כל מילה. נתקעת? נגיעה מגלה מילה</small></button>
 <button type="button" class="chip" data-opt="cue" aria-pressed="false"><b>רק המשפטים שלי</b><small>מדלגים על השאר: שומעים רק את המשפט שלפניך, ואז אתה עונה</small></button>
 </div>
@@ -2901,6 +2919,13 @@ function setupRehearsal(){
   cursor = 0;
   assignVoices();
   document.getElementById('feed').innerHTML = '';
+  if(CLEAN){
+    const lib = SCENES.find(x => x.title === sceneTitle);
+    const mine = runLines.filter(l => l.character === myCharacter).length;
+    const solo = characters.length === 1;
+    document.getElementById('feed').innerHTML = `<div class="ctxcard"><span class="k">על הסצנה</span><b>${esc(sceneTitle)}</b>
+      <p>${lib ? esc(lib.blurb) + '<br>' : ''}${solo ? 'מונולוג, ' + mine + ' קטעים. האפליקציה מחכה לך בין קטע לקטע.' : 'אתה ' + esc(myCharacter) + ', ' + mine + ' שורות. את השאר אני קורא.'}</p></div>`;
+  }
   document.getElementById('progressFill').style.width = '0%';
   document.getElementById('actionBtn').textContent = 'התחל';
   document.getElementById('actionBtn').style.display = 'block';
@@ -3114,6 +3139,15 @@ function wrapLines(ctx, text, maxW, maxLines){
   return lines;
 }
 function drawFrame(ctx, W, H){
+  if(CLEAN){
+    ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+    if(camVid && camVid.videoWidth){
+      const vw = camVid.videoWidth, vh = camVid.videoHeight;
+      const sc = Math.max(W / vw, H / vh), sw = W / sc, sh = H / sc;
+      ctx.drawImage(camVid, (vw - sw)/2, (vh - sh)/2, sw, sh, 0, 0, W, H);
+    }
+    return;
+  }
   // portrait: partner on top, you below. landscape (phone turned sideways): partner on the side, you big
   const land = W > H;
   const P = land ? {x:0, y:0, w:Math.round(W*0.4), h:H} : {x:0, y:0, w:W, h:Math.round(H*0.42)};
@@ -3559,6 +3593,7 @@ document.getElementById('dlBtn').onclick = async () => {
   renderDl();
 };
 
+if(CLEAN){ const ch = document.querySelector('#screen-roles .chips'); const mb = document.getElementById('moreBtn'); if(ch && mb) ch.after(mb); }
 document.getElementById('moreBtn').onclick = () => document.getElementById('screen-roles').classList.toggle('showmore');
 document.getElementById('exitBtn').onclick = () => {
   stopEverything();
