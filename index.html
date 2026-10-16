@@ -431,7 +431,9 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 .prepbtn small{display:block;font-size:13.5px;opacity:.75;line-height:1.4;margin-top:2px}
 .prepbtn.set{border-color:#FFC24B;background:rgba(255,194,75,.12)}
 .prepbtn.done{border-color:#7BD3A4;background:rgba(123,211,164,.12)}
-.prepbtn input[type=date]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;-webkit-appearance:none}
+.prepbtn input[type=date]{position:absolute;left:50%;bottom:0;width:1px;height:1px;opacity:0;pointer-events:none;border:0;padding:0}
+.prepbtn input[type=date].show{position:static;width:auto;height:44px;opacity:1;pointer-events:auto;margin-inline-start:auto;border-radius:12px;border:2px solid #FFC24B;padding:0 8px;font:inherit;font-size:16px;background:#fff;color:#2A1E14}
+#audBtn{cursor:pointer}
 .prepbtn .clr{position:relative;z-index:2;margin-inline-start:auto;width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.12);color:inherit;font-size:18px;cursor:pointer;flex-shrink:0}
 .aud{display:inline-block;margin-inline-start:6px;padding:2px 9px;border-radius:999px;background:#FFC24B;color:#2A1E14;font-size:12.5px;font-weight:800;vertical-align:middle}
 .aud.today{background:#FF7A6B;color:#fff;animation:pulse 1.4s ease-in-out infinite}
@@ -658,7 +660,7 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 <button type="button" data-rate="0.85">איטי</button><button type="button" data-rate="1">רגיל</button><button type="button" data-rate="1.15">מהיר</button>
 </div>
 <div class="prep">
-<div class="prepbtn" id="audBtn"><span class="ic" aria-hidden="true">📅</span><span><b id="audTitle">יש לך אודישן?</b><small id="audSub">מוסיפים תאריך, ואני סופרת איתך לאחור</small></span><input type="date" id="audDate" aria-label="תאריך האודישן"><button type="button" class="clr" id="audClr" hidden aria-label="להסיר את התאריך">×</button></div>
+<div class="prepbtn" id="audBtn" role="button" tabindex="0"><span class="ic" aria-hidden="true">📅</span><span><b id="audTitle">יש לך אודישן?</b><small id="audSub">מוסיפים תאריך, ואני סופרת איתך לאחור</small></span><input type="date" id="audDate" aria-label="תאריך האודישן"><button type="button" class="clr" id="audClr" hidden aria-label="להסיר את התאריך">×</button></div>
 <button type="button" class="prepbtn" id="warmBtn"><span class="ic" aria-hidden="true">🔥</span><span><b>חימום של דקה</b><small>נשימה ותרגילי דיקציה, כמו לפני שעולים לבמה</small></span></button>
 <button type="button" class="prepbtn" id="dlBtn" hidden><span class="ic" aria-hidden="true">⬇️</span><span><b id="dlTitle">להכין את הקולות מראש</b><small id="dlSub">ואז אפשר לתרגל גם בלי אינטרנט, למשל בדרך לאודישן</small></span></button>
 </div>
@@ -2301,7 +2303,12 @@ function lipSync(on){
   if(img){
     const mood = stageMood || 'neutral';
     const rest = portraitSrc(stageChar, mood);
-    const show = src => { const el = document.querySelector('#stageFace img.portrait'); if(el && !el.src.endsWith(src)) el.src = src; };
+    // the big face, and in script view the small picture next to the line being spoken
+    const show = src => {
+      const last = document.querySelector('#feed .line:last-child');
+      const els = [document.querySelector('#stageFace img.portrait'), last && last.classList.contains('other') ? last.querySelector('img.portrait') : null];
+      els.forEach(el => { if(el && !el.src.endsWith(src)) el.src = src; });
+    };
     // the mouth moves only while the voice is actually loud, and the feeling stays on the face
     const follow = () => {
       const a = currentAudio;
@@ -2364,6 +2371,13 @@ function stageShowPartner(line, still){
   tapeCaption = {who: line.character, text: line.text};
 }
 // first letter of a word (skipping a leading quote or bracket)
+// keep the newest line in view, also after its pictures finish loading and change the height
+function feedToBottom(div){
+  const f = document.getElementById('feed');
+  const go = () => f.scrollTo({top: f.scrollHeight, behavior: 'smooth'});
+  requestAnimationFrame(go); setTimeout(go, 250); setTimeout(go, 700);
+  if(div) div.querySelectorAll('img').forEach(i => i.addEventListener('load', go, {once: true}));
+}
 function firstOf(w){ const m = w.match(/^[^\p{L}\p{N}]*[\p{L}\p{N}]/u); return m ? m[0] : w.slice(0, 1); }
 function stageShowMine(line){
   const st = document.getElementById('stage');
@@ -2550,7 +2564,7 @@ function addLineToFeed(line, isMine){
   if(!isMine) div.querySelector('.sayfix').onclick = e => { e.stopPropagation(); openSayEditor(line); };
   feed.appendChild(div);
   // Scroll only the script box, not the whole page (scrollIntoView jumps the page on phones)
-  feed.scrollTo({top: feed.scrollHeight, behavior:'smooth'});
+  feedToBottom(div);
   return div;
 }
 
@@ -2762,6 +2776,13 @@ document.getElementById('audDate').onchange = e => {
     SFX.on(); toast(n === null ? 'התאריך כבר עבר' : audText(n) + '. בהצלחה!', '🎬');
   }
   renderAud(); renderMyScenes();
+};
+document.getElementById('audBtn').onclick = e => {
+  const inp = document.getElementById('audDate');
+  if(e.target === inp || e.target.id === 'audClr') return;
+  SFX.tap();
+  try{ if(inp.showPicker){ inp.showPicker(); return; } }catch(_){}
+  inp.classList.add('show'); inp.focus(); try{ inp.click(); }catch(_){}
 };
 document.getElementById('audClr').onclick = e => { e.stopPropagation(); try{ localStorage.removeItem('sp_aud_' + sceneTitle); }catch(_){} renderAud(); renderMyScenes(); };
 
