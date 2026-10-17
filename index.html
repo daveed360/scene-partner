@@ -696,6 +696,34 @@ html.clean .lockup{min-width:0;overflow:hidden}
 .onb .dots{display:flex;gap:6px;justify-content:flex-start;margin-bottom:10px;direction:rtl}
 .onb .dots i{width:22px;height:4px;border-radius:9px;background:var(--rule,#E6E0D3)}
 .onb .dots i.on{background:var(--ink,#1F1D1A)}
+/* short lessons */
+.lessons{display:none}
+html.clean .lessons:not([hidden]){display:block;margin:18px 0 4px}
+.lessons .lh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.lessons .lh b{font-family:'Amatic SC',cursive;font-size:30px;line-height:1;color:var(--ink)}
+.lessons .lh span{font-size:13px;color:var(--pencil)}
+.lrow{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 2px 12px;margin:0 -16px;padding-inline:16px;scrollbar-width:none}
+.lrow::-webkit-scrollbar{display:none}
+.lcard{flex:0 0 150px;scroll-snap-align:start;position:relative;text-align:right;padding:14px 12px 12px;border-radius:4px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);font-family:var(--sans);cursor:pointer;box-shadow:0 8px 18px -14px var(--shadow);min-height:132px;display:flex;flex-direction:column;gap:4px}
+.lcard:nth-child(3n+1){transform:rotate(-1deg)} .lcard:nth-child(3n+2){transform:rotate(.8deg)}
+.lcard .n{font-family:'Amatic SC',cursive;font-size:22px;color:var(--red);line-height:1}
+.lcard i{font-style:normal;font-size:26px}
+.lcard b{font-family:'David Libre',serif;font-size:17px;line-height:1.25}
+.lcard small{color:var(--pencil);font-size:12px;margin-top:auto}
+.lcard.done::after{content:"✓";position:absolute;top:8px;left:10px;font-family:'Amatic SC',cursive;font-size:28px;color:#3FAE62}
+.lcard.locked{opacity:.7}
+.lcard.locked small::before{content:"🔒 "}
+.lesson .card{text-align:right}
+.lesson .top{display:flex;align-items:center;gap:10px}
+.lesson .top i{font-style:normal;font-size:38px}
+.lesson .top .n{font-family:'Amatic SC',cursive;font-size:24px;color:#C2362C;display:block;line-height:1}
+.lesson h3{font-family:'David Libre',serif;font-size:25px;margin:0}
+.lesson .lbody{overflow-y:auto;margin:10px -6px 0;padding:0 6px}
+.lesson .lbody p{margin:0 0 10px;line-height:1.65;font-size:16px}
+.lesson .tip{background:var(--hl,rgba(134,232,150,.5));padding:10px 12px;border-radius:4px;margin:4px 0 12px;line-height:1.55;font-size:15.5px}
+.lesson .ex{border:1.5px dashed var(--rule,#E6E0D3);border-radius:6px;padding:12px;margin-bottom:12px}
+.lesson .ex b{font-family:'Amatic SC',cursive;font-size:24px;color:#2B4FA8;display:block;line-height:1}
+.lesson .ex p{margin:6px 0 0;font-size:15px;line-height:1.55}
 /* the daily card folds */
 .daily .fold{position:absolute;left:12px;top:14px;width:34px;height:34px;border-radius:50%;border:1px solid #E6DDCB;background:#fff;color:#1F1D1A;font-size:15px;cursor:pointer;z-index:2}
 html.clean .daily.min{padding:14px 20px 12px;background-image:repeating-linear-gradient(transparent 0 29px,#D7E2F2 29px 30px);background-position:0 8px}
@@ -744,6 +772,8 @@ html.clean #meterFill{background:var(--ink)}
 html.clean .minor button{background:transparent;color:var(--ink);border:1.5px solid #CFC5B1;border-radius:12px}
 html.clean .cd{background:rgba(244,238,223,.96);color:var(--ink)}
 html.clean .cd .clap{display:none}
+html.clean.dark .cd{background:rgba(14,14,15,.95)}
+html.clean .cd #countNum.word{color:var(--red)}
 html.clean .cd #countNum{color:var(--ink);font-family:var(--typed)}
 /* done */
 html.clean .donebox h2{font-family:var(--hand);font-size:64px;color:var(--red);transform:rotate(-4deg);margin:0}
@@ -900,6 +930,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <div class="screen active" id="screen-input">
 <div class="daily" id="daily" hidden></div>
 <div class="quota" id="quota" hidden></div>
+<div class="lessons" id="lessons" hidden></div>
 <div class="mytabs" role="tablist"><button type="button" id="tabMine" aria-pressed="true">📄 הסצנות שלי</button><button type="button" id="tabTakes" aria-pressed="false">🎬 הטייקים שלי</button></div>
 <div id="myBox" hidden>
 <h2 class="sec">הסצנות שלי</h2>
@@ -1082,6 +1113,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <button type="button" class="secondary" id="onbAgain">לענות שוב על השאלון</button>
 <button type="button" class="skip" id="glossClose">סגור</button>
 </div></div>
+<div class="intro sheet lesson" id="lessonDlg" hidden role="dialog" aria-modal="true" aria-label="שיעור"><div class="card" id="lessonCard"></div></div>
 <div class="intro onb" id="onb" hidden role="dialog" aria-modal="true" aria-label="היכרות"><div class="card" id="onbCard"></div></div>
 <div class="intro" id="intro" hidden role="dialog" aria-modal="true" aria-label="ברוכים הבאים"><div class="card"><div class="slide"></div><div class="dots"></div><button type="button" class="primary" id="introNext" style="margin-top:0">הבא</button><button type="button" class="skip" id="introSkip">דלג</button></div></div>
 
@@ -2094,6 +2126,80 @@ async function renderTakes(){
   }
 }
 document.addEventListener('DOMContentLoaded', () => { if(CLEAN) myTab('mine'); });
+
+/* ---- short lessons: a little head start for an actor, each one ends in a real exercise ---- */
+const LESSONS = [
+  {i:'🧠', t:'ללמוד טקסט בלי לשנן כמו תוכי', m:3,
+   p:['קודם קוראים את כל הסצנה פעם אחת כמו סיפור, בלי לנסות לזכור. מה קורה פה? מה כל אחד רוצה?',
+      'אחר כך לומדים את המחשבה, לא את המילים. כשאתה יודע למה הדמות אומרת משהו, המילים מגיעות כמעט לבד.',
+      'ולומדים בחתיכות קטנות, שתיים־שלוש שורות, יחד עם הקיו שלפניהן. בלי הקיו, הטקסט לא יבוא בזמן.'],
+   tip:'הכי טוב לחזור על הטקסט לפני השינה, ושוב בבוקר. המוח מסדר אותו בלילה.',
+   ex:'לימוד בהדרגה על "טסט". שתי שורות כל פעם: פעם עם הטקסט ופעם בלי.', scene:'טסט', mode:'learn'},
+  {i:'👂', t:'הקשבה: מה שהופך טקסט לשיחה', m:2,
+   p:['הטעות הכי נפוצה: מחכים לתור שלך במקום להקשיב. הקהל והלוהקים רואים את זה מיד.',
+      'תשמע כל שורה של הפרטנר כאילו בפעם הראשונה, ותן לה לשנות אותך. התגובה שלך מתחילה עוד לפני שאתה מדבר.'],
+   tip:'אחרי כל קיו, קח חצי נשימה. לא הפסקה דרמטית, רק רגע שבו המילים של הפרטנר נוחתות.',
+   ex:'"חזרה" על "המפתחות". בכל שורה של יעל, תסתכל עליה בדמיון ותגיב לה, לא לטקסט.', scene:'המפתחות', mode:'run'},
+  {i:'🎯', t:'מה הדמות רוצה?', m:3,
+   p:['לכל דמות בכל סצנה יש מטרה: משהו שהיא רוצה מהפרטנר עכשיו. אומרים אותה במשפט אחד, בגוף ראשון: "אני רוצה שהוא יבקש ממני להישאר".',
+      'ואז שואלים: איך אני משיג את זה? בכל שורה יש פעולה: לשכנע, לבדוק, להאשים, להצחיק, לבקש. משחקים פעולה, לא רגש.'],
+   tip:'אם הסצנה מרגישה שטוחה, כמעט תמיד חסרה מטרה ברורה.',
+   ex:'לפני שמתחילים "תחנה אחרונה", תגיד בקול מה אבי רוצה מרונית. אחר כך תשחק רק את זה.', scene:'תחנה אחרונה', mode:'run'},
+  {i:'🫥', t:'תת־טקסט: מה שמתחת למילים', m:2,
+   p:['אנשים כמעט אף פעם לא אומרים בדיוק מה הם מתכוונים. "אכלת?" יכול להיות "אני דואג לך", ו"זה בסדר" יכול להיות "אני כועס".',
+      'לכל שורה, תחליט מה המשפט האמיתי שמתחתיה. אל תגיד אותו, רק תחשוב אותו בזמן שאתה אומר את הטקסט.'],
+   tip:'נסה את אותה שורה עם שלושה תת־טקסטים שונים. תופתע כמה היא משתנה.',
+   ex:'"המכתב": לפני כל שורה של דנה, תחשוב משפט אחר שהיא באמת רוצה להגיד.', scene:'המכתב', mode:'run'},
+  {i:'🎥', t:'סלף־טייפ שנראה מקצועי', m:3,
+   p:['מצלמה בגובה העיניים, בדרך כלל לרוחב. מסגרת מהחזה ומעלה. רקע חלק ושקט, והאור מקדימה: חלון מולך הוא התאורה הכי טובה שיש.',
+      'הרידר עומד ליד המצלמה, לא מולה. אתה מסתכל עליו, לא לעדשה. ובסוף, טייק אחד טוב עדיף על חמישה בינוניים.',
+      'בהתחלה סלייט: שם, גובה, ולפעמים סוכנות. בחיוך, בלי לשחק.'],
+   tip:'כאן האפליקציה היא הרידר. שים את הטלפון קרוב למצלמה, והקול שלה ייכנס לסרטון.',
+   ex:'הדלק צילום self-tape ועשה את "חדר האודישן". אחר כך תסתכל בטייק ב"הטייקים שלי".', scene:'חדר האודישן', mode:'run', tape:true},
+  {i:'⚡', t:'איטלקית בבוקר של האודישן', m:2,
+   p:['בבוקר של האודישן לא משחקים את הסצנה. עושים איטלקית: מעבר מהיר על כל הטקסט, בלי רגש, רק לוודא שהוא יושב.',
+      'אם נתקעת, זה המקום לגלות את זה, לא בחדר. אחרי זה נושמים, מחממים את הקול, ומשאירים את המשחק לחדר.'],
+   tip:'איטלקית טובה לוקחת פחות מחצי מהזמן של הסצנה.',
+   ex:'איטלקית על "שותפים". כמה זמן לקח לך?', scene:'שותפים', mode:'italian'},
+  {i:'📄', t:'קולד ריד: כשאין זמן להכין', m:3,
+   p:['לפעמים נותנים לך טקסט ודקה להתכונן. קוראים פעם אחת בשביל הסיפור, ומחליטים רק שני דברים: מה אני רוצה, וממי.',
+      'מותר להסתכל בדף. קוראים בעיניים את תחילת המשפט, מרימים את הראש, ואומרים אותו לפרטנר. הקשר עם הפרטנר חשוב יותר מכל מילה מדויקת.'],
+   tip:'אל תתנצל על טעויות. ממשיכים כאילו ככה זה כתוב.',
+   ex:'סצנה שעוד לא עשית: "הצעת נישואין". קרא פעם אחת ומיד "חזרה".', scene:'הצעת נישואין', mode:'run'},
+];
+function lessonDone(i){ return (lsGet('sp_lessons') || '').split(',').includes(String(i)); }
+function markLesson(i){ const d = new Set((lsGet('sp_lessons') || '').split(',').filter(Boolean)); d.add(String(i)); lsSet('sp_lessons', [...d].join(',')); }
+function lessonLocked(i){ return CLEAN && !isPro() && i >= 3; }
+function renderLessons(){
+  const box = document.getElementById('lessons');
+  if(!CLEAN){ box.hidden = true; return; }
+  const n = LESSONS.filter((_, i) => lessonDone(i)).length;
+  box.innerHTML = `<div class="lh"><b>שיעורים קצרים</b><span>${n} מתוך ${LESSONS.length}</span></div><div class="lrow">${LESSONS.map((l, i) =>
+    `<button type="button" class="lcard ${lessonDone(i) ? 'done' : ''} ${lessonLocked(i) ? 'locked' : ''}" data-i="${i}"><span class="n">שיעור ${i + 1}</span><i>${l.i}</i><b>${esc(l.t)}</b><small>${l.m} דקות + תרגיל</small></button>`).join('')}</div>`;
+  box.hidden = false;
+  box.querySelectorAll('.lcard').forEach(c => c.onclick = () => openLesson(+c.dataset.i));
+}
+function openLesson(i){
+  const l = LESSONS[i];
+  if(lessonLocked(i)){ openPro('השיעור "' + l.t + '" הוא חלק מהגרסה המלאה. שלושת השיעורים הראשונים בחינם.'); return; }
+  const card = document.getElementById('lessonCard');
+  card.innerHTML = `<div class="top"><i>${l.i}</i><div><span class="n">שיעור ${i + 1} · ${l.m} דקות</span><h3>${esc(l.t)}</h3></div></div>
+    <div class="lbody">${l.p.map(x => `<p>${esc(x)}</p>`).join('')}<div class="tip">💡 ${esc(l.tip)}</div>
+    <div class="ex"><b>התרגיל</b><p>${esc(l.ex)}</p></div></div>
+    <button type="button" class="primary" id="lessonGo">לתרגל עכשיו</button><button type="button" class="skip" id="lessonClose">אחר כך</button>`;
+  const dlg = document.getElementById('lessonDlg');
+  card.querySelector('#lessonClose').onclick = () => { dlg.hidden = true; markLesson(i); renderLessons(); };
+  card.querySelector('#lessonGo').onclick = () => {
+    dlg.hidden = true; markLesson(i); renderLessons();
+    const sc = SCENES.find(x => x.title === l.scene);
+    setMode(l.mode || 'run');
+    if(l.tape){ OPTS.tape = true; lsSet(OPT_KEYS.tape, '1'); const c = document.querySelector('.chip[data-opt="tape"]'); if(c) c.setAttribute('aria-pressed', 'true'); }
+    if(sc) loadScene(sc.text, sc.title);
+    toast('התרגיל מוכן. בוחרים תפקיד ומתחילים', '🎬');
+  };
+  dlg.hidden = false;
+}
+document.addEventListener('DOMContentLoaded', renderLessons);
 
 /* ---- actor's glossary ---- */
 const GLOSS = [
