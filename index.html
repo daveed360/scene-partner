@@ -696,6 +696,40 @@ html.clean .lockup{min-width:0;overflow:hidden}
 .onb .dots{display:flex;gap:6px;justify-content:flex-start;margin-bottom:10px;direction:rtl}
 .onb .dots i{width:22px;height:4px;border-radius:9px;background:var(--rule,#E6E0D3)}
 .onb .dots i.on{background:var(--ink,#1F1D1A)}
+/* home: work / learn */
+.hometabs,.glosscard,.folderbar{display:none}
+html.clean .hometabs{display:flex;gap:6px;margin:2px 0 10px;padding:4px;border-radius:14px;background:var(--rule)}
+.hometabs button{flex:1;display:flex;flex-direction:column;align-items:center;padding:9px 4px;border:0;border-radius:11px;background:transparent;color:var(--ink);font-family:var(--sans);font-weight:800;font-size:16px;cursor:pointer}
+.hometabs small{font-weight:400;font-size:11.5px;color:var(--pencil)}
+.hometabs button[aria-pressed=true]{background:var(--sheet);box-shadow:0 2px 8px -4px var(--shadow)}
+html.clean #screen-input.tab-work .learn-only,html.clean #screen-input.tab-learn .work-only{display:none!important}
+html.clean.tab-learn-on .fab{display:none}
+html.clean .glosscard{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;text-align:right;margin:16px 0 4px;padding:14px 16px;border-radius:6px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);font-family:var(--sans);cursor:pointer;box-shadow:0 8px 18px -14px var(--shadow)}
+.glosscard span{font-size:24px}.glosscard b{font-family:'David Libre',serif;font-size:19px}.glosscard small{color:var(--pencil);font-size:13px}
+/* my folder */
+html.clean .folderbar[hidden]{display:none}
+html.clean .folderbar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:2px 0 10px}
+.folderbar input{flex:1 1 100%;padding:10px 12px;border-radius:10px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);font:inherit;font-size:15px}
+.folderbar button{padding:6px 12px;border-radius:99px;border:1px solid var(--rule);background:transparent;color:var(--ink);font-family:var(--sans);font-size:13.5px;font-weight:700;cursor:pointer}
+.folderbar button[aria-pressed=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.folderbar .sort{margin-inline-start:auto;border-style:dashed}
+.fitem{display:flex;gap:12px;align-items:flex-start;padding:12px 12px;background:var(--sheet);border:1px solid var(--rule);border-radius:4px;margin-bottom:8px;cursor:pointer;color:var(--ink);box-shadow:0 8px 18px -16px var(--shadow)}
+.fitem .ic{font-size:24px;line-height:1.2}
+.fitem .fi{flex:1;min-width:0}
+.fitem .fi b{display:block;font-family:'David Libre',serif;font-size:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fitem .fi small{display:block;color:var(--pencil);font-size:12.5px;margin-top:2px}
+.fitem .more{border:0;background:none;color:var(--pencil);font-size:20px;padding:0 4px;cursor:pointer}
+.fitem .acts{display:none;gap:6px;flex-wrap:wrap;margin-top:8px}
+.fitem.open .acts{display:flex}
+.fitem .acts button{padding:6px 10px;border-radius:8px;border:1px solid var(--rule);background:transparent;color:var(--ink);font:inherit;font-size:13px;cursor:pointer}
+.fitem .acts .danger{color:var(--red);border-color:var(--red)}
+.fitem input.ren{width:100%;font:inherit;font-family:'David Libre',serif;font-size:18px;padding:4px 6px;border:1px solid var(--ink);border-radius:6px;background:var(--paper);color:var(--ink)}
+/* voice sheet: women / men */
+.vtabs{display:flex;gap:6px;margin:4px 0 8px;padding:4px;border-radius:12px;background:#EEE9DF}
+.vtabs button{flex:1;padding:9px;border:0;border-radius:9px;background:transparent;font-family:var(--sans);font-weight:800;font-size:15px;color:#1F1D1A;cursor:pointer}
+.vtabs button[aria-pressed=true]{background:#fff;box-shadow:0 2px 8px -4px rgba(0,0,0,.3)}
+html.clean.dark .vtabs{background:#2A2A2D}html.clean.dark .vtabs button{color:#ECE9E2}html.clean.dark .vtabs button[aria-pressed=true]{background:#18181A}
+html.clean.dark .vrow{background:#18181A;border-color:#2A2A2D}html.clean.dark .vname{color:#ECE9E2}
 /* short lessons */
 .lessons{display:none}
 html.clean .lessons:not([hidden]){display:block;margin:18px 0 4px}
@@ -928,10 +962,12 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 
 <!-- SCREEN 1: CHOOSE A SCENE -->
 <div class="screen active" id="screen-input">
+<div class="hometabs" id="homeTabs"><button type="button" data-t="work" aria-pressed="true">🎬 עבודה<small>הסצנות שלך, טייקים</small></button><button type="button" data-t="learn" aria-pressed="false">📚 לימוד<small>שיעורים, תרגול, מילון</small></button></div>
 <div class="daily" id="daily" hidden></div>
 <div class="quota" id="quota" hidden></div>
 <div class="lessons" id="lessons" hidden></div>
 <div class="mytabs" role="tablist"><button type="button" id="tabMine" aria-pressed="true">📄 הסצנות שלי</button><button type="button" id="tabTakes" aria-pressed="false">🎬 הטייקים שלי</button></div>
+<div class="folderbar" id="folderBar"></div>
 <div id="myBox" hidden>
 <h2 class="sec">הסצנות שלי</h2>
 <div class="scenes" id="myList"></div>
@@ -960,7 +996,8 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <p>💾 כל סצנה נשמרת ב"הסצנות שלי", והקולות נשמרים בטלפון אחרי הפעם הראשונה.</p>
 </div>
 
-<h2 class="sec lib">או סצנה מוכנה לתרגול</h2>
+<button type="button" class="glosscard" id="glossCard"><span>📖</span><b>מילון לשחקן</b><small>קיו, איטלקית, תת־טקסט ועוד, ואיך לתרגל אותם</small></button>
+<h2 class="sec lib">סצנות לתרגול</h2>
 <div class="lib-tabs" id="libTabs"><button type="button" data-l="1" aria-pressed="true">קל</button><button type="button" data-l="2" aria-pressed="false">בינוני</button><button type="button" data-l="3" aria-pressed="false">מאתגר</button><button type="button" data-l="4" aria-pressed="false">מונולוגים</button></div>
 <div class="scenes" id="sceneList"></div>
 
@@ -1084,6 +1121,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <div class="intro sheet" id="voiceDlg" hidden role="dialog" aria-modal="true" aria-label="בחירת קול"><div class="card">
 <h3>הקול של <span id="voiceFor"></span></h3>
 <p class="sayhelp">בוחרים קול. ▶ משמיע דוגמה קצרה (באנגלית, בחינם). אחרי הבחירה, ▶ בכרטיס הדמות משמיע את השורה שלה בעברית.</p>
+<div class="vtabs" id="vTabs"><button type="button" data-g="female" aria-pressed="true">♀ קולות נשים</button><button type="button" data-g="male" aria-pressed="false">♂ קולות גברים</button></div>
 <div class="vlist" id="voiceList"></div>
 <button type="button" class="skip" id="voiceClose">סגור</button>
 </div></div>
@@ -1909,17 +1947,81 @@ function showIntro(){
 }
 document.addEventListener('DOMContentLoaded', () => { if(!CLEAN && !lsGet('sp_intro') && !location.hash.startsWith('#s=')) showIntro(); });
 
-let pendingTitle = null;
+let pendingTitle = null, pendingFile = null;
 
 /* ---- my scenes: everything you uploaded or pasted, kept on this device ---- */
 function myScenes(){ try{ return JSON.parse(lsGet('sp_my') || '[]'); }catch(e){ return []; } }
-function saveMyScene(title, text){
+function saveMyScene(title, text, meta){
+  const old = myScenes().find(x => x.text === text || x.title === title);
   const list = myScenes().filter(x => x.text !== text && x.title !== title);
-  list.unshift({title, text, t: Date.now()});
-  lsSet('sp_my', JSON.stringify(list.slice(0, 30)));
+  list.unshift({title, text, t: Date.now(), ...(old ? {src: old.src, fname: old.fname, added: old.added} : {}), ...(meta || {}), added: (old && old.added) || Date.now()});
+  lsSet('sp_my', JSON.stringify(list.slice(0, 100)));
   renderMyScenes();
 }
+let folderFilter = 'all', folderSort = lsGet('sp_fsort') || 'new', folderQuery = '';
+function renderFolderBar(n){
+  const bar = document.getElementById('folderBar');
+  if(!CLEAN || !n){ bar.innerHTML = ''; return; }
+  const f = (k, t) => `<button type="button" data-f="${k}" aria-pressed="${folderFilter === k}">${t}</button>`;
+  bar.innerHTML = (n > 4 ? `<input id="folderQ" type="search" placeholder="חיפוש בסצנות שלי" value="${esc(folderQuery)}">` : '')
+    + f('all', 'הכל') + f('file', '📄 קבצים') + f('paste', '📋 הודבקו') + f('mono', '🎤 מונולוגים')
+    + `<button type="button" class="sort" id="folderSort">${folderSort === 'new' ? '↓ אחרונים' : 'א־ב'}</button>`;
+  bar.querySelectorAll('[data-f]').forEach(b => b.onclick = () => { folderFilter = b.dataset.f; renderMyScenes(); });
+  bar.querySelector('#folderSort').onclick = () => { folderSort = folderSort === 'new' ? 'abc' : 'new'; lsSet('sp_fsort', folderSort); renderMyScenes(); };
+  const q = bar.querySelector('#folderQ');
+  if(q) q.oninput = () => { folderQuery = q.value; renderMyScenes(); setTimeout(() => { const q2 = document.getElementById('folderQ'); if(q2){ q2.focus(); q2.setSelectionRange(q2.value.length, q2.value.length); } }, 0); };
+}
+function renderFolder(){
+  const all = myScenes(), el = document.getElementById('myList');
+  renderFolderBar(all.length);
+  el.innerHTML = '';
+  if(!all.length){ el.innerHTML = '<div class="empty"><span class="big">📄</span><b>התיקייה ריקה</b>לוחצים על + למטה, מעלים קובץ או מדביקים טקסט מאתר, והסצנה נשמרת כאן.</div>'; return; }
+  let list = all.map((sc, i) => ({sc, i, lines: parseScript(sc.text) || []}));
+  list.forEach(o => { o.cast = [...new Set(o.lines.map(l => l.character))]; });
+  if(folderFilter === 'file') list = list.filter(o => o.sc.src === 'file');
+  if(folderFilter === 'paste') list = list.filter(o => o.sc.src !== 'file');
+  if(folderFilter === 'mono') list = list.filter(o => o.cast.length === 1);
+  if(folderQuery.trim()){ const q = folderQuery.trim(); list = list.filter(o => o.sc.title.includes(q) || o.sc.text.includes(q)); }
+  if(folderSort === 'abc') list.sort((a, b) => a.sc.title.localeCompare(b.sc.title, 'he'));
+  if(!list.length){ el.innerHTML = '<div class="empty">אין סצנות שמתאימות לסינון הזה.</div>'; return; }
+  const kind = sc => sc.src === 'file' ? ((sc.fname || '').match(/\.(\w+)$/) || ['', 'קובץ'])[1].toUpperCase().replace('DOCX', 'Word') : sc.src === 'link' ? 'קישור' : 'הודבק';
+  list.forEach(({sc, i, lines, cast}) => {
+    const takes = parseInt(lsGet('sp_takes_' + sc.title) || '0', 10) || 0;
+    const d = new Date(sc.added || sc.t);
+    const row = document.createElement('div');
+    row.className = 'fitem';
+    row.innerHTML = `<span class="ic">${sc.src === 'file' ? '📄' : sc.src === 'link' ? '🔗' : cast.length === 1 ? '🎤' : '📋'}</span>
+      <span class="fi"><b>${esc(sc.title)}</b>${audBadge(sc.title)}
+      <small>${kind(sc)} · ${d.getDate()}/${d.getMonth() + 1}/${String(d.getFullYear()).slice(2)} · ${cast.length === 1 ? 'מונולוג' : cast.length + ' דמויות'} · ${lines.length} שורות${takes ? ' · ' + takes + ' טייקים' : ''}</small>
+      ${sc.fname ? `<small>${esc(sc.fname)}</small>` : ''}
+      <span class="acts"><button type="button" data-a="ren">✏️ שינוי שם</button><button type="button" data-a="share">🔗 שיתוף</button><button type="button" data-a="del" class="danger">🗑️ מחיקה</button></span></span>
+      <button type="button" class="more" aria-label="אפשרויות">⋯</button>`;
+    row.onclick = e => { if(e.target.closest('.acts, .more, input')) return; loadScene(sc.text, sc.title); };
+    row.querySelector('.more').onclick = e => { e.stopPropagation(); row.classList.toggle('open'); };
+    row.querySelector('[data-a="del"]').onclick = e => {
+      e.stopPropagation();
+      const btn = e.currentTarget;
+      if(!btn.dataset.sure){ btn.dataset.sure = '1'; btn.textContent = 'בטוח? למחוק'; return; }
+      lsSet('sp_my', JSON.stringify(myScenes().filter((x, j) => j !== i))); renderMyScenes(); toast('נמחק', '🗑️');
+    };
+    row.querySelector('[data-a="share"]').onclick = e => { e.stopPropagation(); sceneTitle = sc.title; parsedLines = lines; document.getElementById('shareBtn').click(); };
+    row.querySelector('[data-a="ren"]').onclick = e => {
+      e.stopPropagation();
+      const b = row.querySelector('.fi b'); const inp = document.createElement('input'); inp.className = 'ren'; inp.value = sc.title; b.replaceWith(inp); inp.focus(); inp.select();
+      const save = () => {
+        const v = inp.value.trim(); if(!v || v === sc.title){ renderMyScenes(); return; }
+        const L = myScenes(); L[i].title = v; lsSet('sp_my', JSON.stringify(L));
+        for(const k of ['sp_takes_', 'sp_aud_']){ const old = lsGet(k + sc.title); if(old){ lsSet(k + v, old); lsSet(k + sc.title, null); } }
+        renderMyScenes(); toast('השם עודכן', '✏️');
+      };
+      inp.onkeydown = ev => { if(ev.key === 'Enter') inp.blur(); };
+      inp.onblur = save; inp.onclick = ev => ev.stopPropagation();
+    };
+    el.appendChild(row);
+  });
+}
 function renderMyScenes(){
+  if(CLEAN){ document.getElementById('myBox').hidden = false; renderFolder(); return; }
   const list = myScenes(), box = document.getElementById('myBox'), el = document.getElementById('myList');
   box.hidden = !list.length; el.innerHTML = '';
   if(CLEAN && !list.length) el.innerHTML = '<div class="empty"><span class="big">📄</span><b>עוד אין סצנות שלך</b>לוחצים על + למטה, מדביקים או מעלים סצנה, והיא נשמרת כאן.</div>';
@@ -1967,7 +2069,7 @@ document.addEventListener('DOMContentLoaded', () => {
   try{
     const {t, x} = JSON.parse(b64d(m[1]));
     history.replaceState(null, '', location.pathname);
-    saveMyScene(t, x);
+    saveMyScene(t, x, {src: 'link'});
     loadScene(x, t);
   }catch(e){}
 });
@@ -2092,10 +2194,27 @@ function myTab(which){
   document.getElementById('tabTakes').setAttribute('aria-pressed', String(which === 'takes'));
   document.getElementById('myList').hidden = which !== 'mine';
   document.getElementById('takesBox').hidden = which !== 'takes';
+  document.getElementById('folderBar').hidden = which !== 'mine';
   if(which === 'takes') renderTakes();
   if(which === 'mine' && !myScenes().length) document.getElementById('myList').innerHTML = '<div class="empty"><span class="big">📄</span><b>עוד אין סצנות שלך</b>לוחצים על + למטה, מדביקים או מעלים סצנה, והיא נשמרת כאן.</div>';
 }
 document.getElementById('tabMine').onclick = () => myTab('mine');
+function homeTab(t){
+  const sc = document.getElementById('screen-input');
+  sc.classList.toggle('tab-work', t === 'work'); sc.classList.toggle('tab-learn', t === 'learn');
+  document.documentElement.classList.toggle('tab-learn-on', t === 'learn');
+  document.querySelectorAll('#homeTabs button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.t === t)));
+  lsSet('sp_hometab', t);
+}
+document.addEventListener('DOMContentLoaded', () => {
+  if(!CLEAN) return;
+  const tag = (sel, c) => document.querySelectorAll(sel).forEach(e => e.classList.add(c));
+  tag('#daily, #lessons, #glossCard, h2.sec.lib, #libTabs, #sceneList', 'learn-only');
+  tag('#quota, .mytabs, #folderBar, #myBox, #takesBox', 'work-only');
+  document.querySelectorAll('#homeTabs button').forEach(b => b.onclick = () => { homeTab(b.dataset.t); scrollTo(0, 0); });
+  homeTab(lsGet('sp_hometab') || (myScenes().length ? 'work' : 'learn'));
+});
+document.getElementById('glossCard').onclick = () => openGloss();
 document.getElementById('tabTakes').onclick = () => myTab('takes');
 async function takesIndex(){ return (await idbGet('takes')) || []; }
 async function saveTake(blob, title, take){
@@ -2441,7 +2560,8 @@ document.getElementById('analyzeBtn').onclick = () => {
   sceneTitle = typed || pendingTitle || (cast.length === 1 ? 'מונולוג' : '') || (cast.length <= 2 ? cast.join(' ו') : cast.slice(0, 2).join(', ') + ' ועוד ' + (cast.length - 2));
   pendingTitle = null;
   document.getElementById('sceneTitle').textContent = sceneTitle;
-  saveMyScene(sceneTitle, toCleanScript(parsed));
+  saveMyScene(sceneTitle, toCleanScript(parsed), pendingFile ? {src: 'file', fname: pendingFile} : {src: 'paste'});
+  pendingFile = null;
   parsedLines = parsed;
   characters = [...new Set(parsed.map(l=>l.character))];
   setCast(characters);
@@ -2538,7 +2658,7 @@ document.getElementById('fileInput').addEventListener('change', async (e) => {
     note.textContent = file.name;
     const parsed = parseScript(text);
     if(parsed && parsed.length){
-      pendingTitle = file.name.replace(/\.[^.]+$/, '');
+      pendingTitle = file.name.replace(/\.[^.]+$/, ''); pendingFile = file.name;
       document.getElementById('analyzeBtn').click();
     } else {
       errBox.textContent = 'קראתי את הקובץ, אבל לא מצאתי בו דמויות. הטקסט מופיע בתיבה, אפשר לסדר אותו ולנסות שוב.';
@@ -2628,26 +2748,33 @@ function renderNames(){
     }catch(e){ toast('לא הצלחתי להשמיע', '⚠️'); }
   });
 }
+function genderOverride(){ try{ return JSON.parse(lsGet('sp_gender') || '{}'); }catch(e){ return {}; } }
 function openVoiceSheet(name, done){
   const dlg = document.getElementById('voiceDlg'), list = document.getElementById('voiceList');
   document.getElementById('voiceFor').textContent = name;
-  const g = guessGender(name) === 'female' ? 'female' : 'male';
   const all = elVoices.length ? elVoices : EL_FALLBACK_VOICES;
-  const mine = all.filter(v => voiceGender(v) === g), rest = all.filter(v => voiceGender(v) !== g);
   const cur = elVoiceOf(name);
-  const row = v => `<div class="vrow ${v.voice_id === cur ? 'on' : ''}" data-id="${v.voice_id}" role="button" tabindex="0">
+  let g = guessGender(name) === 'female' ? 'female' : 'male';
+  const row = v => `<div class="vrow ${v.voice_id === cur ? 'on' : ''}" data-id="${v.voice_id}" data-g="${voiceGender(v)}" role="button" tabindex="0">
       <span class="vname">${esc(voiceShort(v))}</span><span class="vtags">${esc(voiceTags(v))}</span>
       ${v.preview ? `<button type="button" class="vplay" data-p="${esc(v.preview)}" aria-label="לשמוע דוגמה">▶</button>` : ''}
       <span class="vcheck" aria-hidden="true">✓</span></div>`;
-  list.innerHTML = (mine.length ? `<div class="vhead">${g === 'female' ? 'קולות של נשים' : 'קולות של גברים'}</div>` + mine.map(row).join('') : '')
-    + (rest.length ? `<div class="vhead">עוד קולות</div>` + rest.map(row).join('') : '');
+  const draw = () => {
+    document.querySelectorAll('#vTabs button').forEach(t => t.setAttribute('aria-pressed', String(t.dataset.g === g)));
+    const mine = all.filter(v => voiceGender(v) === g), other = all.filter(v => !voiceGender(v));
+    list.innerHTML = (mine.length ? mine.map(row).join('') : '<div class="vhead">אין בחשבון קולות כאלה</div>')
+      + (other.length ? `<div class="vhead">קולות בלי מגדר מוגדר</div>` + other.map(row).join('') : '');
+  };
+  document.querySelectorAll('#vTabs button').forEach(t => t.onclick = () => { g = t.dataset.g; draw(); });
+  draw();
   list.onclick = e => {
     const p = e.target.closest('.vplay');
     if(p){ e.stopPropagation(); player.src = p.dataset.p; player.play().catch(()=>{}); return; }
     const r = e.target.closest('.vrow'); if(!r) return;
     elVoiceFor[name] = r.dataset.id; lsSet('sp_el_voices2', JSON.stringify(elVoiceFor));
+    const go = genderOverride(); go[name] = r.dataset.g || g; lsSet('sp_gender', JSON.stringify(go));
     SFX.select(); dlg.hidden = true; done && done();
-    toast(name + ' מדבר/ת עכשיו בקול של ' + voiceShort(voiceInfo(r.dataset.id)), '🎙️');
+    toast(name + (go[name] === 'female' ? ' מדברת' : ' מדבר') + ' עכשיו בקול של ' + voiceShort(voiceInfo(r.dataset.id)), '🎙️');
   };
   document.getElementById('voiceClose').onclick = () => { dlg.hidden = true; try{ player.pause(); }catch(e){} };
   dlg.hidden = false;
@@ -2779,6 +2906,7 @@ function elGet(text, voiceId, tag){
 const HE_FEMALE = ['רותם','הילה','אורנה','ליה','מראיינת','ליאת','נועה','שני','יעל','מיכל','רחל','אביגיל','שירן','שיר','ענבל','הדס','אורית','רוני','נועם','גל','שחר','מור','ליאור','סיון','רונית','נוי','אלה','מאיה','שני','קרן','אסתר','רות','לאה','מרים','דנה','עדי','אמא','סבתא','דודה','אחות','מורה'];
 const HE_MALE = ['גיל','אביב','יובל','מיכאל','ארז','יונתן','עמית','אסף','יואב','אלון','תום','עידו','בוחן','רוני','משה','שלמה','יונה','אריה','יהודה','נתנאל','אבא','סבא','דוד','אח','מורה'];
 function guessGender(name){
+  const ov = genderOverride()[name]; if(ov) return ov;
   const n = (name||'').trim().split(/\s+/)[0];
   if(['אבא','סבא','דוד','אח'].includes(n) || HE_MALE.includes(n) && !HE_FEMALE.includes(n)) return 'male';
   if(HE_FEMALE.includes(n) && !['נועם','גל','שחר','מור','ליאור','סיון','עדי','רוני','מורה'].includes(n)) return 'female';
