@@ -858,16 +858,85 @@ html.clean .rehearsing #screen-rehearse > #feed{min-height:55vh}
   html.clean .wrap{background:var(--paper);min-height:100vh;box-shadow:0 0 0 1px rgba(0,0,0,.04),0 30px 80px -20px rgba(60,35,10,.45);padding-left:28px;padding-right:28px}
   html.clean header{margin-left:-28px;margin-right:-28px;padding-left:28px;padding-right:28px}
   html.clean.dark body{background:
-    linear-gradient(35deg, transparent 47%, #E2B93B 47% 53%, transparent 53%) 9% 82% / 46px 46px no-repeat,
-    linear-gradient(-35deg, transparent 47%, #E2B93B 47% 53%, transparent 53%) 9% 82% / 46px 46px no-repeat,
-    linear-gradient(35deg, transparent 47%, #6FB7E9 47% 53%, transparent 53%) 90% 30% / 40px 40px no-repeat,
-    linear-gradient(-35deg, transparent 47%, #6FB7E9 47% 53%, transparent 53%) 90% 30% / 40px 40px no-repeat,
-    radial-gradient(60% 50% at 50% 0%, rgba(255,255,255,.07), transparent 70%),
-    repeating-linear-gradient(90deg, #131313 0 140px, #0F0F0F 140px 142px);
+    radial-gradient(1.5px 1.5px at 7% 18%, rgba(255,240,200,.55), transparent 70%),
+    radial-gradient(1px 1px at 13% 64%, rgba(255,255,255,.45), transparent 70%),
+    radial-gradient(2px 2px at 21% 38%, rgba(255,226,150,.35), transparent 70%),
+    radial-gradient(1px 1px at 9% 86%, rgba(255,255,255,.35), transparent 70%),
+    radial-gradient(1.5px 1.5px at 88% 22%, rgba(255,240,200,.5), transparent 70%),
+    radial-gradient(1px 1px at 94% 52%, rgba(255,255,255,.4), transparent 70%),
+    radial-gradient(2px 2px at 82% 74%, rgba(255,226,150,.3), transparent 70%),
+    radial-gradient(1px 1px at 91% 90%, rgba(255,255,255,.35), transparent 70%),
+    radial-gradient(1px 1px at 17% 8%, rgba(255,255,255,.3), transparent 70%),
+    radial-gradient(1.5px 1.5px at 85% 6%, rgba(255,255,255,.3), transparent 70%),
+    radial-gradient(60% 50% at 50% 0%, rgba(255,255,255,.05), transparent 70%),
+    #0E0E0F;
     background-attachment:fixed}
   html.clean.dark .wrap{box-shadow:0 30px 80px -20px rgba(0,0,0,.8)}
   html.clean .fab{left:max(18px, calc(50vw - 300px));width:68px;height:68px;font-size:38px}
 }
+
+/* ===== spacing: calmer rhythm everywhere ===== */
+html.clean h2.sec,html.clean .scene-title{margin:34px 0 14px}
+html.clean .hometabs{margin:6px 0 22px}
+html.clean .daily:not([hidden]){margin:18px 0 14px}
+html.clean .quota:not([hidden]){margin:6px 2px 4px}
+html.clean .mytabs{margin:26px 0 14px}
+html.clean .folderbar{margin:4px 0 14px;gap:8px}
+html.clean .fitem{padding:16px 16px;margin-bottom:12px}
+html.clean .scenes{gap:14px}
+html.clean .scene{padding:20px 20px 18px}
+html.clean .scene .d{margin-top:6px;line-height:1.55}
+html.clean .scene .meta2{margin-top:12px}
+html.clean .lib-tabs{margin:6px 0 16px;gap:8px}
+html.clean .lessons:not([hidden]){margin:26px 0 8px}
+html.clean .lcard{padding:16px 14px 14px}
+html.clean .glosscard{margin:20px 0 6px;padding:18px}
+html.clean .pathcard:not([hidden]){margin:10px 0 18px;padding:20px 22px}
+html.clean .rolecard{padding:16px 18px;margin-bottom:12px}
+html.clean .modes{gap:12px;margin:22px 0 6px}
+html.clean .modes button{padding:16px 14px}
+html.clean .chips{gap:12px;margin-top:20px}
+html.clean .chip{padding:16px 18px}
+html.clean .moretoggle{margin:20px 0 8px;padding:14px 16px}
+html.clean #startBtn{margin-top:22px}
+html.clean button.primary,html.clean button.secondary{min-height:54px}
+html.clean button.secondary{margin-top:10px}
+html.clean .line{padding:18px 0}
+html.clean .ctxcard{padding:18px 20px;margin:10px 0 10px}
+html.clean .feed{padding:14px 26px 14px 30px}
+html.clean .minor{gap:12px;margin:14px 0 10px}
+html.clean .status{margin:12px 0 14px}
+html.clean #screen-input.adding .fld{margin:4px 0 8px}
+html.clean .tips p{margin-top:10px}
+@media (min-width: 1000px){
+  html.clean .home-grid{gap:44px}
+  html.clean .wrap{padding-left:44px;padding-right:44px}
+  html.clean header{margin-left:-44px;margin-right:-44px;padding:14px 44px}
+  html.clean .workhead{margin:6px 0 10px}
+  html.clean #sceneList{gap:16px}
+}
+/* scene context card, read aloud before the scene */
+.ctxm{z-index:46}
+.ctxm .card{text-align:right;max-width:460px}
+.ctxm .k{font-family:'Amatic SC',cursive;font-size:26px;color:#C2362C}
+.ctxm h3{font-family:'David Libre',serif;font-size:28px;margin:6px 0 4px}
+.ctxm .set{margin:0 0 10px;font-style:italic;color:#8A8378;font-size:15px}
+.ctxm .set:empty{display:none}
+.ctxm .txt{font-size:18px;line-height:1.7;margin:0 0 20px;color:inherit}
+.ctxm .foot{display:flex;align-items:center;justify-content:space-between}
+.ctxm #ctxSkip{padding:11px 22px;border-radius:99px;border:0;background:#1F1D1A;color:#FFF8E6;font-family:var(--sans);font-weight:800;font-size:16px;cursor:pointer}
+html.clean.dark .ctxm #ctxSkip{background:#ECE9E2;color:#111}
+.ctxm .reading{color:#8A8378;font-size:14px;display:flex;align-items:center;gap:3px}
+.ctxm .reading i{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.3;animation:rd 1.2s infinite}
+.ctxm .reading i:nth-child(2){animation-delay:.2s}.ctxm .reading i:nth-child(3){animation-delay:.4s}
+@keyframes rd{50%{opacity:1}}
+html.clean .ctxm .reading i{animation:rd 1.2s infinite!important}
+
+/* continue where you left off */
+.resume{display:none}
+html.clean .resume:not([hidden]){display:flex;align-items:center;gap:14px;width:100%;text-align:right;margin:6px 0 4px;padding:16px 18px;border-radius:10px;border:2px solid var(--ink);background:var(--sheet);color:var(--ink);font-family:var(--sans);cursor:pointer}
+.resume .ic{font-size:26px}.resume .tx{flex:1}.resume small{display:block;color:var(--pencil);font-size:13px}.resume b{font-family:'David Libre',serif;font-size:19px}
+.resume .go{font-weight:800;white-space:nowrap}
 
 /* ===== home grid, work header, simple add page ===== */
 .workhead,.srcseg,.moredet{display:none}
@@ -1061,6 +1130,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <div class="hometabs" id="homeTabs"><button type="button" data-t="work" aria-pressed="true">🎬 עבודה<small>הסצנות שלך, טייקים</small></button><button type="button" data-t="learn" aria-pressed="false">📚 לימוד<small>שיעורים, תרגול, מילון</small></button></div>
 <div class="daily" id="daily" hidden></div>
 <div class="quota" id="quota" hidden></div>
+<button type="button" class="resume" id="resumeCard" hidden></button>
 <div class="pathcard" id="pathCard" hidden></div>
 <div class="lessons" id="lessons" hidden></div>
 <div class="mytabs" role="tablist"><button type="button" id="tabMine" aria-pressed="true">📄 הסצנות שלי</button><button type="button" id="tabTakes" aria-pressed="false">🎬 הטייקים שלי</button></div>
@@ -1254,6 +1324,13 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 </div></div>
 <div class="intro sheet lesson" id="lessonDlg" hidden role="dialog" aria-modal="true" aria-label="שיעור"><div class="card" id="lessonCard"></div></div>
 <div class="intro onb" id="onb" hidden role="dialog" aria-modal="true" aria-label="היכרות"><div class="card" id="onbCard"></div></div>
+<div class="intro ctxm" id="ctxModal" hidden role="dialog" aria-modal="true" aria-label="על הסצנה"><div class="card">
+<span class="k">📖 על הסצנה</span>
+<h3 id="ctxTitle"></h3>
+<p class="set" id="ctxSetting"></p>
+<p class="txt" id="ctxText"></p>
+<div class="foot"><button type="button" id="ctxSkip">⏭ דלג</button><span class="reading">מקריא<i></i><i></i><i></i></span></div>
+</div></div>
 <div class="intro" id="intro" hidden role="dialog" aria-modal="true" aria-label="ברוכים הבאים"><div class="card"><div class="slide"></div><div class="dots"></div><button type="button" class="primary" id="introNext" style="margin-top:0">הבא</button><button type="button" class="skip" id="introSkip">דלג</button></div></div>
 
 <script>
@@ -2050,7 +2127,7 @@ function showIntro(){
 }
 document.addEventListener('DOMContentLoaded', () => { if(!CLEAN && !lsGet('sp_intro') && !location.hash.startsWith('#s=')) showIntro(); });
 
-let pendingTitle = null, pendingFile = null, pendingAbout = '';
+let pendingTitle = null, pendingFile = null, pendingAbout = '', pendingSetting = '';
 
 /* ---- my scenes: everything you uploaded or pasted, kept on this device ---- */
 function myScenes(){ try{ return JSON.parse(lsGet('sp_my') || '[]'); }catch(e){ return []; } }
@@ -2078,7 +2155,7 @@ function renderFolder(){
   const all = myScenes(), el = document.getElementById('myList');
   renderFolderBar(all.length);
   el.innerHTML = '';
-  if(!all.length){ el.innerHTML = '<div class="empty"><span class="big">📄</span><b>התיקייה ריקה</b>לוחצים על + למטה, מעלים קובץ או מדביקים טקסט מאתר, והסצנה נשמרת כאן.</div>'; return; }
+  if(!all.length){ el.innerHTML = '<div class="empty"><span class="big">📄</span><b>התיקייה ריקה</b>לוחצים על ＋ (סצנה חדשה), מעלים קובץ או מדביקים טקסט מאתר, והסצנה נשמרת כאן.</div>'; return; }
   let list = all.map((sc, i) => ({sc, i, lines: parseScript(sc.text) || []}));
   list.forEach(o => { o.cast = [...new Set(o.lines.map(l => l.character))]; });
   if(folderFilter === 'file') list = list.filter(o => o.sc.src === 'file');
@@ -2127,7 +2204,7 @@ function renderMyScenes(){
   if(CLEAN){ document.getElementById('myBox').hidden = false; renderFolder(); return; }
   const list = myScenes(), box = document.getElementById('myBox'), el = document.getElementById('myList');
   box.hidden = !list.length; el.innerHTML = '';
-  if(CLEAN && !list.length) el.innerHTML = '<div class="empty"><span class="big">📄</span><b>עוד אין סצנות שלך</b>לוחצים על + למטה, מדביקים או מעלים סצנה, והיא נשמרת כאן.</div>';
+  if(CLEAN && !list.length) el.innerHTML = '<div class="empty"><span class="big">📄</span><b>עוד אין סצנות שלך</b>לוחצים על ＋ (סצנה חדשה), מדביקים או מעלים סצנה, והיא נשמרת כאן.</div>';
   list.forEach((sc, i) => {
     const lines = parseScript(sc.text) || [];
     const cast = [...new Set(lines.map(l => l.character))];
@@ -2199,6 +2276,21 @@ function renderStreak(){
   document.getElementById('streakTxt').textContent = n === 1 ? 'יום חזרות אחד' : n + ' ימי חזרות ברצף';
 }
 document.addEventListener('DOMContentLoaded', renderStreak);
+function renderResume(){
+  const box = document.getElementById('resumeCard'); if(!box) return;
+  let L = null; try{ L = JSON.parse(lsGet('sp_last') || 'null'); }catch(e){}
+  const src = L && (myScenes().find(x => x.title === L.title) || SCENES.find(x => x.title === L.title));
+  if(!CLEAN || !src){ box.hidden = true; return; }
+  const modeName = {run:'חזרה', learn:'לימוד בהדרגה', italian:'איטלקי', test:'בדיקת זיכרון'}[L.mode] || 'חזרה';
+  box.innerHTML = `<span class="ic">↩️</span><span class="tx"><small>להמשיך מאיפה שעצרת</small><b>${esc(L.title)}</b><small>${esc(L.role || '')} · ${modeName}</small></span><span class="go">עוד טייק ←</span>`;
+  box.hidden = false;
+  box.onclick = () => {
+    loadScene(src.text, src.title); setMode(L.mode || 'run');
+    const card = [...document.querySelectorAll('.rolecard')].find(c => c.querySelector('.name') && c.querySelector('.name').textContent === L.role);
+    if(card) card.click();
+  };
+}
+document.addEventListener('DOMContentLoaded', renderResume);
 function renderDaily(){
   const box = document.getElementById('daily');
   if(!CLEAN){ box.hidden = true; return; }
@@ -2299,7 +2391,7 @@ function myTab(which){
   document.getElementById('takesBox').hidden = which !== 'takes';
   document.getElementById('folderBar').hidden = which !== 'mine';
   if(which === 'takes') renderTakes();
-  if(which === 'mine' && !myScenes().length) document.getElementById('myList').innerHTML = '<div class="empty"><span class="big">📄</span><b>עוד אין סצנות שלך</b>לוחצים על + למטה, מדביקים או מעלים סצנה, והיא נשמרת כאן.</div>';
+  if(which === 'mine' && !myScenes().length) document.getElementById('myList').innerHTML = '<div class="empty"><span class="big">📄</span><b>עוד אין סצנות שלך</b>לוחצים על ＋ (סצנה חדשה), מדביקים או מעלים סצנה, והיא נשמרת כאן.</div>';
 }
 document.getElementById('tabMine').onclick = () => myTab('mine');
 function homeTab(t){
@@ -2320,11 +2412,11 @@ document.addEventListener('DOMContentLoaded', () => {
   $('homeTabs').after(grid); grid.append(side, main);
   const workHead = document.createElement('div'); workHead.className = 'workhead work-only';
   workHead.innerHTML = '<h2>השולחן שלך</h2><button type="button" class="addwide" id="addBtn2">＋ סצנה חדשה</button>';
-  side.append($('pathCard'), $('daily'), $('quota'), $('glossCard'));
+  side.append($('resumeCard'), $('pathCard'), $('daily'), $('quota'), $('glossCard'));
   main.append(workHead, $('lessons'), document.querySelector('.mytabs'), $('folderBar'), $('myBox'), $('takesBox'), document.querySelector('h2.sec.lib'), $('libTabs'), $('sceneList'));
   $('addBtn2').onclick = () => openAdd(true);
   tag('#pathCard, #lessons, #glossCard', 'learn-only');
-  tag('#daily, #quota, .mytabs, #folderBar, #myBox, #takesBox, h2.sec.lib, #libTabs, #sceneList', 'work-only');
+  tag('#resumeCard, #daily, #quota, .mytabs, #folderBar, #myBox, #takesBox, h2.sec.lib, #libTabs, #sceneList', 'work-only');
   // the add page, simple: paste or file, a name, the text, and the extras folded away
   const seg = document.createElement('div'); seg.className = 'seg srcseg';
   seg.innerHTML = '<button type="button" data-s="paste" aria-pressed="true">📋 הדבקת טקסט</button><button type="button" data-s="file" aria-pressed="false">📄 העלאת קובץ</button>';
@@ -2638,6 +2730,7 @@ function looksLikeName(s){
   return words.length <= 3;
 }
 function parseScript(raw){
+  parseScript.pre = [];
   const lines = cleanRaw(raw).split('\n').map(l => l.trim()).filter(Boolean);
   // 1) collect possible speaker labels and how often they appear
   const count = {};
@@ -2683,7 +2776,11 @@ function parseScript(raw){
     m = l.match(/^(.{1,41}?)\s+[-–—]\s+(.+)$/);
     if(m && dashSpeakers.has(m[1].trim())) { start(m[1], m[2]); continue; }
     if(aloneSpeakers.has(l)) { start(l, ''); continue; }
-    if(!cur) continue;                       // headers / background before the dialogue starts
+    if(!cur){                                // headers / background before the dialogue starts: keep it as the scene's background
+      const hm = l.match(/^([^:]{1,16}):/);
+      if(!(hm && META_KEYS.test(hm[1].trim())) && !/^\*/.test(l)) parseScript.pre.push(l.replace(/^[\(\[]|[\)\]]$/g, ''));
+      continue;
+    }
     if(/^[\(\[].*[\)\]]$/.test(l)) { add(l); continue; }   // stage direction on its own line
     add(l);                                  // continuation of the current speech
   }
@@ -2762,7 +2859,12 @@ document.getElementById('analyzeBtn').onclick = () => {
     if(Object.values(cnt).every(n => n === 1) && parsed.length <= 4 && sc0.info.who) parsed = null;
   }
   if((!parsed || !parsed.length) && CLEAN && sc0.body.length > 20) parsed = monologueLines(sc0.body, sc0.info.who || 'אני');
-  pendingAbout = (document.getElementById('sceneAbout').value || '').trim()
+  const pre = (parseScript.pre || []).filter(l => l.length > 2);
+  const setting = (pre.find(l => /^(פנים|חוץ|INT|EXT)[.\s]/i.test(l)) || '').trim();
+  const preText = pre.filter(l => l !== setting && !(sc0.info.title && l.startsWith(sc0.info.title))).join(' ').replace(/\s+/g, ' ').trim().slice(0, 420);
+  pendingSetting = setting;
+  const dialogue = parsed && new Set(parsed.map(l => l.character)).size > 1;
+  pendingAbout = (document.getElementById('sceneAbout').value || '').trim() || (dialogue ? preText : '')
     || (sc0.info.from || sc0.info.who ? [sc0.info.who ? 'הדמות: ' + sc0.info.who : '', sc0.info.from ? 'מתוך "' + sc0.info.from + '"' : '', sc0.info.by ? 'מאת ' + sc0.info.by : ''].filter(Boolean).join(', ') + '.' : '');
   if(!pendingTitle && sc0.info.title) pendingTitle = sc0.info.title;
   if(!parsed || parsed.length === 0){
@@ -2782,7 +2884,7 @@ document.getElementById('analyzeBtn').onclick = () => {
   sceneTitle = typed || pendingTitle || (cast.length === 1 ? 'מונולוג' : '') || (cast.length <= 2 ? cast.join(' ו') : cast.slice(0, 2).join(', ') + ' ועוד ' + (cast.length - 2));
   pendingTitle = null;
   document.getElementById('sceneTitle').textContent = sceneTitle;
-  saveMyScene(sceneTitle, toCleanScript(parsed), Object.assign(pendingFile ? {src: 'file', fname: pendingFile} : {src: 'paste'}, pendingAbout ? {about: pendingAbout} : {}));
+  saveMyScene(sceneTitle, toCleanScript(parsed), Object.assign(pendingFile ? {src: 'file', fname: pendingFile} : {src: 'paste'}, pendingAbout ? {about: pendingAbout} : {}, pendingSetting ? {setting: pendingSetting} : {}));
   document.getElementById('sceneAbout').value = '';
   pendingFile = null;
   parsedLines = parsed;
@@ -3984,24 +4086,26 @@ function narratorVoice(){
 function narrate(text, myRun){
   return new Promise(async res => {
     let over = false;
-    const end = () => { if(over) return; over = true; document.removeEventListener('click', skip, true); setStatus('', false); res(); };
-    const skip = () => { stopAudio(); end(); };
-    setStatus('מקריא את הרקע לסצנה… (נגיעה במסך מדלגת)', false);
-    setTimeout(() => document.addEventListener('click', skip, true), 300);
-    const card = document.querySelector('.ctxcard'); if(card) card.classList.add('reading');
-    const done = () => { if(card) card.classList.remove('reading'); end(); };
+    const box = document.getElementById('ctxModal');
+    const mine = myScenes().find(x => x.title === sceneTitle);
+    document.getElementById('ctxTitle').textContent = sceneTitle;
+    document.getElementById('ctxSetting').textContent = (mine && mine.setting) || '';
+    document.getElementById('ctxText').textContent = text;
+    box.hidden = false;
+    const end = () => { if(over) return; over = true; box.hidden = true; res(); };
+    document.getElementById('ctxSkip').onclick = () => { stopAudio(); end(); };
     try{
       const v = elOn() && narratorVoice();
       if(v){
         const blob = await elGet(text, v);
-        if(myRun !== runId || over) return done();
-        await playBlob(blob, done);
+        if(myRun !== runId || over) return end();
+        await playBlob(blob, () => setTimeout(end, 500));
       } else {
         const u = new SpeechSynthesisUtterance(text); u.lang = 'he-IL'; u.rate = 0.95;
-        u.onend = u.onerror = done; speechSynthesis.cancel(); speechSynthesis.speak(u);
-        setTimeout(done, readingTime(text) + 4000);
+        u.onend = u.onerror = () => setTimeout(end, 500); speechSynthesis.cancel(); speechSynthesis.speak(u);
+        setTimeout(end, readingTime(text) + 5000);
       }
-    }catch(e){ done(); }
+    }catch(e){ end(); }
   });
 }
 // fetch every partner line before the scene, with a progress screen, so nothing waits mid-scene
@@ -4189,6 +4293,7 @@ function finishScene(){
   document.getElementById('stLines').textContent = runLines.filter(l => l.character === myCharacter).length;
   const before = streakCount();
   markPracticedToday(); renderStreak(); renderDaily();
+  lsSet('sp_last', JSON.stringify({title: sceneTitle, role: myCharacter, mode: MODE, t: Date.now()})); renderResume();
   if(!isPro()){ lsSet(weekKey(), String(weekUsed() + 1)); renderQuota(); }
   const st = streakCount();
   SFX.win(); buzz([30, 60, 30]);
