@@ -597,7 +597,7 @@ button.secondary:active{transform:translateY(3px);border-bottom-width:2px}
 .moretoggle,.vswitch.tofull{display:none}
 .vswitch.toclean{display:block;text-align:center;margin:24px 0 0;font-size:14px}
 .vswitch.toclean a{color:var(--on-stage-dim)}
-html.clean{--paper:#F8F6F0;--sheet:#FFFFFF;--ink:#1F1D1A;--pencil:#6E675B;--rule:#E6E0D3;--hl:rgba(134,232,150,.62);--pen:#2B4FA8;--red:#C2362C;--lines:#DCE6F3;--margin:#F0A8A0;--shadow:rgba(60,45,20,.35);
+html.clean{--paper:#F8F6F0;--sheet:#FFFFFF;--ink:#1F1D1A;--pencil:#6E675B;--rule:#E6E0D3;--hl:rgba(255,226,64,.75);--hlg:rgba(134,232,150,.62);--pen:#2B4FA8;--red:#C2362C;--lines:#DCE6F3;--margin:#F0A8A0;--shadow:rgba(60,45,20,.35);
   --typed:'David Libre','Frank Ruhl Libre',serif;--hand:'Amatic SC',cursive;background:var(--paper)}
 html.clean .vswitch.toclean{display:none}
 html.clean body{background:var(--paper);color:var(--ink)}
@@ -693,7 +693,7 @@ html.clean .lockup{min-width:0;overflow:hidden}
 .onb .plan{list-style:none;padding:0;margin:4px 0 18px;display:grid;gap:10px}
 .onb .plan li{display:flex;gap:10px;line-height:1.55;font-size:16px}
 .onb .plan li span{font-size:20px}
-.onb .dots{display:flex;gap:6px;justify-content:flex-start;margin-bottom:10px;direction:rtl}
+.onb .dots{display:flex;gap:6px;justify-content:flex-end;margin-bottom:10px;direction:ltr;flex-direction:row-reverse}
 .onb .dots i{width:22px;height:4px;border-radius:9px;background:var(--rule,#E6E0D3)}
 .onb .dots i.on{background:var(--ink,#1F1D1A)}
 /* home: work / learn */
@@ -758,6 +758,22 @@ html.clean .lessons:not([hidden]){display:block;margin:18px 0 4px}
 .lesson .ex{border:1.5px dashed var(--rule,#E6E0D3);border-radius:6px;padding:12px;margin-bottom:12px}
 .lesson .ex b{font-family:'Amatic SC',cursive;font-size:24px;color:#2B4FA8;display:block;line-height:1}
 .lesson .ex p{margin:6px 0 0;font-size:15px;line-height:1.55}
+/* the learning path */
+.pathcard,.nextstep{display:none}
+html.clean .pathcard:not([hidden]){display:block;margin:6px 0 14px;padding:16px 18px;border-radius:8px;background:var(--ink);color:var(--paper);box-shadow:0 14px 30px -18px var(--shadow)}
+.pathcard .k{display:block;font-family:'Amatic SC',cursive;font-size:22px;line-height:1.1;opacity:.85}
+.pathcard .steps{display:flex;gap:5px;margin:10px 0 8px;direction:ltr;flex-direction:row-reverse}
+.pathcard .steps i{flex:1;height:5px;border-radius:9px;background:rgba(255,255,255,.22)}
+html.clean.dark .pathcard .steps i{background:rgba(0,0,0,.2)}
+.pathcard .steps i.on{background:#86E896}
+.pathcard .steps i.cur{background:#FFE240}
+.pathcard .sn{font-size:13px;opacity:.75}
+.pathcard b{display:block;font-family:'David Libre',serif;font-size:22px;margin:2px 0 4px}
+.pathcard p{margin:0 0 12px;opacity:.8;font-size:14.5px;line-height:1.5}
+.pathcard button{width:100%;border:0;border-radius:10px;background:#FFE240;color:#1F1D1A;font-family:var(--sans);font-weight:800;font-size:17px;padding:12px;cursor:pointer}
+html.clean .nextstep:not([hidden]){display:flex;flex-direction:column;gap:2px;width:100%;margin:0 0 12px;padding:14px;border-radius:10px;border:2px solid var(--ink);background:var(--hl);color:#1F1D1A;font-family:var(--sans);cursor:pointer;text-align:center}
+.nextstep b{font-size:16px}.nextstep small{font-size:13px;opacity:.75}
+.lesson .after{font-size:13.5px;color:#6E675B;margin:0 0 8px}
 /* the daily card folds */
 .daily .fold{position:absolute;left:12px;top:14px;width:34px;height:34px;border-radius:50%;border:1px solid #E6DDCB;background:#fff;color:#1F1D1A;font-size:15px;cursor:pointer;z-index:2}
 html.clean .daily.min{padding:14px 20px 12px;background-image:repeating-linear-gradient(transparent 0 29px,#D7E2F2 29px 30px);background-position:0 8px}
@@ -766,6 +782,9 @@ html.clean .daily.min .k{margin:0 0 4px;font-size:26px}
 html.clean .daily.min .t{font-size:20px}
 html.clean .daily.min .t::after{content:" ▶";font-size:14px;color:#6E675B}
 /* scene context card at the top of the script page */
+.narr{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:14px;color:var(--pencil);cursor:pointer}
+.narr input{width:18px;height:18px;accent-color:var(--ink)}
+html.clean .ctxcard.reading{border-color:var(--pen);border-style:solid;box-shadow:0 0 0 3px rgba(43,79,168,.12)}
 .ctxcard{display:none}
 html.clean .ctxcard{display:block;text-align:right;margin:8px 0 6px;padding:14px 16px;border:1.5px dashed var(--rule);border-radius:6px;background:var(--paper)}
 .ctxcard .k{font-family:'Amatic SC',cursive;font-size:24px;color:var(--red);line-height:1}
@@ -789,7 +808,7 @@ html.clean .line{display:block;border:0;padding:14px 0;margin:0;text-align:cente
 html.clean .line .who{display:block;font-family:var(--typed);font-weight:700;font-size:15px;letter-spacing:1.5px;color:var(--ink)!important;margin-bottom:4px}
 html.clean .line .txt{font-family:var(--typed);font-size:22px;line-height:1.6;color:var(--ink)}
 html.clean .line .dir{font-family:var(--typed);font-style:italic;color:var(--pencil);font-size:16px}
-html.clean .line.mine .txt mark{background:linear-gradient(100deg,transparent 0 2px,var(--hl) 4px calc(100% - 4px),transparent calc(100% - 2px));color:var(--ink);padding:0 3px;border-radius:3px 6px 4px 7px}
+html.clean .line.mine .txt mark{background:linear-gradient(100deg,transparent 0 2px,var(--hlg) 4px calc(100% - 4px),transparent calc(100% - 2px));color:var(--ink);padding:0 3px;border-radius:3px 6px 4px 7px}
 html.clean .line.past{opacity:.42}
 html.clean .line.mine.current{background:none;margin:0;padding:14px 0;border:0;border-radius:0}
 html.clean .line.speaking::before,html.clean .line.mine.current::before{position:absolute;right:-18px;top:12px;font-family:var(--hand);font-size:22px;line-height:1;writing-mode:vertical-rl}
@@ -817,11 +836,43 @@ html.clean .stats b{color:var(--ink);font-family:var(--typed)}
 html.clean .stats small{color:var(--pencil)}
 html.clean .toast{background:var(--ink);color:#FFF8E6;border-bottom:0}
 html.clean .intro .card{background:var(--sheet);border-radius:6px}
+/* computer: the old stage decorations and the side-by-side character are gone in this design */
+html.clean .deco,html.clean #stage{display:none!important}
+html.clean .rehearsing #screen-rehearse > #stage,html.clean body.rehearsing #stage{display:none!important}
+html.clean .rehearsing #screen-rehearse > #feed{min-height:55vh}
+@media (min-width: 900px){
+  html.clean .rehearsing .wrap{max-width:720px}
+  html.clean .rehearsing #screen-rehearse.active{display:block}
+  html.clean .rehearsing #screen-rehearse > #feed{display:block!important}
+  html.clean .keys{display:none!important}
+}
+/* computer: the script lies on a rehearsal-room table — warm oak by day, black studio floor with spike tape at night */
+@media (min-width: 760px){
+  html.clean body{background:
+    radial-gradient(120% 80% at 50% 0%, rgba(255,240,210,.55), transparent 60%),
+    repeating-linear-gradient(90deg, rgba(120,80,40,.05) 0 2px, transparent 2px 9px),
+    repeating-linear-gradient(90deg, #C9A57A 0 180px, #C29E72 180px 182px, #CFAB80 182px 360px, #C49F74 360px 362px);
+    background-attachment:fixed}
+  html.clean .wrap{background:var(--paper);min-height:100vh;box-shadow:0 0 0 1px rgba(0,0,0,.04),0 30px 80px -20px rgba(60,35,10,.45);padding-left:28px;padding-right:28px}
+  html.clean header{margin-left:-28px;margin-right:-28px;padding-left:28px;padding-right:28px}
+  html.clean.dark body{background:
+    linear-gradient(35deg, transparent 47%, #E2B93B 47% 53%, transparent 53%) 9% 82% / 46px 46px no-repeat,
+    linear-gradient(-35deg, transparent 47%, #E2B93B 47% 53%, transparent 53%) 9% 82% / 46px 46px no-repeat,
+    linear-gradient(35deg, transparent 47%, #6FB7E9 47% 53%, transparent 53%) 90% 30% / 40px 40px no-repeat,
+    linear-gradient(-35deg, transparent 47%, #6FB7E9 47% 53%, transparent 53%) 90% 30% / 40px 40px no-repeat,
+    radial-gradient(60% 50% at 50% 0%, rgba(255,255,255,.07), transparent 70%),
+    repeating-linear-gradient(90deg, #131313 0 140px, #0F0F0F 140px 142px);
+    background-attachment:fixed}
+  html.clean.dark .wrap{box-shadow:0 30px 80px -20px rgba(0,0,0,.8)}
+  html.clean .fab{left:max(18px, calc(50vw - 300px));width:68px;height:68px;font-size:38px}
+}
+
 /* add-a-scene page */
 .fab,.addhead,.fld,.namein,.seg,.tips{display:none}
 html.clean .fab{display:grid;place-items:center;position:fixed;left:18px;bottom:calc(22px + env(safe-area-inset-bottom));z-index:25;width:62px;height:62px;border-radius:50%;border:0;background:var(--ink);color:var(--paper);font-size:34px;line-height:1;box-shadow:0 10px 24px -8px var(--shadow);cursor:pointer}
 html.clean #screen-input:not(.adding) #uploadBox,html.clean #screen-input:not(.adding) .or,html.clean #screen-input:not(.adding) #scriptInput,html.clean #screen-input:not(.adding) .hint,
 html.clean #screen-input:not(.adding) #analyzeBtn,html.clean #screen-input:not(.adding) h2.sec:not(.lib){display:none}
+html.clean #screen-input.adding .namein.about{min-height:64px;font-size:15px;line-height:1.5;background-image:none;padding-right:14px}
 html.clean #screen-input.adding > :not(.addhead):not(.fld):not(.namein):not(.seg):not(#uploadBox):not(.or):not(#scriptInput):not(.hint):not(#inputErr):not(#analyzeBtn):not(.tips){display:none!important}
 html.clean #screen-input.adding .addhead{display:flex;align-items:center;gap:10px;margin:4px 0 14px}
 html.clean .addhead h2{margin:0;font-family:var(--typed);font-size:26px}
@@ -846,7 +897,7 @@ html.clean.showkey #voiceBox{display:block}
 html.clean .vswitch{display:block;text-align:center;margin:28px 0 0;font-size:14px}
 html.clean .vswitch a{color:var(--pencil)}
 /* dark: a black notebook, chalk-white text, the same highlighter */
-html.clean.dark{--paper:#0E0E0F;--sheet:#18181A;--ink:#ECE9E2;--pencil:#9C968B;--rule:#2A2A2D;--hl:rgba(110,220,130,.34);--pen:#8FB0FF;--red:#FF7A6E;--lines:#232529;--margin:#5A2D2B;--shadow:rgba(0,0,0,.6)}
+html.clean.dark{--paper:#0E0E0F;--sheet:#18181A;--ink:#ECE9E2;--pencil:#9C968B;--rule:#2A2A2D;--hl:rgba(255,214,0,.32);--hlg:rgba(110,220,130,.34);--pen:#8FB0FF;--red:#FF7A6E;--lines:#232529;--margin:#5A2D2B;--shadow:rgba(0,0,0,.6)}
 html.clean.dark button.primary{background:#ECE9E2;color:#111}
 html.clean.dark .pace button[aria-pressed=true]{background:#ECE9E2;color:#111}
 html.clean.dark .scene::after{background:linear-gradient(45deg,transparent 50%,#2A2A2D 50%)}
@@ -965,6 +1016,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <div class="hometabs" id="homeTabs"><button type="button" data-t="work" aria-pressed="true">🎬 עבודה<small>הסצנות שלך, טייקים</small></button><button type="button" data-t="learn" aria-pressed="false">📚 לימוד<small>שיעורים, תרגול, מילון</small></button></div>
 <div class="daily" id="daily" hidden></div>
 <div class="quota" id="quota" hidden></div>
+<div class="pathcard" id="pathCard" hidden></div>
 <div class="lessons" id="lessons" hidden></div>
 <div class="mytabs" role="tablist"><button type="button" id="tabMine" aria-pressed="true">📄 הסצנות שלי</button><button type="button" id="tabTakes" aria-pressed="false">🎬 הטייקים שלי</button></div>
 <div class="folderbar" id="folderBar"></div>
@@ -977,6 +1029,8 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <div class="addhead"><button type="button" class="backbtn" id="addBack" aria-label="חזרה">→</button><h2>סצנה חדשה</h2></div>
 <label class="fld" for="scriptName">שם הסצנה</label>
 <input id="scriptName" class="namein" placeholder="למשל: אודישן לקופיקו, סצנה 3" autocomplete="off">
+<label class="fld" for="sceneAbout">על הסצנה (לא חובה)</label>
+<textarea id="sceneAbout" class="namein about" rows="2" placeholder="מה קורה כאן? מי הדמויות, מה קרה רגע לפני. יוקרא לך לפני שמתחילים"></textarea>
 <div class="seg" id="kindSeg"><button type="button" data-k="scene" aria-pressed="true">👥 סצנה עם פרטנר</button><button type="button" data-k="mono" aria-pressed="false">🎤 מונולוג</button></div>
 <h2 class="sec">הסצנה שלך</h2>
 <label class="upload" id="uploadBox">
@@ -1090,6 +1144,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <video id="tapeVideo" controls playsinline></video>
 <div class="row2"><a class="secondary-btn" id="tapeSave" download>שמור את הצילום</a><button type="button" class="secondary-btn" id="tapeShare" hidden>שלח</button></div>
 </div>
+<button type="button" class="nextstep" id="nextStep" hidden></button>
 <button class="primary" id="againBtn">עוד פעם מההתחלה</button>
 <button class="secondary" id="newSceneBtn">סצנה אחרת</button>
 </div>
@@ -1121,6 +1176,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <div class="intro sheet" id="voiceDlg" hidden role="dialog" aria-modal="true" aria-label="בחירת קול"><div class="card">
 <h3>הקול של <span id="voiceFor"></span></h3>
 <p class="sayhelp">בוחרים קול. ▶ משמיע דוגמה קצרה (באנגלית, בחינם). אחרי הבחירה, ▶ בכרטיס הדמות משמיע את השורה שלה בעברית.</p>
+<p class="sayhelp morev">רוצה עוד קולות? כל קול שתוסיף לחשבון ה־ElevenLabs שלך (Voice Library ← Add) יופיע כאן אוטומטית.</p>
 <div class="vtabs" id="vTabs"><button type="button" data-g="female" aria-pressed="true">♀ קולות נשים</button><button type="button" data-g="male" aria-pressed="false">♂ קולות גברים</button></div>
 <div class="vlist" id="voiceList"></div>
 <button type="button" class="skip" id="voiceClose">סגור</button>
@@ -1169,6 +1225,8 @@ function show(name){
   currentScreen = name;
   Object.values(screens).forEach(s=>s.classList.remove('active', 'enter-fwd', 'enter-back'));
   screens[name].classList.add('active', back ? 'enter-back' : 'enter-fwd');
+  if(name !== 'rehearse' && typeof sceneRunning !== 'undefined' && sceneRunning){ try{ stopEverything(); }catch(e){} }
+  if(name !== 'rehearse') try{ stopAudio(); }catch(e){}
   document.body.classList.toggle('rehearsing', name === 'rehearse');
   document.body.classList.toggle('is-done', name === 'done');
   if(typeof hostSays === 'function'){
@@ -1947,7 +2005,7 @@ function showIntro(){
 }
 document.addEventListener('DOMContentLoaded', () => { if(!CLEAN && !lsGet('sp_intro') && !location.hash.startsWith('#s=')) showIntro(); });
 
-let pendingTitle = null, pendingFile = null;
+let pendingTitle = null, pendingFile = null, pendingAbout = '';
 
 /* ---- my scenes: everything you uploaded or pasted, kept on this device ---- */
 function myScenes(){ try{ return JSON.parse(lsGet('sp_my') || '[]'); }catch(e){ return []; } }
@@ -2209,7 +2267,8 @@ function homeTab(t){
 document.addEventListener('DOMContentLoaded', () => {
   if(!CLEAN) return;
   const tag = (sel, c) => document.querySelectorAll(sel).forEach(e => e.classList.add(c));
-  tag('#daily, #lessons, #glossCard, h2.sec.lib, #libTabs, #sceneList', 'learn-only');
+  const pc = document.getElementById('pathCard'), dl = document.getElementById('daily'); if(pc && dl) dl.before(pc);
+  tag('#pathCard, #daily, #lessons, #glossCard, h2.sec.lib, #libTabs, #sceneList', 'learn-only');
   tag('#quota, .mytabs, #folderBar, #myBox, #takesBox', 'work-only');
   document.querySelectorAll('#homeTabs button').forEach(b => b.onclick = () => { homeTab(b.dataset.t); scrollTo(0, 0); });
   homeTab(lsGet('sp_hometab') || (myScenes().length ? 'work' : 'learn'));
@@ -2285,16 +2344,59 @@ const LESSONS = [
       'מותר להסתכל בדף. קוראים בעיניים את תחילת המשפט, מרימים את הראש, ואומרים אותו לפרטנר. הקשר עם הפרטנר חשוב יותר מכל מילה מדויקת.'],
    tip:'אל תתנצל על טעויות. ממשיכים כאילו ככה זה כתוב.',
    ex:'סצנה שעוד לא עשית: "הצעת נישואין". קרא פעם אחת ומיד "חזרה".', scene:'הצעת נישואין', mode:'run'},
+  {i:'💓', t:'פחד במה ולחץ מול לוהקים', m:3,
+   p:['הלחץ לא הולך לשום מקום, וזה בסדר. הגוף מתכונן למשהו חשוב. המטרה היא לא להיפטר ממנו, אלא לתת לו עבודה.',
+      'כשהתשומת לב על עצמך ("איך אני נראה? מה הם חושבים?") הלחץ גדל. כשהיא על הפרטנר ועל מה שאתה רוצה ממנו, אין לה זמן לפחד.',
+      'הלוהקים לא מחפשים לפסול אותך. הם רוצים שתהיה הפתרון שלהם. אתה בא לעזור להם, לא להיבחן.'],
+   tip:'לפני שנכנסים: נשיפה ארוכה מהפה, פי שניים מהשאיפה, שלוש פעמים. זה מרגיע את הדופק תוך דקה.',
+   ex:'self-tape על "חדר האודישן", כשכל תשומת הלב על גלית. אם הלחץ עולה, תחזור למה שנדב רוצה ממנה.', scene:'חדר האודישן', mode:'run', tape:true},
+  {i:'🔁', t:'טעית? ממשיכים', m:2,
+   p:['כל שחקן טועה בטקסט. ההבדל הוא מה קורה שנייה אחרי. מי שעוצר ומתנצל מוציא את כולם מהסצנה. מי שממשיך, אף אחד לא שם לב.',
+      'אם שכחת מילה, תגיד את המחשבה במילים שלך ותמשיך. הפרטנר יבין, והקהל לא יידע.'],
+   tip:'באודישן, אם הלכת לאיבוד לגמרי, מותר לבקש "אפשר מההתחלה?" פעם אחת. בחיוך, בלי דרמה.',
+   ex:'"דייט ראשון, שוב" ב"בדיקת זיכרון". כשאתה נתקע, אל תיגע מיד: תנסה קודם להגיד את המחשבה במילים שלך.', scene:'דייט ראשון, שוב', mode:'test'},
 ];
 function lessonDone(i){ return (lsGet('sp_lessons') || '').split(',').includes(String(i)); }
 function markLesson(i){ const d = new Set((lsGet('sp_lessons') || '').split(',').filter(Boolean)); d.add(String(i)); lsSet('sp_lessons', [...d].join(',')); }
-function lessonLocked(i){ return CLEAN && !isPro() && i >= 3; }
+// your path: the order of lessons, picked from your answers; the first three of YOUR path are free
+function myPath(){
+  let a = {}; try{ a = JSON.parse(lsGet('sp_answers') || '{}'); }catch(e){}
+  const pri = {nerves:[7, 1, 4, 8, 5], memory:[0, 5, 8, 1], natural:[2, 3, 1, 7], timing:[1, 5, 0, 6]}[a.hard] || [0, 1, 2];
+  if(a.goal === 'audition') pri.push(4, 5, 6);
+  if(a.goal === 'class') pri.push(2, 3);
+  const seen = new Set(), out = [];
+  [...pri, ...LESSONS.map((_, i) => i)].forEach(i => { if(!seen.has(i) && LESSONS[i]){ seen.add(i); out.push(i); } });
+  return out;
+}
+function lessonLocked(i){ return CLEAN && !isPro() && myPath().indexOf(i) >= 3; }
+let activeLesson = null;
+function renderPath(){
+  const box = document.getElementById('pathCard');
+  if(!CLEAN){ box.hidden = true; return; }
+  const path = myPath(), next = path.find(i => !lessonDone(i));
+  const done = path.filter(i => lessonDone(i)).length;
+  let a = {}; try{ a = JSON.parse(lsGet('sp_answers') || '{}'); }catch(e){}
+  const why = {nerves:'בנוי סביב הלחץ מול מצלמה ולוהקים', memory:'בנוי סביב לימוד טקסט מהר', natural:'בנוי סביב משחק טבעי ואמיתי', timing:'בנוי סביב קצב וכניסות בזמן'}[a.hard] || 'מסלול כללי למתחילים';
+  if(next === undefined){
+    box.innerHTML = `<span class="k">המסלול שלך</span><b>סיימת את כל המסלול 🎉</b><p>עכשיו הכי טוב לעבוד על החומר שלך, בלשונית "עבודה".</p>`;
+  } else {
+    const l = LESSONS[next];
+    box.innerHTML = `<span class="k">המסלול שלך · ${esc(why)}</span>
+      <div class="steps">${path.map((i, k) => `<i class="${lessonDone(i) ? 'on' : ''} ${i === next ? 'cur' : ''}" title="${esc(LESSONS[i].t)}"></i>`).join('')}</div>
+      <span class="sn">שלב ${done + 1} מתוך ${path.length}</span><b>${l.i} ${esc(l.t)}</b>
+      <p>${l.m} דקות קריאה, ואז תרגיל שהאפליקציה מכינה בשבילך.</p>
+      <button type="button" id="pathGo">${done ? 'ממשיכים' : 'מתחילים'} ←</button>`;
+    box.querySelector('#pathGo').onclick = () => openLesson(next);
+  }
+  box.hidden = false;
+}
 function renderLessons(){
   const box = document.getElementById('lessons');
+  renderPath();
   if(!CLEAN){ box.hidden = true; return; }
-  const n = LESSONS.filter((_, i) => lessonDone(i)).length;
-  box.innerHTML = `<div class="lh"><b>שיעורים קצרים</b><span>${n} מתוך ${LESSONS.length}</span></div><div class="lrow">${LESSONS.map((l, i) =>
-    `<button type="button" class="lcard ${lessonDone(i) ? 'done' : ''} ${lessonLocked(i) ? 'locked' : ''}" data-i="${i}"><span class="n">שיעור ${i + 1}</span><i>${l.i}</i><b>${esc(l.t)}</b><small>${l.m} דקות + תרגיל</small></button>`).join('')}</div>`;
+  const n = LESSONS.filter((_, i) => lessonDone(i)).length, path = myPath();
+  box.innerHTML = `<div class="lh"><b>כל השיעורים</b><span>${n} מתוך ${LESSONS.length}</span></div><div class="lrow">${path.map((i, k) => { const l = LESSONS[i];
+    return `<button type="button" class="lcard ${lessonDone(i) ? 'done' : ''} ${lessonLocked(i) ? 'locked' : ''}" data-i="${i}"><span class="n">שלב ${k + 1}</span><i>${l.i}</i><b>${esc(l.t)}</b><small>${l.m} דקות + תרגיל</small></button>`; }).join('')}</div>`;
   box.hidden = false;
   box.querySelectorAll('.lcard').forEach(c => c.onclick = () => openLesson(+c.dataset.i));
 }
@@ -2302,14 +2404,14 @@ function openLesson(i){
   const l = LESSONS[i];
   if(lessonLocked(i)){ openPro('השיעור "' + l.t + '" הוא חלק מהגרסה המלאה. שלושת השיעורים הראשונים בחינם.'); return; }
   const card = document.getElementById('lessonCard');
-  card.innerHTML = `<div class="top"><i>${l.i}</i><div><span class="n">שיעור ${i + 1} · ${l.m} דקות</span><h3>${esc(l.t)}</h3></div></div>
+  card.innerHTML = `<div class="top"><i>${l.i}</i><div><span class="n">שלב ${myPath().indexOf(i) + 1} במסלול · ${l.m} דקות</span><h3>${esc(l.t)}</h3></div></div>
     <div class="lbody">${l.p.map(x => `<p>${esc(x)}</p>`).join('')}<div class="tip">💡 ${esc(l.tip)}</div>
-    <div class="ex"><b>התרגיל</b><p>${esc(l.ex)}</p></div></div>
+    <div class="ex"><b>התרגיל</b><p>${esc(l.ex)}</p></div><p class="after">אחרי התרגיל אחזיר אותך לכאן, לשלב הבא במסלול.</p></div>
     <button type="button" class="primary" id="lessonGo">לתרגל עכשיו</button><button type="button" class="skip" id="lessonClose">אחר כך</button>`;
   const dlg = document.getElementById('lessonDlg');
-  card.querySelector('#lessonClose').onclick = () => { dlg.hidden = true; markLesson(i); renderLessons(); };
+  card.querySelector('#lessonClose').onclick = () => { dlg.hidden = true; };
   card.querySelector('#lessonGo').onclick = () => {
-    dlg.hidden = true; markLesson(i); renderLessons();
+    dlg.hidden = true; markLesson(i); renderLessons(); activeLesson = i;
     const sc = SCENES.find(x => x.title === l.scene);
     setMode(l.mode || 'run');
     if(l.tape){ OPTS.tape = true; lsSet(OPT_KEYS.tape, '1'); const c = document.querySelector('.chip[data-opt="tape"]'); if(c) c.setAttribute('aria-pressed', 'true'); }
@@ -2361,6 +2463,10 @@ document.getElementById('onbAgain').onclick = () => { document.getElementById('g
 const ONB = [
   {q:'על מה אתה עובד עכשיו?', k:'goal', a:[['audition','🎬','יש לי אודישן או סלף־טייפ בקרוב'],['class','🎓','שיעור משחק או הצגה'],['fit','💪','לשמור על כושר, לתרגל'],['look','👀','סתם מסתכל']]},
   {q:'מה הכי קשה לך?', k:'hard', a:[['memory','🧠','לזכור את הטקסט'],['natural','🗣️','להישמע טבעי ולא "משחק"'],['timing','⏱️','הקצב, להיכנס בזמן'],['nerves','💓','הלחץ מול מצלמה או לוהקים']]},
+  {q:'מה הכי מלחיץ אותך?', k:'fear', when:a => a.hard === 'nerves', a:[['camera','🎥','המצלמה. מרגיש שמסתכלים עליי'],['casting','👥','הלוהקים בחדר'],['blank','😶','שאשכח את הטקסט'],['waiting','⏳','ההמתנה לפני שנכנסים']]},
+  {q:'כמה זמן יש לך בדרך כלל ללמוד טקסט?', k:'time', when:a => a.hard === 'memory', a:[['day','⚡','יום או פחות'],['days','📅','כמה ימים'],['week','🗓️','שבוע ויותר']]},
+  {q:'מתי זה קורה הכי הרבה?', k:'when', when:a => a.hard === 'natural', a:[['alone','🪞','כשאני מתאמן לבד'],['cam','🎥','מול מצלמה'],['partner','🤝','מול פרטנר אמיתי']]},
+  {q:'איפה אתה נתקע?', k:'where', when:a => a.hard === 'timing', a:[['late','🐢','נכנס מאוחר אחרי הפרטנר'],['fast','🐇','ממהר מדי'],['pauses','⏸️','לא יודע איפה לעצור']]},
   {q:'איך אתה לומד טקסט הכי טוב?', k:'learn', a:[['hear','👂','לשמוע אותו שוב ושוב'],['cover','📄','לקרוא ולכסות'],['chunks','🧩','חתיכה אחרי חתיכה'],['dunno','🤷','עוד לא יודע']]},
   {q:'כמה ניסיון יש לך?', k:'exp', a:[['new','🌱','מתחיל'],['some','🌿','קצת ניסיון'],['pro','🌳','שחקן מקצועי']]},
 ];
@@ -2371,8 +2477,20 @@ function planFor(a){
   if(a.learn === 'cover'){ out.push(['📄', 'הדלקתי לך "הסתר את השורות שלי": רואים רק אותיות ראשונות, ונוגעים כשנתקעים.']); OPTS.hide = true; lsSet('sp_hide', '1'); }
   if(a.learn === 'hear'){ out.push(['👂', 'קצב איטי לשמיעה. אפשר להריץ את הסצנה שוב ושוב, והקולות נשמרים בטלפון.']); lsSet('sp_rate', '0.85'); speechRate = 0.85; }
   if(a.hard === 'timing'){ out.push(['⏱️', '"רק המשפטים שלי" דולק: שומעים רק את הקיו ונכנסים. ובסוף, "איטלקית" כדי לבדוק קצב.']); OPTS.cue = true; lsSet('sp_o_cue', '1'); }
+  if(a.hard === 'nerves' && !out.length) out.push(['💓', 'המסלול שלך מתחיל בשיעור על פחד במה.']);
+  out.unshift(['🧭', 'בניתי לך מסלול לימוד אישי. הוא מחכה בלשונית "לימוד", ומוביל אותך צעד אחרי צעד.']);
   if(a.hard === 'natural'){ out.push(['🗣️', 'לפני כל סצנה, תגיד לעצמך מה הדמות רוצה מהפרטנר. משחקים פועל, לא רגש. במילון יש הסבר על "מטרה" ו"פעולה".']); }
-  if(a.hard === 'nerves' || a.goal === 'audition'){ out.push(['🎥', 'צלם self-tape כבר בחזרה השנייה. ככה המצלמה מפסיקה להיות אירוע. אם יש תאריך, הוסף אותו ב"עוד אפשרויות".']); OPTS.tape = true; lsSet('sp_o_tape', '1'); }
+  if(a.fear === 'camera'){ out.push(['🎥', 'המצלמה תהיה דלוקה כבר מהחזרה השנייה. אחרי כמה טייקים היא מפסיקה להיות אירוע ונהיית כלי. ב"הטייקים שלי" תראה את עצמך משתפר.']); OPTS.tape = true; lsSet('sp_o_tape', '1'); }
+  if(a.fear === 'casting') out.push(['👥', 'המסלול שלך מתחיל בשיעור על פחד במה ולוהקים, ואחריו הקשבה: כשהתשומת לב על הפרטנר, אין לה זמן לפחד.']);
+  if(a.fear === 'blank'){ out.push(['😶', 'הפחד לשכוח נעלם כשיודעים שהטקסט יושב. נעבוד עם "בדיקת זיכרון", ושיעור "טעית? ממשיכים" ילמד אותך מה עושים כשזה קורה.']); }
+  if(a.fear === 'waiting') out.push(['⏳', 'לפני כל סצנה תשמע את הרקע מוקרא לך, כמו רגע של כניסה לדמות. נשימה ארוכה, ונכנסים.']);
+  if(a.hard !== 'nerves' && a.goal === 'audition'){ out.push(['🎥', 'צלם self-tape כבר בחזרה השנייה. אם יש תאריך לאודישן, הוסף אותו ב"עוד אפשרויות".']); OPTS.tape = true; lsSet('sp_o_tape', '1'); }
+  if(a.time === 'day') out.push(['⚡', 'כשיש רק יום: לימוד בהדרגה בבוקר, איטלקית בערב, בדיקת זיכרון לפני השינה.']);
+  if(a.time === 'week') out.push(['🗓️', 'כשיש שבוע: עשר דקות ביום עדיפות על שעה אחת. ההתקדמות נשמרת לך כאן.']);
+  if(a.when === 'cam'){ out.push(['🎥', 'נתאמן הרבה מול המצלמה, עד שהיא תרגיש כמו עוד פרטנר.']); OPTS.tape = true; lsSet('sp_o_tape', '1'); }
+  if(a.when === 'alone') out.push(['🤝', 'כשמתאמנים לבד קל "להקריא". הקורא כאן נותן לך מישהו להגיב אליו, וזה כל ההבדל.']);
+  if(a.where === 'late') out.push(['🐢', 'שיעור ההקשבה ראשון אצלך: מתחילים להגיב עוד בזמן שהפרטנר מדבר.']);
+  if(a.where === 'fast'){ out.push(['🐇', 'קצב הקורא יהיה איטי, כדי שתלמד לקחת את הזמן.']); lsSet('sp_rate', '0.85'); speechRate = 0.85; }
   if(a.exp === 'new') out.push(['📖', 'מונחים כמו "קיו" או "איטלקית" מוסברים במילון, בכפתור 📖 למעלה.']);
   if(a.goal === 'look' && !out.length) out.push(['🎬', 'נסה את "הסצנה של היום". זה לוקח דקה.']);
   if(!out.length) out.push(['🎬', 'מתחילים ב"חזרה" רגילה, ובסוף כל סצנה מנסים "בדיקת זיכרון".']);
@@ -2385,19 +2503,21 @@ function openOnb(){
   const ans = {};
   let i = 0;
   const finish = () => { lsSet('sp_onb', '1'); dlg.hidden = true; };
+  const qs = () => ONB.filter(q => !q.when || q.when(ans));
   const draw = () => {
-    const dots = ONB.map((_, k) => `<i class="${k <= i ? 'on' : ''}"></i>`).join('');
-    if(i >= ONB.length){
+    const Q = qs();
+    const dots = Q.map((_, k) => `<i class="${k <= i ? 'on' : ''}"></i>`).join('');
+    if(i >= Q.length){
       lsSet('sp_answers', JSON.stringify(ans));
       const plan = planFor(ans);
       card.innerHTML = `<div class="step">התוכנית שלך</div><h3>ככה נתאמן</h3><ul class="plan">${plan.map(([ic, t]) => `<li><span>${ic}</span>${esc(t)}</li>`).join('')}</ul>
         <button type="button" class="primary" id="onbGo">יאללה, מתחילים</button><button type="button" class="skip" id="onbBack">חזרה לשאלות</button>`;
-      card.querySelector('#onbGo').onclick = () => { finish(); SFX.win(); };
+      card.querySelector('#onbGo').onclick = () => { finish(); SFX.win(); renderLessons(); homeTab('learn'); };
       card.querySelector('#onbBack').onclick = () => { i = 0; draw(); };
       return;
     }
-    const s = ONB[i];
-    card.innerHTML = `<div class="dots">${dots}</div><div class="step">שאלה ${i + 1} מתוך ${ONB.length}</div><h3>${esc(s.q)}</h3>
+    const s = Q[i];
+    card.innerHTML = `<div class="dots">${dots}</div><div class="step">שאלה ${i + 1} מתוך ${Q.length}</div><h3>${esc(s.q)}</h3>
       <div class="ans">${s.a.map(([v, ic, t]) => `<button type="button" data-v="${v}"><span>${ic}</span>${esc(t)}</button>`).join('')}</div>
       <button type="button" class="skip" id="onbSkip">${i === 0 ? 'דלג, אני רק רוצה לתרגל' : 'דלג'}</button>`;
     card.querySelectorAll('.ans button').forEach(b => b.onclick = () => { ans[s.k] = b.dataset.v; SFX.tap(); i++; draw(); });
@@ -2426,7 +2546,7 @@ let myCharacter = null;
 
 /* Reads almost any pasted script: "שם: טקסט", "שם:" then text, a name alone on its own line,
    "שם - טקסט", headers and stage directions mixed in. Returns [{character, text, dir}] or null. */
-const META_KEYS = /^(יוצרים|יוצר|יוצרת|יצירה|הפקה|מפיק|מפיקה|צילום|עריכה|ליהוק|שחקנים|בכיכוב|ערוץ|פלטפורמה|תרגום|עיבוד|סדרה|סרט|הצגה|מחזה|בימוי|במאי|במאית|תסריט|תסריטאי|תסריטאית|מחזאי|מאת|רקע|הוסיף למאגר|הוסיפה למאגר|עונה|פרק|סצנה|תמונה|מערכה|דמויות|משתתפים|הערה|הערות|מקור|תקציר|מיקום|זמן|שנה|ז׳אנר|ז'אנר|לוקיישן|INT|EXT|פנים|חוץ)(?=$|[\s.:])/i;
+const META_KEYS = /^(מתוך|דמות|שם הדמות|גיל הדמות|אורך המונולוג|ז׳אנר המונולוג|נכתב על ידי|יוצרים|יוצר|יוצרת|יצירה|הפקה|מפיק|מפיקה|צילום|עריכה|ליהוק|שחקנים|בכיכוב|ערוץ|פלטפורמה|תרגום|עיבוד|סדרה|סרט|הצגה|מחזה|בימוי|במאי|במאית|תסריט|תסריטאי|תסריטאית|מחזאי|מאת|רקע|הוסיף למאגר|הוסיפה למאגר|עונה|פרק|סצנה|תמונה|מערכה|דמויות|משתתפים|הערה|הערות|מקור|תקציר|מיקום|זמן|שנה|ז׳אנר|ז'אנר|לוקיישן|INT|EXT|פנים|חוץ)(?=$|[\s.:])/i;
 function cleanRaw(raw){
   return String(raw)
     .replace(/\r/g, '')
@@ -2522,10 +2642,33 @@ document.querySelectorAll('#kindSeg button').forEach(b => b.onclick = () => {
     : 'דני: את לא חייבת להישאר.\nנועה: אני יודעת. אני פה כי אני רוצה.\nדני: זה לא מה שאמרת אתמול.';
 });
 // a monologue: plain text, one speaker; every paragraph (or 2-3 sentences) is one beat
+// pulls the useful facts out of a copied web page: "מתוך:", "מאת:", "דמות:" — and the rest is the text itself
+function scrapeHeader(raw){
+  const info = {};
+  const body = [];
+  const lines = raw.replace(/\r/g, '').split('\n');
+  lines.forEach((l, i) => {
+    const t = l.trim();
+    const m = t.match(/^([^:]{1,16}):\s*(.{1,60})$/);
+    if(m && META_KEYS.test(m[1].trim())){
+      const k = m[1].trim(), v = m[2].trim();
+      if(/^(דמות|שם הדמות)$/.test(k)) info.who = v.split(/[,(]/)[0].trim();
+      else if(k === 'מתוך') info.from = v;
+      else if(/^(מאת|מחזאי|כתב|כתבה)$/.test(k)) info.by = v;
+      return;
+    }
+    if(/^\*/.test(t)) return;                                         // footnotes ("* השימוש במונולוג...")
+    if(i < 3 && t.length < 70 && /\s[–-]\s/.test(t) && !/[.!?]$/.test(t)){ info.title = info.title || t.split(/\s[–-]\s/)[0].trim(); return; }   // "ילד מחוק – ג'ואל אדגרטון – ג'ררד אימונס"
+    body.push(l);
+  });
+  return {info, body: body.join('\n').trim()};
+}
 function monologueLines(raw, who){
   const out = [];
   raw.replace(/\r/g, '').split(/\n\s*\n|\n/).map(p => p.trim()).filter(Boolean).forEach(p => {
-    p = p.replace(/^[^:\n]{1,20}:\s*/, '');
+    const lm = p.match(/^([^:\n]{1,20}):\s*/); if(lm && META_KEYS.test(lm[1].trim())) return;
+    if(/^\*/.test(p)) return;
+    p = p.replace(/^[^:\n]{1,20}:\s*/, '').replace(/^["“”״]+|["“”״]+$/g, '');
     const sent = p.match(/[^.!?…]+[.!?…]+["׳״']?\s*|[^.!?…]+$/g) || [p];
     let cur = '';
     sent.forEach(x => { if((cur + x).length > 170 && cur){ out.push(cur.trim()); cur = ''; } cur += x; });
@@ -2541,8 +2684,17 @@ document.getElementById('analyzeBtn').onclick = () => {
     errBox.style.display = 'block';
     return;
   }
-  let parsed = sceneKind === 'mono' ? monologueLines(raw, 'אני') : parseScript(raw);
-  if((!parsed || !parsed.length) && CLEAN && raw.trim().length > 20) parsed = monologueLines(raw, 'אני');   // no names at all: treat it as a monologue
+  const sc0 = scrapeHeader(raw);
+  let parsed = sceneKind === 'mono' ? monologueLines(sc0.body, sc0.info.who || 'אני') : parseScript(raw);
+  // no real dialogue (every "speaker" talks once and the text is one long speech): it's a monologue
+  if(parsed && sceneKind !== 'mono'){
+    const cnt = {}; parsed.forEach(l => cnt[l.character] = (cnt[l.character] || 0) + 1);
+    if(Object.values(cnt).every(n => n === 1) && parsed.length <= 4 && sc0.info.who) parsed = null;
+  }
+  if((!parsed || !parsed.length) && CLEAN && sc0.body.length > 20) parsed = monologueLines(sc0.body, sc0.info.who || 'אני');
+  pendingAbout = (document.getElementById('sceneAbout').value || '').trim()
+    || (sc0.info.from || sc0.info.who ? [sc0.info.who ? 'הדמות: ' + sc0.info.who : '', sc0.info.from ? 'מתוך "' + sc0.info.from + '"' : '', sc0.info.by ? 'מאת ' + sc0.info.by : ''].filter(Boolean).join(', ') + '.' : '');
+  if(!pendingTitle && sc0.info.title) pendingTitle = sc0.info.title;
   if(!parsed || parsed.length === 0){
     errBox.textContent = "לא מצאתי דמויות בטקסט. צריך שהשם של מי שמדבר יופיע לפני מה שהוא אומר, למשל \"רונה:\" בשורה נפרדת או בתחילת השורה.";
     errBox.style.display = 'block';
@@ -2560,7 +2712,8 @@ document.getElementById('analyzeBtn').onclick = () => {
   sceneTitle = typed || pendingTitle || (cast.length === 1 ? 'מונולוג' : '') || (cast.length <= 2 ? cast.join(' ו') : cast.slice(0, 2).join(', ') + ' ועוד ' + (cast.length - 2));
   pendingTitle = null;
   document.getElementById('sceneTitle').textContent = sceneTitle;
-  saveMyScene(sceneTitle, toCleanScript(parsed), pendingFile ? {src: 'file', fname: pendingFile} : {src: 'paste'});
+  saveMyScene(sceneTitle, toCleanScript(parsed), Object.assign(pendingFile ? {src: 'file', fname: pendingFile} : {src: 'paste'}, pendingAbout ? {about: pendingAbout} : {}));
+  document.getElementById('sceneAbout').value = '';
   pendingFile = null;
   parsedLines = parsed;
   characters = [...new Set(parsed.map(l=>l.character))];
@@ -2846,7 +2999,8 @@ async function elLoadVoices(){
     const j = await r.json();
     if(j.voices && j.voices.length){
       elVoices = j.voices.map(v => ({voice_id:v.voice_id, name:v.name, gender:((v.labels||{}).gender||'').toLowerCase(),
-        age:((v.labels||{}).age||'').toLowerCase().replace(/[\s-]+/g, '_'), accent:(v.labels||{}).accent||'', preview:v.preview_url||''}));
+        age:((v.labels||{}).age||'').toLowerCase().replace(/[\s-]+/g, '_'), accent:(v.labels||{}).accent||'', preview:v.preview_url||'',
+        desc:[(v.labels||{}).description, (v.labels||{}).descriptive, (v.labels||{}).use_case, (v.labels||{}).use_case && ''].filter(Boolean).join(' ')}));
       lsSet('sp_el_voicelist2', JSON.stringify(elVoices));
     }
     return true;
@@ -2944,12 +3098,21 @@ function elVoiceOf(character){
   return castVoice(castId(character)) || defaultVoiceFor(character);
 }
 function voiceInfo(id){ return elVoices.find(v => v.voice_id === id) || EL_FALLBACK_VOICES.find(v => v.voice_id === id) || {name:'קול'}; }
-function voiceShort(v){ return (v.name || '').split(/\s*[-–(]\s*/)[0]; }
+const HEB_F = ['נועה','מיכל','טליה','הדס','שירה','רוני','יעל','ליאור','מאיה','דנה','אורית','ענבל','גלית','נגה','תמר','אלה'];
+const HEB_M = ['איתי','עומר','יואב','אלון','גיא','נדב','עידו','רועי','תומר','אסף','ניר','בן','משה','אריה','דורון','שחר'];
+const HEB_X = ['קול א׳','קול ב׳','קול ג׳','קול ד׳'];
+function voiceShort(v){
+  const g = voiceGender(v), all = (elVoices.length ? elVoices : EL_FALLBACK_VOICES).filter(x => voiceGender(x) === g).map(x => x.voice_id).sort();
+  const i = Math.max(0, all.indexOf(v.voice_id)), names = g === 'female' ? HEB_F : g === 'male' ? HEB_M : HEB_X;
+  return v.voice_id ? names[i % names.length] + (i >= names.length ? ' ' + (Math.floor(i / names.length) + 1) : '') : 'קול';
+}
+const DESC_HE = {warm:'חם', calm:'רגוע', deep:'עמוק', soft:'רך', raspy:'צרוד', confident:'בטוח', young:'צעיר', mature:'בוגר', narrator:'קריין', narration:'קריינות', casual:'יומיומי', friendly:'ידידותי', strong:'חזק', gentle:'עדין', energetic:'אנרגטי', authoritative:'סמכותי', husky:'צרוד', bright:'בהיר', smooth:'חלק', clear:'צלול', expressive:'אקספרסיבי', playful:'שובב', serious:'רציני', wise:'חכם', grandpa:'סבא', grandma:'סבתא', crisp:'חד', relaxed:'רגוע', engaging:'סוחף', sassy:'עוקצני', seductive:'מפתה', intense:'עוצמתי', articulate:'ברור', upbeat:'שמח', professional:'מקצועי', emotive:'רגשי'};
 function voiceTags(v){
   const g = voiceGender(v) === 'female' ? 'אישה' : voiceGender(v) === 'male' ? 'גבר' : '';
   const a = {young:'צעיר', middle_aged:'בגיל הביניים', old:'מבוגר'}[v.age] || '';
-  const desc = (v.name || '').split(/\s*-\s*/).slice(1).join(' ');
-  return [g, a, desc].filter(Boolean).join(' · ');
+  const words = ((v.name || '') + ' ' + (v.desc || '')).toLowerCase().match(/[a-z]+/g) || [];
+  const d = [...new Set(words.map(w => DESC_HE[w]).filter(Boolean))].slice(0, 3).join(', ');
+  return [g, a, d].filter(Boolean).join(' · ');
 }
 function elPrefetchFrom(idx){
   if(!elOn()) return;
@@ -3004,11 +3167,12 @@ async function playBlob(blob, onEnd){
   catch(e){
     // some phones refuse the shared player after the mic opens: try a fresh one once
     player.onended = null;
-    const fresh = new Audio(); fresh.setAttribute('playsinline','');
+    const fresh = new Audio(); fresh.setAttribute('playsinline',''); allAudio.add(fresh);
     await attempt(fresh);
   }
 }
 async function elSpeak(text, character, cb, onFail){
+  const myRun = runId;
   let done = false;
   const finish = () => { if(done) return; done = true; cb(); };
   const voice = elVoiceOf(character);
@@ -3024,6 +3188,7 @@ async function elSpeak(text, character, cb, onFail){
       if(fb !== voice){ try{ blob = await elGet(text, fb); elVoiceFor[character] = fb; lsSet('sp_el_voices2', JSON.stringify(elVoiceFor)); }catch(e2){} }
     }
   }
+  if(myRun !== runId) return;              // stopped / paused / left while the voice was loading
   if(!blob){ noteElError(firstErr); onFail(firstErr); return; }
   if(firstErr) noteElError(firstErr, true);
   try{ await playBlob(blob, finish); }
@@ -3037,7 +3202,12 @@ function noteElError(err, recovered){
   const n = document.getElementById('micNotice');
   if(n){ n.style.display = 'block'; n.textContent = 'ElevenLabs: ' + msg; n.classList.add('bad'); }
 }
-function stopAudio(){ for(const a of [player, currentAudio]){ try{ if(a){ a.pause(); a.onended = a.onerror = null; } }catch(e){} } }
+const allAudio = new Set();
+function stopAudio(){
+  for(const a of [player, currentAudio, ...allAudio]){ try{ if(a){ a.pause(); a.onended = a.onerror = null; } }catch(e){} }
+  allAudio.clear();
+  try{ window.speechSynthesis.cancel(); }catch(e){}
+}
 
 (function initVoiceBox(){
   const inp = document.getElementById('elKey');
@@ -3337,11 +3507,13 @@ function setupRehearsal(){
   assignVoices();
   document.getElementById('feed').innerHTML = '';
   if(CLEAN){
-    const lib = SCENES.find(x => x.title === sceneTitle);
     const mine = runLines.filter(l => l.character === myCharacter).length;
     const solo = characters.length === 1;
+    sceneAbout = aboutOf(sceneTitle);
     document.getElementById('feed').innerHTML = `<div class="ctxcard"><span class="k">על הסצנה</span><b>${esc(sceneTitle)}</b>
-      <p>${lib ? esc(lib.blurb) + '<br>' : ''}${solo ? 'מונולוג, ' + mine + ' קטעים. האפליקציה מחכה לך בין קטע לקטע.' : 'אתה ' + esc(myCharacter) + ', ' + mine + ' שורות. את השאר אני קורא.'}</p></div>`;
+      <p>${sceneAbout ? esc(sceneAbout) + '<br>' : ''}${solo ? 'מונולוג, ' + mine + ' קטעים. האפליקציה מחכה לך בין קטע לקטע.' : 'אתה ' + esc(myCharacter) + ', ' + mine + ' שורות. את השאר אני קורא.'}</p>
+      ${sceneAbout ? `<label class="narr"><input type="checkbox" id="narrOn" ${lsGet('sp_narr') === '0' ? '' : 'checked'}> להקריא לי את הרקע לפני שמתחילים</label>` : ''}</div>`;
+    const nb = document.getElementById('narrOn'); if(nb) nb.onchange = () => lsSet('sp_narr', nb.checked ? null : '0');
   }
   document.getElementById('progressFill').style.width = '0%';
   document.getElementById('actionBtn').textContent = 'התחל';
@@ -3711,6 +3883,40 @@ function addLineToFeed(line, isMine){
   return div;
 }
 
+// the scene's background, read by a calm narrator voice before the countdown (tap to skip)
+let sceneAbout = '';
+function aboutOf(title){
+  const lib = SCENES.find(x => x.title === title); if(lib) return lib.blurb;
+  const mine = myScenes().find(x => x.title === title); return (mine && mine.about) || '';
+}
+function narratorVoice(){
+  const used = new Set(characters.map(c => elVoiceOf(c)));
+  const v = elVoices.find(x => /narrat|story|calm/i.test(x.name) && !used.has(x.voice_id)) || elVoices.find(x => !used.has(x.voice_id)) || elVoices[0];
+  return v ? v.voice_id : null;
+}
+function narrate(text, myRun){
+  return new Promise(async res => {
+    let over = false;
+    const end = () => { if(over) return; over = true; document.removeEventListener('click', skip, true); setStatus('', false); res(); };
+    const skip = () => { stopAudio(); end(); };
+    setStatus('מקריא את הרקע לסצנה… (נגיעה במסך מדלגת)', false);
+    setTimeout(() => document.addEventListener('click', skip, true), 300);
+    const card = document.querySelector('.ctxcard'); if(card) card.classList.add('reading');
+    const done = () => { if(card) card.classList.remove('reading'); end(); };
+    try{
+      const v = elOn() && narratorVoice();
+      if(v){
+        const blob = await elGet(text, v);
+        if(myRun !== runId || over) return done();
+        await playBlob(blob, done);
+      } else {
+        const u = new SpeechSynthesisUtterance(text); u.lang = 'he-IL'; u.rate = 0.95;
+        u.onend = u.onerror = done; speechSynthesis.cancel(); speechSynthesis.speak(u);
+        setTimeout(done, readingTime(text) + 4000);
+      }
+    }catch(e){ done(); }
+  });
+}
 // fetch every partner line before the scene, with a progress screen, so nothing waits mid-scene
 async function prepareVoices(myRun){
   if(!elOn()) return;
@@ -3752,6 +3958,7 @@ async function beginScene(){
   }
   await prepareVoices(myRun);
   if(myRun !== runId) return;
+  if(CLEAN && sceneAbout && lsGet('sp_narr') !== '0'){ await narrate(sceneAbout, myRun); if(myRun !== runId) return; }
   if(OPTS.tape && tapeFailed) document.getElementById('micNotice').textContent = 'אין גישה למצלמה, אז הסצנה רצה בלי צילום. אפשר לאשר מצלמה בהגדרות האתר בדפדפן.';
   await countdown();
   if(myRun !== runId) return;
@@ -3884,6 +4091,7 @@ function advance(myRun){
 
 function finishScene(){
   sceneRunning = false;
+  stopAudio();
   document.getElementById('minorCtl').hidden = true;
   const secs = Math.round((Date.now() - sceneStart) / 1000);
   const takeKey = 'sp_takes_' + sceneTitle;
@@ -3913,6 +4121,14 @@ function finishScene(){
   }
   if(MODE === 'italian') document.getElementById('doneLine').textContent = 'איטלקית ב־' + Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0') + '. אם לא נתקעת, הטקסט יושב. עכשיו אפשר לשחק אותו.';
   speechRate = BASE_RATE();
+  const nb = document.getElementById('nextStep');
+  if(activeLesson !== null){
+    const path = myPath(), next = path.find(i => !lessonDone(i));
+    nb.hidden = false;
+    nb.innerHTML = next === undefined ? '<b>סיימת את כל המסלול 🎉</b><small>מכאן, העבודה על החומר שלך</small>'
+      : `<b>השלב הבא במסלול: ${LESSONS[next].i} ${esc(LESSONS[next].t)}</b><small>לחץ כדי להמשיך</small>`;
+    nb.onclick = () => { nb.hidden = true; activeLesson = null; show('input'); homeTab('learn'); if(next !== undefined) setTimeout(() => openLesson(next), 250); };
+  } else nb.hidden = true;
   setTimeout(confetti, 150);
   stopRecording().then(blob => { closeMic(); showTape(blob, take); saveTake(blob, sceneTitle, take); });
   allowScreenOff();
