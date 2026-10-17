@@ -869,13 +869,56 @@ html.clean .rehearsing #screen-rehearse > #feed{min-height:55vh}
   html.clean .fab{left:max(18px, calc(50vw - 300px));width:68px;height:68px;font-size:38px}
 }
 
+/* ===== home grid, work header, simple add page ===== */
+.workhead,.srcseg,.moredet{display:none}
+html.clean .workhead{display:none;align-items:center;justify-content:space-between;margin:4px 0 6px}
+html.clean .workhead h2{margin:0;font-family:'Amatic SC',cursive;font-size:32px;color:var(--ink);font-weight:700}
+html.clean .addwide{padding:10px 18px;border-radius:99px;border:0;background:var(--ink);color:var(--paper);font-family:var(--sans);font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 8px 18px -10px var(--shadow)}
+html.clean #screen-input.adding .srcseg{display:flex}
+html.clean #screen-input.adding.src-paste #uploadBox,html.clean #screen-input.adding.src-file #scriptInput{display:none!important}
+html.clean #screen-input.adding .or,html.clean #screen-input.adding .hint,html.clean #screen-input.adding h2.sec{display:none!important}
+html.clean #screen-input.adding .srcseg{margin:0 0 16px}
+html.clean #screen-input.adding #uploadBox{padding:34px 16px;justify-content:center;flex-direction:column;text-align:center;margin-top:8px}
+html.clean #screen-input.adding #scriptInput{min-height:240px;margin-top:8px}
+html.clean #screen-input.adding .moredet{display:block;margin:12px 0 14px;border:1px solid var(--rule);border-radius:10px;padding:10px 14px;background:var(--sheet)}
+.moredet summary{cursor:pointer;font-weight:700;font-size:14.5px;color:var(--pencil)}
+.moredet[open] summary{margin-bottom:10px}
+.moredet .seg,.moredet .fld,.moredet .namein{display:flex!important}
+.moredet .fld{display:block!important;margin:10px 0 6px;font-weight:700;color:var(--ink)}
+.moredet .namein.about{display:block!important;width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--rule);background:var(--paper);color:var(--ink);font:inherit;font-size:15px;line-height:1.5}
+.moredet .seg{padding:4px;border-radius:12px;background:var(--rule);gap:6px}
+html.clean #screen-input.adding #analyzeBtn{font-size:18px;padding:16px}
+html.clean #screen-input.adding .tips{margin-top:18px}
+/* computer: a real desktop layout — two columns, wider page; the phone stays as it was */
+@media (min-width: 1000px){
+  html.clean .wrap{max-width:1120px}
+  html.clean .rehearsing .wrap{max-width:780px}
+  html.clean .home-grid{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:30px;align-items:start}
+  html.clean .home-main{grid-column:1;grid-row:1;min-width:0}
+  html.clean .home-side{grid-column:2;grid-row:1;position:sticky;top:96px}
+  html.clean #screen-input.tab-learn .home-grid{grid-template-columns:minmax(0,1fr) 380px}
+  html.clean .workhead{display:flex}
+  html.clean #screen-input.tab-learn .workhead{display:none}
+  html.clean .fab{display:none!important}
+  html.clean .hometabs{max-width:520px}
+  html.clean #sceneList{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  html.clean #sceneList .scene{margin:0}
+  html.clean .lrow{flex-wrap:wrap;overflow:visible;margin:0;padding:4px 0 12px}
+  html.clean .lcard{flex:0 0 calc(33.33% - 8px);min-height:150px}
+  html.clean .daily:not([hidden]){margin-top:0}
+  html.clean #screen-input.adding{max-width:680px;margin:0 auto}
+  html.clean #screen-roles{max-width:860px;margin:0 auto}
+  html.clean .modes{grid-template-columns:repeat(4,1fr)}
+  html.clean #screen-done{max-width:640px;margin:0 auto}
+}
+
 /* add-a-scene page */
 .fab,.addhead,.fld,.namein,.seg,.tips{display:none}
 html.clean .fab{display:grid;place-items:center;position:fixed;left:18px;bottom:calc(22px + env(safe-area-inset-bottom));z-index:25;width:62px;height:62px;border-radius:50%;border:0;background:var(--ink);color:var(--paper);font-size:34px;line-height:1;box-shadow:0 10px 24px -8px var(--shadow);cursor:pointer}
 html.clean #screen-input:not(.adding) #uploadBox,html.clean #screen-input:not(.adding) .or,html.clean #screen-input:not(.adding) #scriptInput,html.clean #screen-input:not(.adding) .hint,
 html.clean #screen-input:not(.adding) #analyzeBtn,html.clean #screen-input:not(.adding) h2.sec:not(.lib){display:none}
 html.clean #screen-input.adding .namein.about{min-height:64px;font-size:15px;line-height:1.5;background-image:none;padding-right:14px}
-html.clean #screen-input.adding > :not(.addhead):not(.fld):not(.namein):not(.seg):not(#uploadBox):not(.or):not(#scriptInput):not(.hint):not(#inputErr):not(#analyzeBtn):not(.tips){display:none!important}
+html.clean #screen-input.adding > :not(.addhead):not(.fld):not(.namein):not(.seg):not(.moredet):not(#uploadBox):not(.or):not(#scriptInput):not(.hint):not(#inputErr):not(#analyzeBtn):not(.tips){display:none!important}
 html.clean #screen-input.adding .addhead{display:flex;align-items:center;gap:10px;margin:4px 0 14px}
 html.clean .addhead h2{margin:0;font-family:var(--typed);font-size:26px}
 html.clean .backbtn{width:42px;height:42px;border-radius:50%;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);font-size:20px;cursor:pointer}
@@ -2269,11 +2312,35 @@ function homeTab(t){
 document.addEventListener('DOMContentLoaded', () => {
   if(!CLEAN) return;
   const tag = (sel, c) => document.querySelectorAll(sel).forEach(e => e.classList.add(c));
-  const pc = document.getElementById('pathCard'), dl = document.getElementById('daily'); if(pc && dl) dl.before(pc);
-  tag('#pathCard, #daily, #lessons, #glossCard, h2.sec.lib, #libTabs, #sceneList', 'learn-only');
-  tag('#quota, .mytabs, #folderBar, #myBox, #takesBox', 'work-only');
+  const $ = id => document.getElementById(id), scr = $('screen-input');
+  // two columns on a computer, one on the phone (side first)
+  const grid = document.createElement('div'); grid.className = 'home-grid';
+  const side = document.createElement('div'); side.className = 'home-side';
+  const main = document.createElement('div'); main.className = 'home-main';
+  $('homeTabs').after(grid); grid.append(side, main);
+  const workHead = document.createElement('div'); workHead.className = 'workhead work-only';
+  workHead.innerHTML = '<h2>השולחן שלך</h2><button type="button" class="addwide" id="addBtn2">＋ סצנה חדשה</button>';
+  side.append($('pathCard'), $('daily'), $('quota'), $('glossCard'));
+  main.append(workHead, $('lessons'), document.querySelector('.mytabs'), $('folderBar'), $('myBox'), $('takesBox'), document.querySelector('h2.sec.lib'), $('libTabs'), $('sceneList'));
+  $('addBtn2').onclick = () => openAdd(true);
+  tag('#pathCard, #lessons, #glossCard', 'learn-only');
+  tag('#daily, #quota, .mytabs, #folderBar, #myBox, #takesBox, h2.sec.lib, #libTabs, #sceneList', 'work-only');
+  // the add page, simple: paste or file, a name, the text, and the extras folded away
+  const seg = document.createElement('div'); seg.className = 'seg srcseg';
+  seg.innerHTML = '<button type="button" data-s="paste" aria-pressed="true">📋 הדבקת טקסט</button><button type="button" data-s="file" aria-pressed="false">📄 העלאת קובץ</button>';
+  const det = document.createElement('details'); det.className = 'moredet';
+  det.innerHTML = '<summary>עוד פרטים (לא חובה): רקע לסצנה, מונולוג</summary>';
+  const aboutLbl = document.querySelector('label[for="sceneAbout"]');
+  det.append($('kindSeg'), aboutLbl, $('sceneAbout'));
+  document.querySelector('.addhead').after(seg);
+  $('scriptInput').after(det);
+  scr.classList.add('src-paste');
+  seg.querySelectorAll('button').forEach(b => b.onclick = () => {
+    seg.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+    scr.classList.toggle('src-paste', b.dataset.s === 'paste'); scr.classList.toggle('src-file', b.dataset.s === 'file');
+  });
   document.querySelectorAll('#homeTabs button').forEach(b => b.onclick = () => { homeTab(b.dataset.t); scrollTo(0, 0); });
-  homeTab(lsGet('sp_hometab') || (myScenes().length ? 'work' : 'learn'));
+  homeTab(lsGet('sp_hometab') || 'work');
 });
 document.getElementById('glossCard').onclick = () => openGloss();
 document.getElementById('tabTakes').onclick = () => myTab('takes');
@@ -2631,6 +2698,7 @@ function toCleanScript(lines){
 let sceneKind = 'scene';
 function openAdd(on){
   document.getElementById('screen-input').classList.toggle('adding', on);
+  document.getElementById('analyzeBtn').textContent = on && CLEAN ? 'הוספת הסצנה ←' : 'המשך לבחירת תפקיד';
   document.documentElement.classList.toggle('adding-open', on);
   scrollTo(0, 0);
 }
