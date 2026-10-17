@@ -782,6 +782,8 @@ html.clean .daily.min .k{margin:0 0 4px;font-size:26px}
 html.clean .daily.min .t{font-size:20px}
 html.clean .daily.min .t::after{content:" ▶";font-size:14px;color:#6E675B}
 /* scene context card at the top of the script page */
+.addabout{margin-top:10px;padding:7px 12px;border-radius:99px;border:1px solid var(--rule);background:transparent;color:var(--ink);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.abouted{width:100%;margin-top:10px;padding:10px;border-radius:8px;border:1px solid var(--ink);background:var(--sheet);color:var(--ink);font:inherit;font-size:15px;line-height:1.5}
 .narr{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:14px;color:var(--pencil);cursor:pointer}
 .narr input{width:18px;height:18px;accent-color:var(--ink)}
 html.clean .ctxcard.reading{border-color:var(--pen);border-style:solid;box-shadow:0 0 0 3px rgba(43,79,168,.12)}
@@ -1050,7 +1052,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <p>💾 כל סצנה נשמרת ב"הסצנות שלי", והקולות נשמרים בטלפון אחרי הפעם הראשונה.</p>
 </div>
 
-<button type="button" class="glosscard" id="glossCard"><span>📖</span><b>מילון לשחקן</b><small>קיו, איטלקית, תת־טקסט ועוד, ואיך לתרגל אותם</small></button>
+<button type="button" class="glosscard" id="glossCard"><span>📖</span><b>מילון לשחקן</b><small>קיו, איטלקי, תת־טקסט ועוד, ואיך לתרגל אותם</small></button>
 <h2 class="sec lib">סצנות לתרגול</h2>
 <div class="lib-tabs" id="libTabs"><button type="button" data-l="1" aria-pressed="true">קל</button><button type="button" data-l="2" aria-pressed="false">בינוני</button><button type="button" data-l="3" aria-pressed="false">מאתגר</button><button type="button" data-l="4" aria-pressed="false">מונולוגים</button></div>
 <div class="scenes" id="sceneList"></div>
@@ -1082,7 +1084,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <div class="modes" id="modes" role="radiogroup" aria-label="סוג התרגול">
 <button type="button" data-m="run" aria-pressed="true"><i>🎬</i><b>חזרה</b><small>כל הסצנה, כמו באודישן</small></button>
 <button type="button" data-m="learn" aria-pressed="false"><i>🧩</i><b>לימוד בהדרגה</b><small>שתי שורות כל פעם: פעם עם הטקסט, פעם בלי</small></button>
-<button type="button" data-m="italian" aria-pressed="false"><i>⚡</i><b>איטלקית</b><small>מהר ובלי משחק, רק לבדוק שהטקסט יושב</small></button>
+<button type="button" data-m="italian" aria-pressed="false"><i>⚡</i><b>איטלקי</b><small>מהר ובלי משחק, רק לבדוק שהטקסט יושב</small></button>
 <button type="button" data-m="test" aria-pressed="false"><i>✅</i><b>בדיקת זיכרון</b><small>הטקסט שלך מוסתר לגמרי, ובסוף ציון</small></button>
 </div>
 <div class="chips">
@@ -2334,11 +2336,11 @@ const LESSONS = [
       'בהתחלה סלייט: שם, גובה, ולפעמים סוכנות. בחיוך, בלי לשחק.'],
    tip:'כאן האפליקציה היא הרידר. שים את הטלפון קרוב למצלמה, והקול שלה ייכנס לסרטון.',
    ex:'הדלק צילום self-tape ועשה את "חדר האודישן". אחר כך תסתכל בטייק ב"הטייקים שלי".', scene:'חדר האודישן', mode:'run', tape:true},
-  {i:'⚡', t:'איטלקית בבוקר של האודישן', m:2,
-   p:['בבוקר של האודישן לא משחקים את הסצנה. עושים איטלקית: מעבר מהיר על כל הטקסט, בלי רגש, רק לוודא שהוא יושב.',
+  {i:'⚡', t:'איטלקי בבוקר של האודישן', m:2,
+   p:['בבוקר של האודישן לא משחקים את הסצנה. עושים איטלקי: מעבר מהיר על כל הטקסט, בלי רגש, רק לוודא שהוא יושב.',
       'אם נתקעת, זה המקום לגלות את זה, לא בחדר. אחרי זה נושמים, מחממים את הקול, ומשאירים את המשחק לחדר.'],
-   tip:'איטלקית טובה לוקחת פחות מחצי מהזמן של הסצנה.',
-   ex:'איטלקית על "שותפים". כמה זמן לקח לך?', scene:'שותפים', mode:'italian'},
+   tip:'איטלקי טוב לוקחת פחות מחצי מהזמן של הסצנה.',
+   ex:'איטלקי על "שותפים". כמה זמן לקח לך?', scene:'שותפים', mode:'italian'},
   {i:'📄', t:'קולד ריד: כשאין זמן להכין', m:3,
    p:['לפעמים נותנים לך טקסט ודקה להתכונן. קוראים פעם אחת בשביל הסיפור, ומחליטים רק שני דברים: מה אני רוצה, וממי.',
       'מותר להסתכל בדף. קוראים בעיניים את תחילת המשפט, מרימים את הראש, ואומרים אותו לפרטנר. הקשר עם הפרטנר חשוב יותר מכל מילה מדויקת.'],
@@ -2424,7 +2426,7 @@ document.addEventListener('DOMContentLoaded', renderLessons);
 
 /* ---- actor's glossary ---- */
 const GLOSS = [
-  ['איטלקית', 'מעבר מהיר על כל הטקסט, בלי משחק ובלי רגש, רק כדי לבדוק שהוא יושב בראש. עושים את זה לפני הופעה או אודישן.', 'italian'],
+  ['איטלקי', 'מעבר מהיר על כל הטקסט, בלי משחק ובלי רגש, רק כדי לבדוק שהוא יושב בראש. עושים את זה לפני הופעה או אודישן.', 'italian'],
   ['קיו (Cue)', 'המילים האחרונות של הפרטנר, שאחריהן נכנסת השורה שלך. מי שיודע את הקיו לא מאחר להיכנס.', 'cue'],
   ['ריצה (Run)', 'מעבר על כל הסצנה מההתחלה ועד הסוף בלי לעצור, גם אם טועים.', 'run'],
   ['אותיות ראשונות', 'שיטת שינון: רואים רק את האות הראשונה של כל מילה, והמוח משלים את השאר.', 'hide'],
@@ -2476,7 +2478,7 @@ function planFor(a){
   if(a.hard === 'memory' || a.learn === 'chunks') { mode = 'learn'; out.push(['🧩', 'מתחילים ב"לימוד בהדרגה": שתי שורות כל פעם, עם הטקסט ואז בלעדיו. כשזה יושב, עוברים ל"בדיקת זיכרון".']); }
   if(a.learn === 'cover'){ out.push(['📄', 'הדלקתי לך "הסתר את השורות שלי": רואים רק אותיות ראשונות, ונוגעים כשנתקעים.']); OPTS.hide = true; lsSet('sp_hide', '1'); }
   if(a.learn === 'hear'){ out.push(['👂', 'קצב איטי לשמיעה. אפשר להריץ את הסצנה שוב ושוב, והקולות נשמרים בטלפון.']); lsSet('sp_rate', '0.85'); speechRate = 0.85; }
-  if(a.hard === 'timing'){ out.push(['⏱️', '"רק המשפטים שלי" דולק: שומעים רק את הקיו ונכנסים. ובסוף, "איטלקית" כדי לבדוק קצב.']); OPTS.cue = true; lsSet('sp_o_cue', '1'); }
+  if(a.hard === 'timing'){ out.push(['⏱️', '"רק המשפטים שלי" דולק: שומעים רק את הקיו ונכנסים. ובסוף, "איטלקי" כדי לבדוק קצב.']); OPTS.cue = true; lsSet('sp_o_cue', '1'); }
   if(a.hard === 'nerves' && !out.length) out.push(['💓', 'המסלול שלך מתחיל בשיעור על פחד במה.']);
   out.unshift(['🧭', 'בניתי לך מסלול לימוד אישי. הוא מחכה בלשונית "לימוד", ומוביל אותך צעד אחרי צעד.']);
   if(a.hard === 'natural'){ out.push(['🗣️', 'לפני כל סצנה, תגיד לעצמך מה הדמות רוצה מהפרטנר. משחקים פועל, לא רגש. במילון יש הסבר על "מטרה" ו"פעולה".']); }
@@ -2485,13 +2487,13 @@ function planFor(a){
   if(a.fear === 'blank'){ out.push(['😶', 'הפחד לשכוח נעלם כשיודעים שהטקסט יושב. נעבוד עם "בדיקת זיכרון", ושיעור "טעית? ממשיכים" ילמד אותך מה עושים כשזה קורה.']); }
   if(a.fear === 'waiting') out.push(['⏳', 'לפני כל סצנה תשמע את הרקע מוקרא לך, כמו רגע של כניסה לדמות. נשימה ארוכה, ונכנסים.']);
   if(a.hard !== 'nerves' && a.goal === 'audition'){ out.push(['🎥', 'צלם self-tape כבר בחזרה השנייה. אם יש תאריך לאודישן, הוסף אותו ב"עוד אפשרויות".']); OPTS.tape = true; lsSet('sp_o_tape', '1'); }
-  if(a.time === 'day') out.push(['⚡', 'כשיש רק יום: לימוד בהדרגה בבוקר, איטלקית בערב, בדיקת זיכרון לפני השינה.']);
+  if(a.time === 'day') out.push(['⚡', 'כשיש רק יום: לימוד בהדרגה בבוקר, איטלקי בערב, בדיקת זיכרון לפני השינה.']);
   if(a.time === 'week') out.push(['🗓️', 'כשיש שבוע: עשר דקות ביום עדיפות על שעה אחת. ההתקדמות נשמרת לך כאן.']);
   if(a.when === 'cam'){ out.push(['🎥', 'נתאמן הרבה מול המצלמה, עד שהיא תרגיש כמו עוד פרטנר.']); OPTS.tape = true; lsSet('sp_o_tape', '1'); }
   if(a.when === 'alone') out.push(['🤝', 'כשמתאמנים לבד קל "להקריא". הקורא כאן נותן לך מישהו להגיב אליו, וזה כל ההבדל.']);
   if(a.where === 'late') out.push(['🐢', 'שיעור ההקשבה ראשון אצלך: מתחילים להגיב עוד בזמן שהפרטנר מדבר.']);
   if(a.where === 'fast'){ out.push(['🐇', 'קצב הקורא יהיה איטי, כדי שתלמד לקחת את הזמן.']); lsSet('sp_rate', '0.85'); speechRate = 0.85; }
-  if(a.exp === 'new') out.push(['📖', 'מונחים כמו "קיו" או "איטלקית" מוסברים במילון, בכפתור 📖 למעלה.']);
+  if(a.exp === 'new') out.push(['📖', 'מונחים כמו "קיו" או "איטלקי" מוסברים במילון, בכפתור 📖 למעלה.']);
   if(a.goal === 'look' && !out.length) out.push(['🎬', 'נסה את "הסצנה של היום". זה לוקח דקה.']);
   if(!out.length) out.push(['🎬', 'מתחילים ב"חזרה" רגילה, ובסוף כל סצנה מנסים "בדיקת זיכרון".']);
   setMode(mode);
@@ -3509,10 +3511,20 @@ function setupRehearsal(){
   if(CLEAN){
     const mine = runLines.filter(l => l.character === myCharacter).length;
     const solo = characters.length === 1;
-    sceneAbout = aboutOf(sceneTitle);
+    const written = aboutOf(sceneTitle);
+    sceneAbout = written || autoAbout();
     document.getElementById('feed').innerHTML = `<div class="ctxcard"><span class="k">על הסצנה</span><b>${esc(sceneTitle)}</b>
-      <p>${sceneAbout ? esc(sceneAbout) + '<br>' : ''}${solo ? 'מונולוג, ' + mine + ' קטעים. האפליקציה מחכה לך בין קטע לקטע.' : 'אתה ' + esc(myCharacter) + ', ' + mine + ' שורות. את השאר אני קורא.'}</p>
-      ${sceneAbout ? `<label class="narr"><input type="checkbox" id="narrOn" ${lsGet('sp_narr') === '0' ? '' : 'checked'}> להקריא לי את הרקע לפני שמתחילים</label>` : ''}</div>`;
+      <p>${written ? esc(written) + '<br>' : ''}${solo ? 'מונולוג, ' + mine + ' קטעים. האפליקציה מחכה לך בין קטע לקטע.' : 'אתה ' + esc(myCharacter) + ', ' + mine + ' שורות. את השאר אני קורא.'}</p>
+      ${myScenes().some(x => x.title === sceneTitle) ? `<button type="button" class="addabout" id="addAbout">✏️ ${written ? 'לערוך את הרקע' : 'להוסיף רקע לסצנה'}</button>` : ''}
+      <label class="narr"><input type="checkbox" id="narrOn" ${lsGet('sp_narr') === '0' ? '' : 'checked'}> להקריא לי את הרקע לפני שמתחילים</label></div>`;
+    const ab = document.getElementById('addAbout');
+    if(ab) ab.onclick = () => {
+      const card = document.querySelector('.ctxcard'); if(card.querySelector('textarea')) return;
+      const ta = document.createElement('textarea'); ta.className = 'abouted'; ta.rows = 3; ta.value = written; ta.placeholder = 'מה קורה בסצנה? מה קרה רגע לפני? מה הדמות שלך רוצה?';
+      const ok = document.createElement('button'); ok.type = 'button'; ok.className = 'addabout'; ok.textContent = 'שמור';
+      ab.replaceWith(ta); ta.after(ok); ta.focus();
+      ok.onclick = () => { const L = myScenes(), k = L.findIndex(x => x.title === sceneTitle); if(k >= 0){ L[k].about = ta.value.trim(); lsSet('sp_my', JSON.stringify(L)); } setupRehearsal(); toast('הרקע נשמר', '✏️'); };
+    };
     const nb = document.getElementById('narrOn'); if(nb) nb.onchange = () => lsSet('sp_narr', nb.checked ? null : '0');
   }
   document.getElementById('progressFill').style.width = '0%';
@@ -3889,6 +3901,13 @@ function aboutOf(title){
   const lib = SCENES.find(x => x.title === title); if(lib) return lib.blurb;
   const mine = myScenes().find(x => x.title === title); return (mine && mine.about) || '';
 }
+// when there is no written background, say who is in the scene and who opens it
+function autoAbout(){
+  const others = characters.filter(c => c !== myCharacter), first = (runLines[0] || {}).character;
+  if(characters.length === 1) return 'מונולוג. אתה ' + myCharacter + '. קח נשימה, ותתחיל כשאתה מוכן.';
+  const g = guessGender(myCharacter) === 'female';
+  return 'סצנה בין ' + characters.join(' ו') + '. ' + (g ? 'את משחקת את ' : 'אתה משחק את ') + myCharacter + '. ' + (first === myCharacter ? (g ? 'את פותחת את הסצנה.' : 'אתה פותח את הסצנה.') : first + ' פותח' + (guessGender(first) === 'female' ? 'ת' : '') + ' את הסצנה.');
+}
 function narratorVoice(){
   const used = new Set(characters.map(c => elVoiceOf(c)));
   const v = elVoices.find(x => /narrat|story|calm/i.test(x.name) && !used.has(x.voice_id)) || elVoices.find(x => !used.has(x.voice_id)) || elVoices[0];
@@ -4119,7 +4138,7 @@ function finishScene(){
       ? (clean === myIdx.length ? 'כל ' + myIdx.length + ' השורות מהזיכרון, בלי עזרה אחת. הטקסט יושב!' : 'זכרת ' + clean + ' מתוך ' + myIdx.length + ' שורות בלי עזרה. עוד סיבוב ותגיע לכולן.')
       : 'סיימת לימוד בהדרגה: ' + clean + ' מתוך ' + myIdx.length + ' פעמים מהזיכרון בלי עזרה. עכשיו נסה "בדיקת זיכרון".';
   }
-  if(MODE === 'italian') document.getElementById('doneLine').textContent = 'איטלקית ב־' + Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0') + '. אם לא נתקעת, הטקסט יושב. עכשיו אפשר לשחק אותו.';
+  if(MODE === 'italian') document.getElementById('doneLine').textContent = 'איטלקי ב־' + Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0') + '. אם לא נתקעת, הטקסט יושב. עכשיו אפשר לשחק אותו.';
   speechRate = BASE_RATE();
   const nb = document.getElementById('nextStep');
   if(activeLesson !== null){
