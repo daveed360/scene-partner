@@ -655,6 +655,54 @@ html.clean .chip[aria-pressed=true]::after{background-color:#3FAE62;background-i
 html.clean .chip[aria-pressed=true] b{background:none!important}
 html.clean .chip[aria-pressed=true]{border-color:var(--rule)!important;box-shadow:0 1px 0 #E2D8C4,0 8px 18px -14px var(--shadow)!important}
 html.clean #dlBtn{display:none!important}
+/* practice modes */
+.modes{display:none}
+html.clean .modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0 4px}
+.modes button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:right;padding:12px;border-radius:8px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);font-family:var(--sans);cursor:pointer;box-shadow:0 8px 18px -14px var(--shadow)}
+.modes i{font-style:normal;font-size:22px}
+.modes b{font-size:16px}
+.modes small{font-size:12.5px;color:var(--pencil);line-height:1.35}
+.modes button[aria-pressed=true]{border:2px solid var(--ink);padding:11px}
+.modes button[aria-pressed=true] b{background:linear-gradient(transparent 55%,var(--hl) 55%,var(--hl) 92%,transparent 92%)}
+html.clean.m-learn .chip[data-opt=hide],html.clean.m-italian .chip[data-opt=hide],html.clean.m-test .chip[data-opt=hide]{display:none}
+.feed .round{display:block;text-align:center;font-family:'Amatic SC',cursive;font-size:24px;color:var(--pen,#2B4FA8);margin:10px 0 0}
+.hw.full .r,.fl.full .r{filter:blur(6px)!important;opacity:.5}
+/* glossary */
+.gloss .card{text-align:right}
+.glist{overflow-y:auto;margin:0 -6px;padding:0 6px}
+.gitem{border-bottom:1px solid var(--rule,#E6E0D3);padding:12px 2px}
+.gitem summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-family:'David Libre',serif;font-weight:700;font-size:19px}
+.gitem summary::-webkit-details-marker{display:none}
+.gitem summary::after{content:"+";color:var(--pencil,#6E675B);font-family:var(--sans);font-size:20px}
+.gitem[open] summary::after{content:"–"}
+.gitem p{margin:6px 0 0;line-height:1.6;font-size:15.5px;color:var(--pencil,#5D574C)}
+.gitem .try{margin-top:8px;padding:7px 14px;border-radius:99px;border:1px solid var(--ink,#1F1D1A);background:transparent;color:var(--ink,#1F1D1A);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.gloss .secondary{margin-top:14px}
+html.clean .themebtn + .themebtn{margin-inline-start:6px}
+html.clean .brand{min-width:0}
+html.clean .lockup{min-width:0;overflow:hidden}
+@media (max-width:430px){html.clean .lockup .sub{display:none}html.clean header h1{font-size:21px}}
+/* onboarding questionnaire */
+.onb .card{text-align:right;max-width:440px}
+.onb .step{font-family:'Amatic SC',cursive;font-size:24px;color:#C2362C}
+.onb h3{font-family:'David Libre',serif;font-size:27px;margin:2px 0 14px}
+.onb .ans{display:grid;gap:8px;margin-bottom:12px}
+.onb .ans button{display:flex;align-items:center;gap:12px;text-align:right;padding:14px;border-radius:10px;border:1px solid var(--rule,#E6E0D3);background:var(--sheet,#fff);color:var(--ink,#1F1D1A);font-family:var(--sans);font-size:16px;font-weight:600;cursor:pointer}
+.onb .ans button span{font-size:22px}
+.onb .ans button:active{transform:scale(.99)}
+.onb .plan{list-style:none;padding:0;margin:4px 0 18px;display:grid;gap:10px}
+.onb .plan li{display:flex;gap:10px;line-height:1.55;font-size:16px}
+.onb .plan li span{font-size:20px}
+.onb .dots{display:flex;gap:6px;justify-content:flex-start;margin-bottom:10px;direction:rtl}
+.onb .dots i{width:22px;height:4px;border-radius:9px;background:var(--rule,#E6E0D3)}
+.onb .dots i.on{background:var(--ink,#1F1D1A)}
+/* the daily card folds */
+.daily .fold{position:absolute;left:12px;top:14px;width:34px;height:34px;border-radius:50%;border:1px solid #E6DDCB;background:#fff;color:#1F1D1A;font-size:15px;cursor:pointer;z-index:2}
+html.clean .daily.min{padding:14px 20px 12px;background-image:repeating-linear-gradient(transparent 0 29px,#D7E2F2 29px 30px);background-position:0 8px}
+html.clean .daily.min .d,html.clean .daily.min .tally,html.clean .daily.min #dailyGo{display:none}
+html.clean .daily.min .k{margin:0 0 4px;font-size:26px}
+html.clean .daily.min .t{font-size:20px}
+html.clean .daily.min .t::after{content:" ▶";font-size:14px;color:#6E675B}
 /* scene context card at the top of the script page */
 .ctxcard{display:none}
 html.clean .ctxcard{display:block;text-align:right;margin:8px 0 6px;padding:14px 16px;border:1.5px dashed var(--rule);border-radius:6px;background:var(--paper)}
@@ -837,6 +885,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
   <circle cx="22" cy="33" r="3.2" fill="#2A1E14"/><circle cx="32" cy="33" r="3.2" fill="#2A1E14"/><circle cx="42" cy="33" r="3.2" fill="#2A1E14"/>
 </svg>
 <div class="lockup"><h1>Audition<br> Partner</h1><span class="sub">שותף לתפקיד</span></div>
+<button type="button" class="themebtn" id="glossBtn" aria-label="מילון לשחקן">📖</button>
 <button type="button" class="themebtn" id="themeBtn" aria-label="מסך כהה או בהיר">🌙</button>
 </div>
 <p class="tagline">מתרגלים סצנה לבד, כאילו יש מולך שחקן. האפליקציה משחקת את כל שאר הדמויות בקול, ומחכה לך בתור שלך.</p>
@@ -908,6 +957,12 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <button type="button" class="moretoggle" id="moreBtn"><span>עוד אפשרויות</span><small>קצב הדיבור, תאריך אודישן, חימום</small></button>
 <div class="opts">
 <label>איך מתרגלים?</label>
+<div class="modes" id="modes" role="radiogroup" aria-label="סוג התרגול">
+<button type="button" data-m="run" aria-pressed="true"><i>🎬</i><b>חזרה</b><small>כל הסצנה, כמו באודישן</small></button>
+<button type="button" data-m="learn" aria-pressed="false"><i>🧩</i><b>לימוד בהדרגה</b><small>שתי שורות כל פעם: פעם עם הטקסט, פעם בלי</small></button>
+<button type="button" data-m="italian" aria-pressed="false"><i>⚡</i><b>איטלקית</b><small>מהר ובלי משחק, רק לבדוק שהטקסט יושב</small></button>
+<button type="button" data-m="test" aria-pressed="false"><i>✅</i><b>בדיקת זיכרון</b><small>הטקסט שלך מוסתר לגמרי, ובסוף ציון</small></button>
+</div>
 <div class="chips">
 <button type="button" class="chip" data-opt="face" aria-pressed="false"><b>מול הפרטנר</b><small>במקום לקרוא תסריט, רואים את הדמות שמדברת איתך</small></button>
 <button type="button" class="chip" data-opt="tape" aria-pressed="false"><b>צילום self-tape</b><small>מצלם אותך בזמן הסצנה, עם הקול של הקורא ברקע. הסרטון נשמר ב"הטייקים שלי"</small></button>
@@ -1020,6 +1075,14 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <button type="button" class="primary" id="proGo">אני רוצה את הגרסה המלאה</button>
 <button type="button" class="skip" id="proClose">לא עכשיו</button>
 </div></div>
+<div class="intro sheet gloss" id="glossDlg" hidden role="dialog" aria-modal="true" aria-label="מילון לשחקן"><div class="card">
+<h3>מילון לשחקן</h3>
+<p class="sayhelp">מונחים מעולם המשחק, ואיך לתרגל אותם כאן.</p>
+<div class="glist" id="glossList"></div>
+<button type="button" class="secondary" id="onbAgain">לענות שוב על השאלון</button>
+<button type="button" class="skip" id="glossClose">סגור</button>
+</div></div>
+<div class="intro onb" id="onb" hidden role="dialog" aria-modal="true" aria-label="היכרות"><div class="card" id="onbCard"></div></div>
 <div class="intro" id="intro" hidden role="dialog" aria-modal="true" aria-label="ברוכים הבאים"><div class="card"><div class="slide"></div><div class="dots"></div><button type="button" class="primary" id="introNext" style="margin-top:0">הבא</button><button type="button" class="skip" id="introSkip">דלג</button></div></div>
 
 <script>
@@ -1909,11 +1972,14 @@ function renderDaily(){
   const done = new Set(practiceDays());
   const n = streakCount();
   const tally = n ? ('𝍸 '.repeat(Math.floor(n / 5)) + '|'.repeat(n % 5)).trim() : '';
-  box.innerHTML = `<span class="k">הסצנה של היום</span><span class="t">${esc(sc.title)}</span><span class="d">${esc(sc.blurb)}</span>
+  box.classList.toggle('min', lsGet('sp_daily_min') === '1');
+  box.innerHTML = `<button type="button" class="fold" id="dailyFold" aria-label="לקפל או לפתוח">${lsGet('sp_daily_min') === '1' ? '▾' : '▴'}</button><span class="k">הסצנה של היום</span><span class="t">${esc(sc.title)}</span><span class="d">${esc(sc.blurb)}</span>
     <div class="tally">${n ? `<b>${tally}</b> ${n === 1 ? 'יום חזרות אחד' : n + ' ימי חזרות ברצף'}` : 'עוד לא תרגלת היום'}</div>
     <button type="button" id="dailyGo">לתרגל את זה</button>`;
   box.hidden = false;
   box.querySelector('#dailyGo').onclick = () => loadScene(sc.text, sc.title);
+  box.querySelector('#dailyFold').onclick = e => { e.stopPropagation(); lsSet('sp_daily_min', box.classList.contains('min') ? null : '1'); renderDaily(); };
+  box.querySelector('.t').onclick = () => { if(box.classList.contains('min')) loadScene(sc.text, sc.title); };
 }
 document.addEventListener('DOMContentLoaded', renderDaily);
 
@@ -2028,6 +2094,93 @@ async function renderTakes(){
   }
 }
 document.addEventListener('DOMContentLoaded', () => { if(CLEAN) myTab('mine'); });
+
+/* ---- actor's glossary ---- */
+const GLOSS = [
+  ['איטלקית', 'מעבר מהיר על כל הטקסט, בלי משחק ובלי רגש, רק כדי לבדוק שהוא יושב בראש. עושים את זה לפני הופעה או אודישן.', 'italian'],
+  ['קיו (Cue)', 'המילים האחרונות של הפרטנר, שאחריהן נכנסת השורה שלך. מי שיודע את הקיו לא מאחר להיכנס.', 'cue'],
+  ['ריצה (Run)', 'מעבר על כל הסצנה מההתחלה ועד הסוף בלי לעצור, גם אם טועים.', 'run'],
+  ['אותיות ראשונות', 'שיטת שינון: רואים רק את האות הראשונה של כל מילה, והמוח משלים את השאר.', 'hide'],
+  ['בונים בהדרגה', 'לומדים שתי שורות, עם הטקסט ואז בלעדיו, וממשיכים הלאה. ככה הטקסט נבנה מחתיכות קטנות.', 'learn'],
+  ['בדיקת זיכרון', 'הטקסט מוסתר לגמרי. מנסים מהזיכרון, ונוגעים רק כשבאמת נתקעים. בסוף רואים כמה שורות יצאו נקיות.', 'test'],
+  ['מטרה (אובייקטיב)', 'מה הדמות רוצה מהפרטנר בסצנה הזאת. משפט אחד, בגוף ראשון: "אני רוצה שהוא יישאר". כל שורה משרתת את המטרה.'],
+  ['סופר־אובייקטיב', 'מה הדמות רוצה לאורך כל הסיפור, מעבר לסצנה אחת.'],
+  ['פעולה / פועל משחקי', 'מה אתה עושה לפרטנר עם המשפט: לשכנע, להרגיע, להאשים, לפתות, להקטין. משחקים פועל, לא רגש.'],
+  ['תת־טקסט', 'מה שהדמות באמת מתכוונת מתחת למילים. "אכלת?" יכול להיות "אני גאה בך".'],
+  ['נסיבות נתונות', 'כל מה שהטקסט אומר על המצב: איפה, מתי, מה קרה רגע לפני, מה היחסים. משם מתחילים לבנות.'],
+  ['ביט', 'יחידה קטנה בתוך הסצנה. כשהמטרה או הטקטיקה משתנה, מתחיל ביט חדש.'],
+  ['הקשבה', 'לשמוע את השורה של הפרטנר כאילו בפעם הראשונה, ולתת לה לשנות אותך. זה מה שהופך טקסט שנלמד לשיחה.'],
+  ['רידר', 'מי שקורא באודישן את כל שאר הדמויות. האפליקציה הזאת היא הרידר שלך.'],
+  ['סיידס (Sides)', 'דפי הסצנה שמקבלים לאודישן. מעלים אותם כאן עם +.'],
+  ['סלייט', 'ההצגה העצמית בתחילת סלף־טייפ: שם, גובה, ולפעמים סוכנות. קצר, בחיוך, בלי לשחק.'],
+  ['קולד ריד', 'קריאה של טקסט שרואים בפעם הראשונה, בלי הכנה. מתרגלים את זה עם סצנה חדשה מהספרייה.'],
+  ['קולבק', 'הזמנה לאודישן חוזר. בדרך כלל מבקשים לשמור על מה שעבד, ולהוסיף כיוון חדש.'],
+];
+function openGloss(){
+  const list = document.getElementById('glossList');
+  list.innerHTML = GLOSS.map(([t, d, k], i) => `<details class="gitem"><summary>${esc(t)}</summary><p>${esc(d)}</p>${k ? `<button type="button" class="try" data-k="${k}">לנסות באפליקציה</button>` : ''}</details>`).join('');
+  list.querySelectorAll('.try').forEach(b => b.onclick = () => {
+    const k = b.dataset.k;
+    if(['run', 'learn', 'italian', 'test'].includes(k)) setMode(k);
+    if(k === 'cue' || k === 'hide'){ setMode('run'); OPTS[k] = true; lsSet(OPT_KEYS[k], '1'); document.querySelector(`.chip[data-opt="${k}"]`).setAttribute('aria-pressed', 'true'); }
+    document.getElementById('glossDlg').hidden = true;
+    toast('נבחר. עכשיו בוחרים סצנה ומתחילים', '👍');
+  });
+  document.getElementById('glossDlg').hidden = false;
+}
+document.getElementById('glossBtn').onclick = openGloss;
+document.getElementById('glossClose').onclick = () => { document.getElementById('glossDlg').hidden = true; };
+document.getElementById('onbAgain').onclick = () => { document.getElementById('glossDlg').hidden = true; openOnb(); };
+
+/* ---- first-time questionnaire: tunes the app to how you learn (skippable) ---- */
+const ONB = [
+  {q:'על מה אתה עובד עכשיו?', k:'goal', a:[['audition','🎬','יש לי אודישן או סלף־טייפ בקרוב'],['class','🎓','שיעור משחק או הצגה'],['fit','💪','לשמור על כושר, לתרגל'],['look','👀','סתם מסתכל']]},
+  {q:'מה הכי קשה לך?', k:'hard', a:[['memory','🧠','לזכור את הטקסט'],['natural','🗣️','להישמע טבעי ולא "משחק"'],['timing','⏱️','הקצב, להיכנס בזמן'],['nerves','💓','הלחץ מול מצלמה או לוהקים']]},
+  {q:'איך אתה לומד טקסט הכי טוב?', k:'learn', a:[['hear','👂','לשמוע אותו שוב ושוב'],['cover','📄','לקרוא ולכסות'],['chunks','🧩','חתיכה אחרי חתיכה'],['dunno','🤷','עוד לא יודע']]},
+  {q:'כמה ניסיון יש לך?', k:'exp', a:[['new','🌱','מתחיל'],['some','🌿','קצת ניסיון'],['pro','🌳','שחקן מקצועי']]},
+];
+function planFor(a){
+  const out = [];
+  let mode = 'run';
+  if(a.hard === 'memory' || a.learn === 'chunks') { mode = 'learn'; out.push(['🧩', 'מתחילים ב"לימוד בהדרגה": שתי שורות כל פעם, עם הטקסט ואז בלעדיו. כשזה יושב, עוברים ל"בדיקת זיכרון".']); }
+  if(a.learn === 'cover'){ out.push(['📄', 'הדלקתי לך "הסתר את השורות שלי": רואים רק אותיות ראשונות, ונוגעים כשנתקעים.']); OPTS.hide = true; lsSet('sp_hide', '1'); }
+  if(a.learn === 'hear'){ out.push(['👂', 'קצב איטי לשמיעה. אפשר להריץ את הסצנה שוב ושוב, והקולות נשמרים בטלפון.']); lsSet('sp_rate', '0.85'); speechRate = 0.85; }
+  if(a.hard === 'timing'){ out.push(['⏱️', '"רק המשפטים שלי" דולק: שומעים רק את הקיו ונכנסים. ובסוף, "איטלקית" כדי לבדוק קצב.']); OPTS.cue = true; lsSet('sp_o_cue', '1'); }
+  if(a.hard === 'natural'){ out.push(['🗣️', 'לפני כל סצנה, תגיד לעצמך מה הדמות רוצה מהפרטנר. משחקים פועל, לא רגש. במילון יש הסבר על "מטרה" ו"פעולה".']); }
+  if(a.hard === 'nerves' || a.goal === 'audition'){ out.push(['🎥', 'צלם self-tape כבר בחזרה השנייה. ככה המצלמה מפסיקה להיות אירוע. אם יש תאריך, הוסף אותו ב"עוד אפשרויות".']); OPTS.tape = true; lsSet('sp_o_tape', '1'); }
+  if(a.exp === 'new') out.push(['📖', 'מונחים כמו "קיו" או "איטלקית" מוסברים במילון, בכפתור 📖 למעלה.']);
+  if(a.goal === 'look' && !out.length) out.push(['🎬', 'נסה את "הסצנה של היום". זה לוקח דקה.']);
+  if(!out.length) out.push(['🎬', 'מתחילים ב"חזרה" רגילה, ובסוף כל סצנה מנסים "בדיקת זיכרון".']);
+  setMode(mode);
+  document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', String(!!OPTS[c.dataset.opt])));
+  return out;
+}
+function openOnb(){
+  const dlg = document.getElementById('onb'), card = document.getElementById('onbCard');
+  const ans = {};
+  let i = 0;
+  const finish = () => { lsSet('sp_onb', '1'); dlg.hidden = true; };
+  const draw = () => {
+    const dots = ONB.map((_, k) => `<i class="${k <= i ? 'on' : ''}"></i>`).join('');
+    if(i >= ONB.length){
+      lsSet('sp_answers', JSON.stringify(ans));
+      const plan = planFor(ans);
+      card.innerHTML = `<div class="step">התוכנית שלך</div><h3>ככה נתאמן</h3><ul class="plan">${plan.map(([ic, t]) => `<li><span>${ic}</span>${esc(t)}</li>`).join('')}</ul>
+        <button type="button" class="primary" id="onbGo">יאללה, מתחילים</button><button type="button" class="skip" id="onbBack">חזרה לשאלות</button>`;
+      card.querySelector('#onbGo').onclick = () => { finish(); SFX.win(); };
+      card.querySelector('#onbBack').onclick = () => { i = 0; draw(); };
+      return;
+    }
+    const s = ONB[i];
+    card.innerHTML = `<div class="dots">${dots}</div><div class="step">שאלה ${i + 1} מתוך ${ONB.length}</div><h3>${esc(s.q)}</h3>
+      <div class="ans">${s.a.map(([v, ic, t]) => `<button type="button" data-v="${v}"><span>${ic}</span>${esc(t)}</button>`).join('')}</div>
+      <button type="button" class="skip" id="onbSkip">${i === 0 ? 'דלג, אני רק רוצה לתרגל' : 'דלג'}</button>`;
+    card.querySelectorAll('.ans button').forEach(b => b.onclick = () => { ans[s.k] = b.dataset.v; SFX.tap(); i++; draw(); });
+    card.querySelector('#onbSkip').onclick = finish;
+  };
+  draw(); dlg.hidden = false;
+}
+document.addEventListener('DOMContentLoaded', () => { if(CLEAN && !lsGet('sp_onb') && !location.hash.startsWith('#s=')) openOnb(); });
 
 /* ---- header tucks away on scroll; light / dark ---- */
 addEventListener('scroll', () => { const h = document.querySelector('header'); if(h) h.classList.toggle('compact', scrollY > 30); }, {passive: true});
@@ -2895,7 +3048,35 @@ function stopEverything(){
   setMeter(0, false);
 }
 
+/* ---- practice modes ---- */
+let MODE = lsGet('sp_mode') || 'run';
+const BASE_RATE = () => parseFloat(lsGet('sp_rate') || '1') || 1;
+function setMode(m){
+  MODE = m; lsSet('sp_mode', m === 'run' ? null : m);
+  document.querySelectorAll('#modes button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.m === m)));
+  ['learn', 'italian', 'test'].forEach(x => document.documentElement.classList.toggle('m-' + x, x === m));
+}
+document.querySelectorAll('#modes button').forEach(b => b.onclick = () => { setMode(b.dataset.m); SFX.select(); });
+document.addEventListener('DOMContentLoaded', () => setMode(MODE));
+let helped = new Set();
 function buildRun(){
+  const base = buildBase();
+  if(MODE === 'test') return base.map(l => l.character === myCharacter ? {...l, hide: 'full'} : l);
+  if(MODE === 'italian') return base.map(l => ({...l, hide: false}));
+  if(MODE !== 'learn') return base;
+  // learn: two of my lines at a time, with the cue before them — once with the text, then again from memory
+  const mine = base.map((l, i) => l.character === myCharacter ? i : -1).filter(i => i >= 0);
+  const out = [];
+  for(let c = 0; c < mine.length; c += 2){
+    const first = mine[c], last = mine[Math.min(c + 1, mine.length - 1)];
+    let from = first; while(from > 0 && base[from - 1].character !== myCharacter && from > first - 1) from--;
+    const seg = base.slice(from, last + 1);
+    out.push(...seg.map((l, k) => ({...l, hide: false, round: k === 0 ? 'קודם עם הטקסט' : ''})));
+    out.push(...seg.map((l, k) => ({...l, hide: true, round: k === 0 ? 'עכשיו מהזיכרון' : ''})));
+  }
+  return out.length ? out : base;
+}
+function buildBase(){
   if(!OPTS.cue) return parsedLines.slice();
   const out = [];
   parsedLines.forEach((l, i) => {
@@ -2910,6 +3091,8 @@ function setupRehearsal(){
   stopEverything();
   runLines = buildRun();
   hideMine = OPTS.hide;
+  helped = new Set();
+  speechRate = MODE === 'italian' ? Math.max(1.3, BASE_RATE() + 0.25) : BASE_RATE();
   setView(!CLEAN && OPTS.face);
   const firstOther = runLines.find(l => l.character !== myCharacter);
   if(firstOther){ setStageFace(firstOther.character); document.getElementById('stageWho').textContent = firstOther.character; }
@@ -3097,7 +3280,8 @@ function stageShowMine(line){
   document.getElementById('stageWho').textContent = 'התור שלך';
   const box = document.getElementById('stageLine');
   const words = line.text.trim().split(/\s+/);
-  let n = hideMine ? 1 : words.length;
+  const hid = line.hide !== undefined ? line.hide : hideMine;
+  let n = hid === 'full' ? 0 : hid ? 1 : words.length;
   const draw = () => {
     box.innerHTML = `<mark>${words.map((w, i) => i < n ? esc(w) : `<span class="fl">${esc(firstOf(w))}<span class="r">${esc(w.slice(firstOf(w).length))}</span></span>`).join(' ')}</mark>` + (n < words.length ? '<span class="tap">נגיעה מגלה מילה</span>' : '');
   };
@@ -3265,10 +3449,14 @@ function addLineToFeed(line, isMine){
   let txt = esc(line.text);
   if(isMine){
     const words = line.text.trim().split(/\s+/);
-    if(hideMine && words.length > 1){
+    const hid = line.hide !== undefined ? line.hide : hideMine, full = hid === 'full';
+    if(hid && (words.length > 1 || full)){
       div.classList.add('hidden');
-      txt = `<mark>${esc(words[0])} ${words.slice(1).map(w => `<span class="hw">${esc(firstOf(w))}<span class="r">${esc(w.slice(firstOf(w).length))}</span></span>`).join(' ')}</mark><span class="reveal">נגיעה מגלה מילה</span>`;
+      const shown = full ? [] : [words[0]], rest = full ? words : words.slice(1);
+      txt = `<mark>${shown.map(esc).join(' ')} ${rest.map(w => full ? `<span class="hw full"><span class="r">${esc(w)}</span></span>` : `<span class="hw">${esc(firstOf(w))}<span class="r">${esc(w.slice(firstOf(w).length))}</span></span>`).join(' ')}</mark><span class="reveal">${full ? 'נתקעת? נגיעה מגלה מילה' : 'נגיעה מגלה מילה'}</span>`;
+      const idx = cursor;
       div.onclick = () => {
+        helped.add(idx);
         const next = div.querySelector('.hw:not(.shown)');
         if(next) next.classList.add('shown');
         if(!div.querySelector('.hw:not(.shown)')) div.classList.remove('hidden');
@@ -3280,6 +3468,7 @@ function addLineToFeed(line, isMine){
   const dir = line.dir ? `<span class="dir">(${esc(line.dir)})</span>` : '';
   const lineMood = moodOfLine(line);
   const fix = isMine ? '' : `<button type="button" class="sayfix" aria-label="תיקון הגייה">🗣️ תיקון הגייה</button>`;
+  if(line.round){ const r = document.createElement('span'); r.className = 'round'; r.textContent = line.round; feed.appendChild(r); }
   div.innerHTML = `<span class="av" style="--ink-c:${ink}">${portraitHTML(line.character, lineMood)}</span><div class="body"><span class="who">${esc(line.character)}</span><span class="txt">${txt}</span>${dir}${fix}</div>`;
   if(!isMine) div.querySelector('.sayfix').onclick = e => { e.stopPropagation(); openSayEditor(line); };
   feed.appendChild(div);
@@ -3420,7 +3609,7 @@ function advance(myRun){
       setMeter(0, false);
       btn.disabled = true;
       cursor++;
-      setTimeout(() => advance(myRun), 200);
+      setTimeout(() => advance(myRun), MODE === 'italian' ? 40 : 200);
     };
     btn.style.display = 'block';
     btn.textContent = 'סיימתי — הבא';
@@ -3454,7 +3643,7 @@ function advance(myRun){
       el.classList.remove('speaking');
       cursor++;
       updateProgress();
-      setTimeout(() => advance(myRun), 300);
+      setTimeout(() => advance(myRun), MODE === 'italian' ? 60 : 300);
     });
   }
 }
@@ -3481,6 +3670,15 @@ function finishScene(){
   const an = audDays(sceneTitle);
   document.getElementById('doneLine').textContent = an !== null ? (an === 0 ? 'מוכן לאודישן. תנשום, תיהנה, ותזכור מה הדמות רוצה. בהצלחה!' : 'עוד ' + (an === 1 ? 'יום אחד' : an + ' ימים') + ' לאודישן, וכבר ' + take + ' טייקים. ממשיכים ככה!')
     : st > 1 ? 'סיימת את הסצנה. ' + st + ' ימים ברצף, ככה בונים תפקיד!' : 'סיימת את הסצנה. עוד טייק?';
+  if(MODE === 'test' || MODE === 'learn'){
+    const myIdx = runLines.map((l, i) => l.character === myCharacter && l.hide ? i : -1).filter(i => i >= 0);
+    const clean = myIdx.filter(i => !helped.has(i)).length;
+    document.getElementById('doneLine').textContent = MODE === 'test'
+      ? (clean === myIdx.length ? 'כל ' + myIdx.length + ' השורות מהזיכרון, בלי עזרה אחת. הטקסט יושב!' : 'זכרת ' + clean + ' מתוך ' + myIdx.length + ' שורות בלי עזרה. עוד סיבוב ותגיע לכולן.')
+      : 'סיימת לימוד בהדרגה: ' + clean + ' מתוך ' + myIdx.length + ' פעמים מהזיכרון בלי עזרה. עכשיו נסה "בדיקת זיכרון".';
+  }
+  if(MODE === 'italian') document.getElementById('doneLine').textContent = 'איטלקית ב־' + Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0') + '. אם לא נתקעת, הטקסט יושב. עכשיו אפשר לשחק אותו.';
+  speechRate = BASE_RATE();
   setTimeout(confetti, 150);
   stopRecording().then(blob => { closeMic(); showTape(blob, take); saveTake(blob, sceneTitle, take); });
   allowScreenOff();
