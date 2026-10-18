@@ -947,6 +947,31 @@ html.clean .learnback{display:inline-block;margin:0 0 14px;padding:8px 14px;bord
 html.clean #screen-input.tab-work .learnback{display:none!important}
 html.clean #screen-input.tab-work .tipsbtn{display:flex}
 
+/* "who are you?" sheet */
+.rolesheet .card{text-align:right}
+.rolesheet .k{display:block;font-family:'Amatic SC',cursive;font-size:24px;color:#C2362C}
+.rolesheet h3{font-family:'David Libre',serif;font-size:27px;margin:2px 0 16px}
+.rolesheet .chars{display:grid;gap:10px;margin-bottom:16px;overflow-y:auto;max-height:38vh}
+.rolesheet .char{display:grid;grid-template-columns:1fr auto;grid-template-areas:"nm go" "sm go";align-items:center;text-align:right;padding:16px 18px;border-radius:10px;border:1px solid var(--rule,#E6E0D3);background:var(--sheet,#fff);color:var(--ink,#1F1D1A);font-family:var(--sans);cursor:pointer;box-shadow:0 8px 18px -14px var(--shadow,rgba(0,0,0,.3))}
+.rolesheet .char:active{transform:scale(.99)}
+.rolesheet .nm{grid-area:nm;font-family:'David Libre',serif;font-weight:700;font-size:21px}
+.rolesheet .char small{grid-area:sm;color:var(--pencil,#6E675B);font-size:13px}
+.rolesheet .go{grid-area:go;font-size:20px;color:var(--pencil,#6E675B)}
+.rolesheet .mseg{display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--rule,#E6E0D3);margin-bottom:12px}
+.rolesheet .mseg button{flex:1;padding:10px 4px;border:0;border-radius:9px;background:transparent;color:var(--ink,#1F1D1A);font-family:var(--sans);font-weight:700;font-size:14.5px;cursor:pointer}
+.rolesheet .mseg button[aria-pressed=true]{background:var(--sheet,#fff);box-shadow:0 2px 8px -4px rgba(0,0,0,.3)}
+.rolesheet .sws{display:grid;gap:8px;margin-bottom:12px}
+.rolesheet .sw{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:10px;border:1px solid var(--rule,#E6E0D3);background:var(--sheet,#fff);color:var(--ink,#1F1D1A);font-family:var(--sans);text-align:right;cursor:pointer}
+.rolesheet .sw b{display:block;font-size:15px}.rolesheet .sw small{display:block;font-size:12.5px;color:var(--pencil,#6E675B)}
+.rolesheet .sw i{flex-shrink:0;width:44px;height:26px;border-radius:99px;background:var(--rule,#E6E0D3);position:relative}
+.rolesheet .sw i::after{content:"";position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.rolesheet .sw[aria-pressed=true] i{background:#3FAE62}
+.rolesheet .sw[aria-pressed=true] i::after{right:auto;left:3px}
+.rolesheet .more{width:100%;padding:10px;border:0;background:none;color:var(--pen,#2B4FA8);font-family:var(--sans);font-weight:700;font-size:14.5px;cursor:pointer}
+html.clean.dark .rolesheet .card{background:#18181A;color:#ECE9E2}
+/* skip the partner's line */
+html.clean #actionBtn.skipbtn{background:transparent;color:var(--ink);border:1.5px solid var(--rule)}
+
 /* continue where you left off */
 .resume{display:none}
 html.clean .resume:not([hidden]){display:flex;align-items:center;gap:14px;width:100%;text-align:right;margin:6px 0 4px;padding:16px 18px;border-radius:10px;border:2px solid var(--ink);background:var(--sheet);color:var(--ink);font-family:var(--sans);cursor:pointer}
@@ -1340,6 +1365,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <button type="button" class="skip" id="glossClose">סגור</button>
 </div></div>
 <div class="intro sheet lesson" id="lessonDlg" hidden role="dialog" aria-modal="true" aria-label="שיעור"><div class="card" id="lessonCard"></div></div>
+<div class="intro sheet rolesheet" id="roleSheet" hidden role="dialog" aria-modal="true" aria-label="בחירת דמות"><div class="card" id="roleSheetCard"></div></div>
 <div class="intro onb" id="onb" hidden role="dialog" aria-modal="true" aria-label="היכרות"><div class="card" id="onbCard"></div></div>
 <div class="intro ctxm" id="ctxModal" hidden role="dialog" aria-modal="true" aria-label="על הסצנה"><div class="card">
 <span class="k">📖 על הסצנה</span>
@@ -1575,7 +1601,7 @@ const SCENES = [
 שירה: (מחייכת חלש) כמו כשהיינו קטנים והיה רעם?
 אביב: בדיוק ככה. רק שהפעם אני זה שמפחד.`},
  {title:'הביקורת', genre:'דרמה', level:3, blurb:'שחקנית צעירה קוראת ביקורת קטלנית על ההצגה. הבמאי שלה מסרב לתת לה לוותר.', text:
-`עדי: קראת? "השחקנית הראשית נראית כאילו היא מחכה שמישהו יגיד לה מה להרגיש."
+`הילה: קראת? "השחקנית הראשית נראית כאילו היא מחכה שמישהו יגיד לה מה להרגיש."
 יובל: קראתי. הוא כותב ככה על כולם.
 הילה: הוא לא כתב ככה על כולם. הוא כתב ככה עליי. בשם מלא. עם תמונה.
 יובל: עדי, ביקורת אחת—
@@ -1612,7 +1638,7 @@ const SCENES = [
 אורנה: אז זה דייט ראשון או שני?
 מיכאל: נגיד אחד וחצי. ואני לא הולך לשירותים עד הסוף.`},
  {title:'הנאום', genre:'מונולוג', level:4, blurb:'אחות הכלה עולה לנאום בחתונה, ומבינה באמצע שהיא צריכה להגיד את האמת.', text:
-`טל: ערב טוב לכולם. אני ליה, האחות הגדולה של הכלה. כתבתי נאום, הוא פה בטלפון, הוא מצחיק, היו בו שלוש בדיחות על זה שמיכל אף פעם לא מגיעה בזמן.
+`ליה: ערב טוב לכולם. אני ליה, האחות הגדולה של הכלה. כתבתי נאום, הוא פה בטלפון, הוא מצחיק, היו בו שלוש בדיחות על זה שמיכל אף פעם לא מגיעה בזמן.
 ליה: (מסתכלת על הטלפון, ואז מכניסה אותו לכיס) אבל אני לא אקריא אותו.
 ליה: כי כשמיכל הייתה בת שבע, ואני בת אחת־עשרה, אבא עזב. ואמא עבדה בשתי עבודות. ומי שהכין לה סנדוויצ'ים, ומי שחתם לה על מבחנים, ומי שישבה איתה בלילות כשהיא פחדה מהחושך, זאת הייתי אני.
 ליה: והייתי כועסת. אלוהים, כמה כעסתי. על אבא, על אמא, ובעיקר עלייך, מיכל, כי היית ילדה ואני לא הספקתי להיות.
@@ -1939,7 +1965,7 @@ function loadScene(raw, title){
   sceneTitle = title;
   document.getElementById('sceneTitle').textContent = title;
   renderRoles();
-  show('roles');
+  if(CLEAN){ show('input'); openRoleSheet(); } else show('roles');
   return true;
 }
 
@@ -2302,9 +2328,7 @@ function renderResume(){
   box.innerHTML = `<span class="ic">↩️</span><span class="tx"><small>להמשיך מאיפה שעצרת</small><b>${esc(L.title)}</b><small>${esc(L.role || '')} · ${modeName}</small></span><span class="go">עוד טייק ←</span>`;
   box.hidden = false;
   box.onclick = () => {
-    loadScene(src.text, src.title); setMode(L.mode || 'run');
-    const card = [...document.querySelectorAll('.rolecard')].find(c => c.querySelector('.name') && c.querySelector('.name').textContent === L.role);
-    if(card) card.click();
+    setMode(L.mode || 'run'); loadScene(src.text, src.title);
   };
 }
 document.addEventListener('DOMContentLoaded', renderResume);
@@ -2816,6 +2840,38 @@ function toCleanScript(lines){
   return lines.map(l => `${l.character}: ${l.text}${l.dir ? ' (' + l.dir + ')' : ''}`).join('\n');
 }
 
+/* ---- "who are you?" sheet: choose a character and you're rehearsing ---- */
+function openRoleSheet(){
+  const dlg = document.getElementById('roleSheet'), card = document.getElementById('roleSheetCard');
+  const cnt = c => parsedLines.filter(l => l.character === c).length;
+  const sw = (k, label, sub) => `<button type="button" class="sw" data-k="${k}" aria-pressed="${!!OPTS[k]}"><span><b>${label}</b><small>${sub}</small></span><i></i></button>`;
+  const draw = () => {
+    card.innerHTML = `<span class="k">${esc(sceneTitle)}</span><h3>${characters.length === 1 ? 'מוכן?' : 'את מי אתה משחק?'}</h3>
+      <div class="chars">${characters.map(c => `<button type="button" class="char" data-c="${esc(c)}"><span class="nm">${esc(c)}</span><small>${cnt(c)} ${characters.length === 1 ? 'קטעים' : 'שורות'}</small><span class="go">←</span></button>`).join('')}</div>
+      <div class="mseg">${[['run', '🎬 חזרה'], ['learn', '🧩 שינון'], ['test', '✅ בדיקה']].map(([m, t]) => `<button type="button" data-m="${m}" aria-pressed="${MODE === m}">${t}</button>`).join('')}</div>
+      <div class="sws">${MODE === 'run' ? sw('hide', '👁️ הסתר את השורות שלי', 'רק אותיות ראשונות') + sw('fast', '⚡ מהר (איטלקי)', 'בלי הפסקות, לבדוק שהטקסט יושב') : ''}${sw('tape', '🎥 צילום self-tape', 'נשמר ב"הטייקים שלי"')}</div>
+      <button type="button" class="more" id="rsMore">🎙️ קולות ועוד הגדרות</button>
+      <button type="button" class="skip" id="rsClose">ביטול</button>`;
+    card.querySelectorAll('.mseg button').forEach(b => b.onclick = () => { setMode(b.dataset.m); draw(); });
+    card.querySelectorAll('.sw').forEach(b => b.onclick = () => {
+      const k = b.dataset.k; OPTS[k] = !OPTS[k]; lsSet(OPT_KEYS[k], OPTS[k] ? '1' : null);
+      const ch = document.querySelector(`.chip[data-opt="${k}"]`); if(ch) ch.setAttribute('aria-pressed', String(OPTS[k]));
+      b.setAttribute('aria-pressed', String(OPTS[k]));
+    });
+    card.querySelectorAll('.char').forEach(b => b.onclick = () => startAs(b.dataset.c));
+    card.querySelector('#rsMore').onclick = () => { dlg.hidden = true; show('roles'); };
+    card.querySelector('#rsClose').onclick = () => { dlg.hidden = true; };
+  };
+  draw(); dlg.hidden = false;
+}
+function startAs(name){
+  document.getElementById('roleSheet').hidden = true;
+  const card = [...document.querySelectorAll('#roleList .rolecard')].find(c => c.querySelector('.name') && c.querySelector('.name').textContent === name);
+  if(card) card.click(); else myCharacter = name;
+  document.getElementById('startBtn').click();
+  if(document.getElementById('screen-rehearse').classList.contains('active')) beginScene();   // same tap: sound and mic are allowed
+}
+
 /* ---- add-a-scene page ---- */
 let sceneKind = 'scene';
 function openAdd(on){
@@ -2917,7 +2973,7 @@ document.getElementById('analyzeBtn').onclick = () => {
   setCast(characters);
   renderRoles();
   openAdd(false); document.getElementById('scriptName').value = '';
-  show('roles');
+  if(CLEAN){ show('input'); openRoleSheet(); } else show('roles');
 };
 
 /* ---- Read a scene from a file: Word (.docx), PDF, or plain text. Everything stays on the device. ---- */
@@ -4256,6 +4312,7 @@ function advance(myRun){
   updateProgress();
 
   if(line.character === myCharacter){
+    document.getElementById('actionBtn').classList.remove('skipbtn');
     const el = addLineToFeed(line, true);
     stageShowMine(line);
     if(!viewFace) scheduleNudge(9000);
@@ -4290,12 +4347,17 @@ function advance(myRun){
   } else {
     const el = addLineToFeed(line, false);
     el.classList.add('speaking');
-    document.getElementById('actionBtn').style.display = 'none';
+    const ab = document.getElementById('actionBtn');
+    if(CLEAN){ ab.style.display = 'block'; ab.disabled = false; ab.textContent = 'דלג ⏭'; ab.classList.add('skipbtn'); }
+    else ab.style.display = 'none';
     setStatus(esc(line.character) + (guessGender(line.character) === 'female' ? ' מדברת…' : ' מדבר…'), false);
     speakDir = line.dir || '';
     stageShowPartner(line);
     isPartnerTalking = true;
-    speak(spokenOf(line), line.character, () => {
+    let moved = false;
+    const afterLine = () => {
+      if(moved) return; moved = true;
+      ab.classList.remove('skipbtn');
       document.getElementById('stage').classList.remove('talking');
       lipSync(false);
       isPartnerTalking = false;
@@ -4304,7 +4366,9 @@ function advance(myRun){
       cursor++;
       updateProgress();
       setTimeout(() => advance(myRun), isFast() ? 60 : 300);
-    });
+    };
+    if(CLEAN) ab.onclick = () => { if(myRun !== runId) return; stopAudio(); afterLine(); };
+    speak(spokenOf(line), line.character, afterLine);
   }
 }
 
