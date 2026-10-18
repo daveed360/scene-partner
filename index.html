@@ -642,7 +642,9 @@ html.clean .moretoggle{display:flex;flex-direction:column;align-items:flex-start
 html.clean .moretoggle small{font-weight:400;color:var(--pencil);font-size:13px;margin-top:2px}
 html.clean .moretoggle::after{content:"▾";position:absolute;left:18px;top:16px;color:var(--pencil)}
 html.clean .opts{display:block}
-html.clean .opts > label,html.clean .opts .pace,html.clean .opts .prep{display:none}
+html.clean .opts > label,html.clean .opts .pace,html.clean .opts .prep,html.clean .opts > .chip{display:none}
+html.clean .showmore .opts > .chip{display:grid;margin-top:12px}
+html.clean #audBtn,html.clean #warmBtn{display:none!important}
 html.clean .showmore .opts .pace,html.clean .showmore .opts .prep{display:grid}
 html.clean .showmore .opts .pace{display:flex}
 html.clean .chips{display:flex;flex-direction:column;gap:8px;margin-top:14px}
@@ -657,14 +659,14 @@ html.clean .chip[aria-pressed=true]{border-color:var(--rule)!important;box-shado
 html.clean #dlBtn{display:none!important}
 /* practice modes */
 .modes{display:none}
-html.clean .modes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0 4px}
+html.clean .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:16px 0 4px}
 .modes button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:right;padding:12px;border-radius:8px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);font-family:var(--sans);cursor:pointer;box-shadow:0 8px 18px -14px var(--shadow)}
 .modes i{font-style:normal;font-size:22px}
 .modes b{font-size:16px}
 .modes small{font-size:12.5px;color:var(--pencil);line-height:1.35}
 .modes button[aria-pressed=true]{border:2px solid var(--ink);padding:11px}
 .modes button[aria-pressed=true] b{background:linear-gradient(transparent 55%,var(--hl) 55%,var(--hl) 92%,transparent 92%)}
-html.clean.m-learn .chip[data-opt=hide],html.clean.m-italian .chip[data-opt=hide],html.clean.m-test .chip[data-opt=hide]{display:none}
+html.clean.m-learn .chip[data-opt=hide],html.clean.m-test .chip[data-opt=hide],html.clean.m-learn .chip[data-opt=fast],html.clean.m-test .chip[data-opt=fast]{display:none}
 .feed .round{display:block;text-align:center;font-family:'Amatic SC',cursive;font-size:24px;color:var(--pen,#2B4FA8);margin:10px 0 0}
 .hw.full .r,.fl.full .r{filter:blur(6px)!important;opacity:.5}
 /* glossary */
@@ -698,7 +700,7 @@ html.clean .lockup{min-width:0;overflow:hidden}
 .onb .dots i.on{background:var(--ink,#1F1D1A)}
 /* home: work / learn */
 .hometabs,.glosscard,.folderbar{display:none}
-html.clean .hometabs{display:flex;gap:6px;margin:2px 0 10px;padding:4px;border-radius:14px;background:var(--rule)}
+html.clean .hometabs{display:none!important;gap:6px;margin:2px 0 10px;padding:4px;border-radius:14px;background:var(--rule)}
 .hometabs button{flex:1;display:flex;flex-direction:column;align-items:center;padding:9px 4px;border:0;border-radius:11px;background:transparent;color:var(--ink);font-family:var(--sans);font-weight:800;font-size:16px;cursor:pointer}
 .hometabs small{font-weight:400;font-size:11.5px;color:var(--pencil)}
 .hometabs button[aria-pressed=true]{background:var(--sheet);box-shadow:0 2px 8px -4px var(--shadow)}
@@ -932,6 +934,19 @@ html.clean.dark .ctxm #ctxSkip{background:#ECE9E2;color:#111}
 @keyframes rd{50%{opacity:1}}
 html.clean .ctxm .reading i{animation:rd 1.2s infinite!important}
 
+/* simplified home */
+html.clean .fab{display:none!important}
+html.clean .workhead{flex-direction:column;align-items:stretch;gap:12px}
+html.clean .workhead h2{display:none}
+html.clean .addwide{width:100%;padding:16px;font-size:18px;border-radius:12px}
+html.clean #daily{display:none!important}
+.tipsbtn,.learnback{display:none}
+html.clean .tipsbtn{display:flex;flex-direction:column;align-items:flex-start;gap:2px;width:100%;margin:34px 0 10px;padding:18px;border-radius:8px;border:1px dashed var(--rule);background:transparent;color:var(--ink);font-family:var(--sans);text-align:right;cursor:pointer}
+.tipsbtn span{font-size:24px}.tipsbtn b{font-family:'David Libre',serif;font-size:19px}.tipsbtn small{color:var(--pencil);font-size:13px}
+html.clean .learnback{display:inline-block;margin:0 0 14px;padding:8px 14px;border-radius:99px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);font-family:var(--sans);font-weight:700;cursor:pointer}
+html.clean #screen-input.tab-work .learnback{display:none!important}
+html.clean #screen-input.tab-work .tipsbtn{display:flex}
+
 /* continue where you left off */
 .resume{display:none}
 html.clean .resume:not([hidden]){display:flex;align-items:center;gap:14px;width:100%;text-align:right;margin:6px 0 4px;padding:16px 18px;border-radius:10px;border:2px solid var(--ink);background:var(--sheet);color:var(--ink);font-family:var(--sans);cursor:pointer}
@@ -940,7 +955,7 @@ html.clean .resume:not([hidden]){display:flex;align-items:center;gap:14px;width:
 
 /* ===== home grid, work header, simple add page ===== */
 .workhead,.srcseg,.moredet{display:none}
-html.clean .workhead{display:none;align-items:center;justify-content:space-between;margin:4px 0 6px}
+html.clean .workhead{display:flex;align-items:center;justify-content:space-between;margin:4px 0 6px}
 html.clean .workhead h2{margin:0;font-family:'Amatic SC',cursive;font-size:32px;color:var(--ink);font-weight:700}
 html.clean .addwide{padding:10px 18px;border-radius:99px;border:0;background:var(--ink);color:var(--paper);font-family:var(--sans);font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 8px 18px -10px var(--shadow)}
 html.clean #screen-input.adding .srcseg{display:flex}
@@ -966,7 +981,8 @@ html.clean #screen-input.adding .tips{margin-top:18px}
   html.clean .home-main{grid-column:1;grid-row:1;min-width:0}
   html.clean .home-side{grid-column:2;grid-row:1;position:sticky;top:96px}
   html.clean #screen-input.tab-learn .home-grid{grid-template-columns:minmax(0,1fr) 380px}
-  html.clean .workhead{display:flex}
+  html.clean #screen-input.tab-work .home-grid{display:block;max-width:860px;margin:0 auto}
+  html.clean #screen-input.tab-work .home-side{position:static}
   html.clean #screen-input.tab-learn .workhead{display:none}
   html.clean .fab{display:none!important}
   html.clean .hometabs{max-width:520px}
@@ -977,7 +993,7 @@ html.clean #screen-input.adding .tips{margin-top:18px}
   html.clean .daily:not([hidden]){margin-top:0}
   html.clean #screen-input.adding{max-width:680px;margin:0 auto}
   html.clean #screen-roles{max-width:860px;margin:0 auto}
-  html.clean .modes{grid-template-columns:repeat(4,1fr)}
+  html.clean .modes{grid-template-columns:repeat(3,1fr)}
   html.clean #screen-done{max-width:640px;margin:0 auto}
 }
 
@@ -1165,6 +1181,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <p>💾 כל סצנה נשמרת ב"הסצנות שלי", והקולות נשמרים בטלפון אחרי הפעם הראשונה.</p>
 </div>
 
+<button type="button" class="glosscard" id="onbCard2" onclick="openOnb()"><span>🧭</span><b>בונים לך מסלול אישי</b><small>4 שאלות קצרות, ואני מסדר את השיעורים לפי מה שקשה לך</small></button>
 <button type="button" class="glosscard" id="glossCard"><span>📖</span><b>מילון לשחקן</b><small>קיו, איטלקי, תת־טקסט ועוד, ואיך לתרגל אותם</small></button>
 <h2 class="sec lib">סצנות לתרגול</h2>
 <div class="lib-tabs" id="libTabs"><button type="button" data-l="1" aria-pressed="true">קל</button><button type="button" data-l="2" aria-pressed="false">בינוני</button><button type="button" data-l="3" aria-pressed="false">מאתגר</button><button type="button" data-l="4" aria-pressed="false">מונולוגים</button></div>
@@ -1191,19 +1208,19 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <label>את מי אתה משחק?</label>
 <div id="roleList"></div>
 <details class="names" id="namesBox"><summary>שם נשמע לא נכון? תקן כאן</summary><div id="namesList"></div></details>
-<button type="button" class="moretoggle" id="moreBtn"><span>עוד אפשרויות</span><small>קצב הדיבור, תאריך אודישן, חימום</small></button>
+<button type="button" class="moretoggle" id="moreBtn"><span>עוד אפשרויות</span><small>קצב הדיבור, רק המשפטים שלי</small></button>
 <div class="opts">
 <label>איך מתרגלים?</label>
 <div class="modes" id="modes" role="radiogroup" aria-label="סוג התרגול">
 <button type="button" data-m="run" aria-pressed="true"><i>🎬</i><b>חזרה</b><small>כל הסצנה, כמו באודישן</small></button>
-<button type="button" data-m="learn" aria-pressed="false"><i>🧩</i><b>לימוד בהדרגה</b><small>שתי שורות כל פעם: פעם עם הטקסט, פעם בלי</small></button>
-<button type="button" data-m="italian" aria-pressed="false"><i>⚡</i><b>איטלקי</b><small>מהר ובלי משחק, רק לבדוק שהטקסט יושב</small></button>
-<button type="button" data-m="test" aria-pressed="false"><i>✅</i><b>בדיקת זיכרון</b><small>הטקסט שלך מוסתר לגמרי, ובסוף ציון</small></button>
+<button type="button" data-m="learn" aria-pressed="false"><i>🧩</i><b>שינון</b><small>שתי שורות כל פעם, עם הטקסט ואז בלי</small></button>
+<button type="button" data-m="test" aria-pressed="false"><i>✅</i><b>בדיקה</b><small>בלי הטקסט שלך, ובסוף ציון</small></button>
 </div>
 <div class="chips">
 <button type="button" class="chip" data-opt="face" aria-pressed="false"><b>מול הפרטנר</b><small>במקום לקרוא תסריט, רואים את הדמות שמדברת איתך</small></button>
 <button type="button" class="chip" data-opt="tape" aria-pressed="false"><b>צילום self-tape</b><small>מצלם אותך בזמן הסצנה, עם הקול של הקורא ברקע. הסרטון נשמר ב"הטייקים שלי"</small></button>
 <button type="button" class="chip" data-opt="hide" aria-pressed="false"><b>הסתר את השורות שלי</b><small>לשינון: רואים רק את האות הראשונה של כל מילה. נתקעת? נגיעה מגלה מילה</small></button>
+<button type="button" class="chip" data-opt="fast" aria-pressed="false"><b>⚡ מהר (איטלקי)</b><small>הקורא מדבר מהר ובלי הפסקות, רק לבדוק שהטקסט יושב</small></button>
 <button type="button" class="chip" data-opt="cue" aria-pressed="false"><b>רק המשפטים שלי</b><small>מדלגים על השאר: שומעים רק את המשפט שלפניך, ואז אתה עונה</small></button>
 </div>
 <div class="pace" role="group" aria-label="קצב הדיבור של הפרטנרים">
@@ -2281,7 +2298,7 @@ function renderResume(){
   let L = null; try{ L = JSON.parse(lsGet('sp_last') || 'null'); }catch(e){}
   const src = L && (myScenes().find(x => x.title === L.title) || SCENES.find(x => x.title === L.title));
   if(!CLEAN || !src){ box.hidden = true; return; }
-  const modeName = {run:'חזרה', learn:'לימוד בהדרגה', italian:'איטלקי', test:'בדיקת זיכרון'}[L.mode] || 'חזרה';
+  const modeName = {run:'חזרה', learn:'שינון', italian:'איטלקי', test:'בדיקה'}[L.mode] || 'חזרה';
   box.innerHTML = `<span class="ic">↩️</span><span class="tx"><small>להמשיך מאיפה שעצרת</small><b>${esc(L.title)}</b><small>${esc(L.role || '')} · ${modeName}</small></span><span class="go">עוד טייק ←</span>`;
   box.hidden = false;
   box.onclick = () => {
@@ -2369,7 +2386,7 @@ function weekKey(){ const d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.ge
 function weekUsed(){ return parseInt(lsGet(weekKey()) || '0', 10) || 0; }
 function renderQuota(){
   const q = document.getElementById('quota');
-  if(!CLEAN || isPro()){ q.hidden = true; return; }
+  if(!CLEAN || isPro() || weekUsed() < FREE_WEEK - 2){ q.hidden = true; return; }
   const u = Math.min(weekUsed(), FREE_WEEK);
   q.innerHTML = `<span>השבוע: ${u} מתוך ${FREE_WEEK} חזרות</span><span class="bar"><i style="width:${u / FREE_WEEK * 100}%"></i></span><button type="button" id="quotaPro">לגרסה המלאה</button>`;
   q.hidden = false;
@@ -2415,7 +2432,8 @@ document.addEventListener('DOMContentLoaded', () => {
   side.append($('resumeCard'), $('pathCard'), $('daily'), $('quota'), $('glossCard'));
   main.append(workHead, $('lessons'), document.querySelector('.mytabs'), $('folderBar'), $('myBox'), $('takesBox'), document.querySelector('h2.sec.lib'), $('libTabs'), $('sceneList'));
   $('addBtn2').onclick = () => openAdd(true);
-  tag('#pathCard, #lessons, #glossCard', 'learn-only');
+  side.append($('onbCard2'));
+  tag('#pathCard, #lessons, #glossCard, #onbCard2', 'learn-only');
   tag('#resumeCard, #daily, #quota, .mytabs, #folderBar, #myBox, #takesBox, h2.sec.lib, #libTabs, #sceneList', 'work-only');
   // the add page, simple: paste or file, a name, the text, and the extras folded away
   const seg = document.createElement('div'); seg.className = 'seg srcseg';
@@ -2432,7 +2450,13 @@ document.addEventListener('DOMContentLoaded', () => {
     scr.classList.toggle('src-paste', b.dataset.s === 'paste'); scr.classList.toggle('src-file', b.dataset.s === 'file');
   });
   document.querySelectorAll('#homeTabs button').forEach(b => b.onclick = () => { homeTab(b.dataset.t); scrollTo(0, 0); });
-  homeTab(lsGet('sp_hometab') || 'work');
+  homeTab('work');
+  const tips = document.createElement('button'); tips.type = 'button'; tips.className = 'tipsbtn work-only'; tips.innerHTML = '<span>📖</span><b>טיפים לשחקן</b><small>שיעורים קצרים, מילון מונחים, ומסלול אישי</small>';
+  tips.onclick = () => { homeTab('learn'); scrollTo(0, 0); };
+  main.append(tips);
+  const back = document.createElement('button'); back.type = 'button'; back.className = 'learnback learn-only'; back.textContent = '→ חזרה לסצנות שלי';
+  back.onclick = () => { homeTab('work'); scrollTo(0, 0); };
+  grid.before(back);
 });
 document.getElementById('glossCard').onclick = () => openGloss();
 document.getElementById('tabTakes').onclick = () => myTab('takes');
@@ -2515,7 +2539,7 @@ const LESSONS = [
    p:['כל שחקן טועה בטקסט. ההבדל הוא מה קורה שנייה אחרי. מי שעוצר ומתנצל מוציא את כולם מהסצנה. מי שממשיך, אף אחד לא שם לב.',
       'אם שכחת מילה, תגיד את המחשבה במילים שלך ותמשיך. הפרטנר יבין, והקהל לא יידע.'],
    tip:'באודישן, אם הלכת לאיבוד לגמרי, מותר לבקש "אפשר מההתחלה?" פעם אחת. בחיוך, בלי דרמה.',
-   ex:'"דייט ראשון, שוב" ב"בדיקת זיכרון". כשאתה נתקע, אל תיגע מיד: תנסה קודם להגיד את המחשבה במילים שלך.', scene:'דייט ראשון, שוב', mode:'test'},
+   ex:'"דייט ראשון, שוב" ב"בדיקה". כשאתה נתקע, אל תיגע מיד: תנסה קודם להגיד את המחשבה במילים שלך.', scene:'דייט ראשון, שוב', mode:'test'},
 ];
 function lessonDone(i){ return (lsGet('sp_lessons') || '').split(',').includes(String(i)); }
 function markLesson(i){ const d = new Set((lsGet('sp_lessons') || '').split(',').filter(Boolean)); d.add(String(i)); lsSet('sp_lessons', [...d].join(',')); }
@@ -2610,13 +2634,14 @@ function openGloss(){
   list.querySelectorAll('.try').forEach(b => b.onclick = () => {
     const k = b.dataset.k;
     if(['run', 'learn', 'italian', 'test'].includes(k)) setMode(k);
+    if(k === 'run' || k === 'learn' || k === 'test'){ OPTS.fast = false; lsSet('sp_o_fast', null); const c = document.querySelector('.chip[data-opt="fast"]'); if(c) c.setAttribute('aria-pressed', 'false'); }
     if(k === 'cue' || k === 'hide'){ setMode('run'); OPTS[k] = true; lsSet(OPT_KEYS[k], '1'); document.querySelector(`.chip[data-opt="${k}"]`).setAttribute('aria-pressed', 'true'); }
     document.getElementById('glossDlg').hidden = true;
     toast('נבחר. עכשיו בוחרים סצנה ומתחילים', '👍');
   });
   document.getElementById('glossDlg').hidden = false;
 }
-document.getElementById('glossBtn').onclick = openGloss;
+document.getElementById('glossBtn').onclick = () => { if(CLEAN){ show('input'); homeTab('learn'); scrollTo(0, 0); } else openGloss(); };
 document.getElementById('glossClose').onclick = () => { document.getElementById('glossDlg').hidden = true; };
 document.getElementById('onbAgain').onclick = () => { document.getElementById('glossDlg').hidden = true; openOnb(); };
 
@@ -2634,7 +2659,7 @@ const ONB = [
 function planFor(a){
   const out = [];
   let mode = 'run';
-  if(a.hard === 'memory' || a.learn === 'chunks') { mode = 'learn'; out.push(['🧩', 'מתחילים ב"לימוד בהדרגה": שתי שורות כל פעם, עם הטקסט ואז בלעדיו. כשזה יושב, עוברים ל"בדיקת זיכרון".']); }
+  if(a.hard === 'memory' || a.learn === 'chunks') { mode = 'learn'; out.push(['🧩', 'מתחילים ב"שינון": שתי שורות כל פעם, עם הטקסט ואז בלעדיו. כשזה יושב, עוברים ל"בדיקה".']); }
   if(a.learn === 'cover'){ out.push(['📄', 'הדלקתי לך "הסתר את השורות שלי": רואים רק אותיות ראשונות, ונוגעים כשנתקעים.']); OPTS.hide = true; lsSet('sp_hide', '1'); }
   if(a.learn === 'hear'){ out.push(['👂', 'קצב איטי לשמיעה. אפשר להריץ את הסצנה שוב ושוב, והקולות נשמרים בטלפון.']); lsSet('sp_rate', '0.85'); speechRate = 0.85; }
   if(a.hard === 'timing'){ out.push(['⏱️', '"רק המשפטים שלי" דולק: שומעים רק את הקיו ונכנסים. ובסוף, "איטלקי" כדי לבדוק קצב.']); OPTS.cue = true; lsSet('sp_o_cue', '1'); }
@@ -2643,10 +2668,10 @@ function planFor(a){
   if(a.hard === 'natural'){ out.push(['🗣️', 'לפני כל סצנה, תגיד לעצמך מה הדמות רוצה מהפרטנר. משחקים פועל, לא רגש. במילון יש הסבר על "מטרה" ו"פעולה".']); }
   if(a.fear === 'camera'){ out.push(['🎥', 'המצלמה תהיה דלוקה כבר מהחזרה השנייה. אחרי כמה טייקים היא מפסיקה להיות אירוע ונהיית כלי. ב"הטייקים שלי" תראה את עצמך משתפר.']); OPTS.tape = true; lsSet('sp_o_tape', '1'); }
   if(a.fear === 'casting') out.push(['👥', 'המסלול שלך מתחיל בשיעור על פחד במה ולוהקים, ואחריו הקשבה: כשהתשומת לב על הפרטנר, אין לה זמן לפחד.']);
-  if(a.fear === 'blank'){ out.push(['😶', 'הפחד לשכוח נעלם כשיודעים שהטקסט יושב. נעבוד עם "בדיקת זיכרון", ושיעור "טעית? ממשיכים" ילמד אותך מה עושים כשזה קורה.']); }
+  if(a.fear === 'blank'){ out.push(['😶', 'הפחד לשכוח נעלם כשיודעים שהטקסט יושב. נעבוד עם "בדיקה", ושיעור "טעית? ממשיכים" ילמד אותך מה עושים כשזה קורה.']); }
   if(a.fear === 'waiting') out.push(['⏳', 'לפני כל סצנה תשמע את הרקע מוקרא לך, כמו רגע של כניסה לדמות. נשימה ארוכה, ונכנסים.']);
   if(a.hard !== 'nerves' && a.goal === 'audition'){ out.push(['🎥', 'צלם self-tape כבר בחזרה השנייה. אם יש תאריך לאודישן, הוסף אותו ב"עוד אפשרויות".']); OPTS.tape = true; lsSet('sp_o_tape', '1'); }
-  if(a.time === 'day') out.push(['⚡', 'כשיש רק יום: לימוד בהדרגה בבוקר, איטלקי בערב, בדיקת זיכרון לפני השינה.']);
+  if(a.time === 'day') out.push(['⚡', 'כשיש רק יום: שינון בבוקר, איטלקי בערב, בדיקה לפני השינה.']);
   if(a.time === 'week') out.push(['🗓️', 'כשיש שבוע: עשר דקות ביום עדיפות על שעה אחת. ההתקדמות נשמרת לך כאן.']);
   if(a.when === 'cam'){ out.push(['🎥', 'נתאמן הרבה מול המצלמה, עד שהיא תרגיש כמו עוד פרטנר.']); OPTS.tape = true; lsSet('sp_o_tape', '1'); }
   if(a.when === 'alone') out.push(['🤝', 'כשמתאמנים לבד קל "להקריא". הקורא כאן נותן לך מישהו להגיב אליו, וזה כל ההבדל.']);
@@ -2654,7 +2679,7 @@ function planFor(a){
   if(a.where === 'fast'){ out.push(['🐇', 'קצב הקורא יהיה איטי, כדי שתלמד לקחת את הזמן.']); lsSet('sp_rate', '0.85'); speechRate = 0.85; }
   if(a.exp === 'new') out.push(['📖', 'מונחים כמו "קיו" או "איטלקי" מוסברים במילון, בכפתור 📖 למעלה.']);
   if(a.goal === 'look' && !out.length) out.push(['🎬', 'נסה את "הסצנה של היום". זה לוקח דקה.']);
-  if(!out.length) out.push(['🎬', 'מתחילים ב"חזרה" רגילה, ובסוף כל סצנה מנסים "בדיקת זיכרון".']);
+  if(!out.length) out.push(['🎬', 'מתחילים ב"חזרה" רגילה, ובסוף כל סצנה מנסים "בדיקה".']);
   setMode(mode);
   document.querySelectorAll('.chip').forEach(c => c.setAttribute('aria-pressed', String(!!OPTS[c.dataset.opt])));
   return out;
@@ -2686,7 +2711,7 @@ function openOnb(){
   };
   draw(); dlg.hidden = false;
 }
-document.addEventListener('DOMContentLoaded', () => { if(CLEAN && !lsGet('sp_onb') && !location.hash.startsWith('#s=')) openOnb(); });
+// the questionnaire is offered inside "tips", not forced on first launch
 
 /* ---- header tucks away on scroll; light / dark ---- */
 addEventListener('scroll', () => { const h = document.querySelector('header'); if(h) h.classList.toggle('compact', scrollY > 30); }, {passive: true});
@@ -3626,8 +3651,10 @@ function stopEverything(){
 
 /* ---- practice modes ---- */
 let MODE = lsGet('sp_mode') || 'run';
+if(MODE === 'italian'){ MODE = 'run'; lsSet('sp_mode', null); lsSet('sp_o_fast', '1'); }
 const BASE_RATE = () => parseFloat(lsGet('sp_rate') || '1') || 1;
 function setMode(m){
+  if(m === 'italian'){ m = 'run'; OPTS.fast = true; lsSet('sp_o_fast', '1'); const c = document.querySelector('.chip[data-opt="fast"]'); if(c) c.setAttribute('aria-pressed', 'true'); }
   MODE = m; lsSet('sp_mode', m === 'run' ? null : m);
   document.querySelectorAll('#modes button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.m === m)));
   ['learn', 'italian', 'test'].forEach(x => document.documentElement.classList.toggle('m-' + x, x === m));
@@ -3638,7 +3665,7 @@ let helped = new Set();
 function buildRun(){
   const base = buildBase();
   if(MODE === 'test') return base.map(l => l.character === myCharacter ? {...l, hide: 'full'} : l);
-  if(MODE === 'italian') return base.map(l => ({...l, hide: false}));
+  if(MODE === 'italian' || (OPTS.fast && MODE === 'run')) return base.map(l => ({...l, hide: OPTS.hide && !OPTS.fast ? undefined : false}));
   if(MODE !== 'learn') return base;
   // learn: two of my lines at a time, with the cue before them — once with the text, then again from memory
   const mine = base.map((l, i) => l.character === myCharacter ? i : -1).filter(i => i >= 0);
@@ -3668,7 +3695,7 @@ function setupRehearsal(){
   runLines = buildRun();
   hideMine = OPTS.hide;
   helped = new Set();
-  speechRate = MODE === 'italian' ? Math.max(1.3, BASE_RATE() + 0.25) : BASE_RATE();
+  speechRate = isFast() ? Math.max(1.3, BASE_RATE() + 0.25) : BASE_RATE();
   setView(!CLEAN && OPTS.face);
   const firstOther = runLines.find(l => l.character !== myCharacter);
   if(firstOther){ setStageFace(firstOther.character); document.getElementById('stageWho').textContent = firstOther.character; }
@@ -3730,8 +3757,9 @@ function updateProgress(){
 
 let hideMine = lsGet('sp_hide') === '1';
 let runLines = [];
-const OPTS = {face: lsGet('sp_o_face') === '1', tape: lsGet('sp_o_tape') === '1', hide: hideMine, cue: lsGet('sp_o_cue') === '1'};
-const OPT_KEYS = {face:'sp_o_face', tape:'sp_o_tape', hide:'sp_hide', cue:'sp_o_cue'};
+const OPTS = {face: lsGet('sp_o_face') === '1', tape: lsGet('sp_o_tape') === '1', hide: hideMine, cue: lsGet('sp_o_cue') === '1', fast: lsGet('sp_o_fast') === '1'};
+const OPT_KEYS = {face:'sp_o_face', tape:'sp_o_tape', hide:'sp_hide', cue:'sp_o_cue', fast:'sp_o_fast'};
+function isFast(){ return MODE === 'italian' || !!OPTS.fast; }
 document.querySelectorAll('.chip').forEach(c => {
   const k = c.dataset.opt;
   c.setAttribute('aria-pressed', String(!!OPTS[k]));
@@ -4241,7 +4269,7 @@ function advance(myRun){
       setMeter(0, false);
       btn.disabled = true;
       cursor++;
-      setTimeout(() => advance(myRun), MODE === 'italian' ? 40 : 200);
+      setTimeout(() => advance(myRun), isFast() ? 40 : 200);
     };
     btn.style.display = 'block';
     btn.textContent = 'סיימתי — הבא';
@@ -4275,7 +4303,7 @@ function advance(myRun){
       el.classList.remove('speaking');
       cursor++;
       updateProgress();
-      setTimeout(() => advance(myRun), MODE === 'italian' ? 60 : 300);
+      setTimeout(() => advance(myRun), isFast() ? 60 : 300);
     });
   }
 }
@@ -4309,9 +4337,9 @@ function finishScene(){
     const clean = myIdx.filter(i => !helped.has(i)).length;
     document.getElementById('doneLine').textContent = MODE === 'test'
       ? (clean === myIdx.length ? 'כל ' + myIdx.length + ' השורות מהזיכרון, בלי עזרה אחת. הטקסט יושב!' : 'זכרת ' + clean + ' מתוך ' + myIdx.length + ' שורות בלי עזרה. עוד סיבוב ותגיע לכולן.')
-      : 'סיימת לימוד בהדרגה: ' + clean + ' מתוך ' + myIdx.length + ' פעמים מהזיכרון בלי עזרה. עכשיו נסה "בדיקת זיכרון".';
+      : 'סיימת שינון: ' + clean + ' מתוך ' + myIdx.length + ' פעמים מהזיכרון בלי עזרה. עכשיו נסה "בדיקה".';
   }
-  if(MODE === 'italian') document.getElementById('doneLine').textContent = 'איטלקי ב־' + Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0') + '. אם לא נתקעת, הטקסט יושב. עכשיו אפשר לשחק אותו.';
+  if(isFast() && MODE === 'run' || MODE === 'italian') document.getElementById('doneLine').textContent = 'איטלקי ב־' + Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0') + '. אם לא נתקעת, הטקסט יושב. עכשיו אפשר לשחק אותו.';
   speechRate = BASE_RATE();
   const nb = document.getElementById('nextStep');
   if(activeLesson !== null){
@@ -4433,7 +4461,8 @@ document.getElementById('dlBtn').onclick = async () => {
   renderDl();
 };
 
-if(CLEAN){ const ch = document.querySelector('#screen-roles .chips'); const mb = document.getElementById('moreBtn'); if(ch && mb) ch.after(mb); }
+if(CLEAN){ const ch = document.querySelector('#screen-roles .chips'); const mb = document.getElementById('moreBtn'); if(ch && mb) ch.after(mb);
+  const cue = document.querySelector('.chip[data-opt="cue"]'), pace = document.querySelector('#screen-roles .pace'); if(cue && pace) pace.after(cue); }
 document.getElementById('moreBtn').onclick = () => document.getElementById('screen-roles').classList.toggle('showmore');
 document.getElementById('exitBtn').onclick = () => {
   stopEverything();
