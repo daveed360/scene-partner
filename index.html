@@ -952,6 +952,32 @@ html.clean .scene .m{display:none!important}
 html.clean #sceneList{gap:14px}
 html.clean .scene .d{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
+/* library shelves: one card per group, "הכל" opens the list */
+html.clean #libTabs{display:none!important}
+html.clean h2.sec.lib{font-family:var(--sans)!important;font-size:13px!important;font-weight:800;letter-spacing:.12em;color:#B8860B;margin:34px 0 6px!important}
+html.clean #sceneList{display:block!important}
+html.clean .shelf{margin:0 0 26px}
+html.clean .shead{display:flex;align-items:baseline;gap:8px;margin:0 2px 10px}
+html.clean .shead b{font-family:'David Libre',serif;font-size:22px}
+html.clean .shead .cnt{color:var(--pencil);font-size:14px;font-weight:700}
+html.clean .shead .all{margin-inline-start:auto;border:0;background:none;color:var(--pen);font-family:var(--sans);font-weight:800;font-size:15px;padding:4px;cursor:pointer}
+html.clean .feat{display:flex;flex-direction:column;gap:8px;padding:20px 20px 18px;border-radius:16px;background:var(--sheet);border:1px solid var(--rule);box-shadow:0 10px 24px -18px var(--shadow);cursor:pointer;text-align:right}
+html.clean .feat .fm{font-size:13px;font-weight:700;color:var(--pencil)}
+html.clean .feat .ft{font-family:'David Libre',serif;font-weight:700;font-size:25px;line-height:1.2}
+html.clean .feat .fd{color:var(--pencil);font-size:15px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+html.clean .feat .fr{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:6px}
+html.clean .feat .fc{color:var(--pencil);font-size:13.5px}
+html.clean .feat .go{flex-shrink:0;border:0;border-radius:99px;padding:11px 22px;background:var(--hl);color:#1F1D1A;font-family:var(--sans);font-weight:800;font-size:16px;cursor:pointer}
+html.clean .feat.locked .go{background:var(--rule)}
+html.clean .srows{display:grid;gap:8px}
+html.clean .srow{display:flex;align-items:center;gap:10px;padding:14px 16px;border-radius:12px;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);font-family:var(--sans);text-align:right;cursor:pointer}
+html.clean .srow .st{flex:1;font-family:'David Libre',serif;font-weight:700;font-size:18px}
+html.clean .srow .sm{color:var(--pencil);font-size:13px}
+html.clean .srow .sp{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:var(--hl);font-size:12px}
+html.clean .srow.locked .sp{background:var(--rule)}
+html.clean.dark .feat,html.clean.dark .srow{background:#1B1B1D;border-color:#2C2C30}
+html.clean.dark .feat .go,html.clean.dark .srow .sp{color:#111}
+
 /* simplified home */
 html.clean .fab{display:none!important}
 html.clean .workhead{flex-direction:column;align-items:stretch;gap:12px}
@@ -1226,7 +1252,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 
 <button type="button" class="glosscard" id="onbCard2" onclick="openOnb()"><span>🧭</span><b>בונים לך מסלול אישי</b><small>4 שאלות קצרות, ואני מסדר את השיעורים לפי מה שקשה לך</small></button>
 <button type="button" class="glosscard" id="glossCard"><span>📖</span><b>מילון לשחקן</b><small>קיו, איטלקי, תת־טקסט ועוד, ואיך לתרגל אותם</small></button>
-<h2 class="sec lib">סצנות לתרגול</h2>
+<h2 class="sec lib">ספריית סצנות</h2>
 <div class="lib-tabs" id="libTabs"><button type="button" data-l="1" aria-pressed="true">קל</button><button type="button" data-l="2" aria-pressed="false">בינוני</button><button type="button" data-l="3" aria-pressed="false">מאתגר</button><button type="button" data-l="4" aria-pressed="false">מונולוגים</button></div>
 <div class="scenes" id="sceneList"></div>
 
@@ -2393,8 +2419,44 @@ const FREE_WEEK = 5;
 function isPro(){ return lsGet('sp_pro') === '1'; }
 function sceneSecs(text){ const w = (text.match(/\S+/g) || []).length; return Math.round(w / 2.2 + (text.match(/\n/g) || []).length * 0.8); }
 function isLocked(sc){ if(!CLEAN || isPro()) return false; const lv = sc.level || 1; if(lv === 1) return false; return !((lv === 2 || lv === 4) && SCENES.filter(x => (x.level || 1) === lv)[0] === sc); }
-let libLevel = 1;
+let libLevel = 1, libOpen = {};
+function renderShelves(){
+  const list = document.getElementById('sceneList');
+  let D = []; try{ D = JSON.parse(lsGet('sp_done') || '[]'); }catch(e){}
+  const time = sc => { const t = sceneSecs(sc.text); return Math.floor(t / 60) + ':' + String(t % 60).padStart(2, '0'); };
+  const names = ['', 'קל', 'בינוני', 'מאתגר', 'מונולוגים'], icons = ['', '🌱', '🔥', '⚡', '🎤'];
+  list.innerHTML = '';
+  [1, 2, 3, 4].forEach(lv => {
+    const group = SCENES.filter(sc => (sc.level || 1) === lv);
+    if(!group.length) return;
+    const done = group.filter(sc => D.includes(sc.title)).length;
+    const pick = group.find(sc => !D.includes(sc.title) && !isLocked(sc)) || group[0];
+    const sec = document.createElement('section'); sec.className = 'shelf';
+    sec.innerHTML = `<div class="shead"><b>${icons[lv]} ${names[lv]}</b><span class="cnt">${done}/${group.length}</span><button type="button" class="all">${libOpen[lv] ? 'סגור' : 'הכל ›'}</button></div>`;
+    const card = sc => {
+      const lines = parseScript(sc.text), cast = [...new Set(lines.map(l => l.character))];
+      const b = document.createElement('div'); b.className = 'feat' + (isLocked(sc) ? ' locked' : '') + (D.includes(sc.title) ? ' did' : '');
+      b.innerHTML = `<span class="fm">⏱ ${time(sc)} · ${esc(sc.genre)}${D.includes(sc.title) ? ' · ✓ עשית' : ''}</span><span class="ft">${esc(sc.title)}</span>
+        <span class="fd">${esc(sc.blurb)}</span><span class="fr"><span class="fc">${cast.map(esc).join(' · ')}</span><button type="button" class="go">${isLocked(sc) ? '🔒 Pro' : 'התחל ▶'}</button></span>`;
+      b.onclick = () => { if(isLocked(sc)){ openPro('הסצנה "' + sc.title + '" היא חלק מהגרסה המלאה.'); return; } loadScene(sc.text, sc.title); };
+      return b;
+    };
+    if(libOpen[lv]){
+      const rows = document.createElement('div'); rows.className = 'srows';
+      group.forEach(sc => {
+        const r = document.createElement('button'); r.type = 'button'; r.className = 'srow' + (isLocked(sc) ? ' locked' : '');
+        r.innerHTML = `<span class="st">${D.includes(sc.title) ? '✓ ' : ''}${esc(sc.title)}</span><span class="sm">⏱ ${time(sc)}</span><span class="sp">${isLocked(sc) ? '🔒' : '▶'}</span>`;
+        r.onclick = () => { if(isLocked(sc)){ openPro('הסצנה "' + sc.title + '" היא חלק מהגרסה המלאה.'); return; } loadScene(sc.text, sc.title); };
+        rows.appendChild(r);
+      });
+      sec.appendChild(rows);
+    } else sec.appendChild(card(pick));
+    sec.querySelector('.all').onclick = () => { libOpen[lv] = !libOpen[lv]; renderShelves(); };
+    list.appendChild(sec);
+  });
+}
 function renderSceneList(){
+  if(CLEAN) return renderShelves();
   const list = document.getElementById('sceneList');
   list.innerHTML = '';
   SCENES.forEach((sc, i) => {
@@ -2443,7 +2505,10 @@ document.getElementById('proGo').onclick = () => { document.getElementById('proD
 document.addEventListener('DOMContentLoaded', renderQuota);
 
 /* ---- my scenes / my takes ---- */
-function myTab(which){
+let myOpen = null;
+function myTab(which, init){
+  if(CLEAN && !init){ which = myOpen === which ? null : which; }
+  myOpen = which;
   document.getElementById('tabMine').setAttribute('aria-pressed', String(which === 'mine'));
   document.getElementById('tabTakes').setAttribute('aria-pressed', String(which === 'takes'));
   document.getElementById('myList').hidden = which !== 'mine';
@@ -2530,7 +2595,7 @@ async function renderTakes(){
     box.appendChild(row);
   }
 }
-document.addEventListener('DOMContentLoaded', () => { if(CLEAN) myTab('mine'); });
+document.addEventListener('DOMContentLoaded', () => { if(CLEAN) myTab(null, true); });
 
 /* ---- short lessons: a little head start for an actor, each one ends in a real exercise ---- */
 const LESSONS = [
@@ -4185,12 +4250,13 @@ function narrate(text, myRun){
         const blob = await elGet(text, v);
         if(myRun !== runId || over) return end();
         await playBlob(blob, () => setTimeout(end, 500));
-      } else {
-        const u = new SpeechSynthesisUtterance(text); u.lang = 'he-IL'; u.rate = 0.95;
-        u.onend = u.onerror = () => setTimeout(end, 500); speechSynthesis.cancel(); speechSynthesis.speak(u);
-        setTimeout(end, readingTime(text) + 5000);
-      }
-    }catch(e){ end(); }
+      } else phoneVoice();
+    }catch(e){ if(!over && myRun === runId) phoneVoice(); else end(); }
+    function phoneVoice(){
+      const u = new SpeechSynthesisUtterance(text); u.lang = 'he-IL'; u.rate = 0.95;
+      u.onend = u.onerror = () => setTimeout(end, 500); speechSynthesis.cancel(); speechSynthesis.speak(u);
+      setTimeout(end, readingTime(text) + 5000);
+    }
   });
 }
 // fetch every partner line before the scene, with a progress screen, so nothing waits mid-scene
@@ -4388,6 +4454,8 @@ function finishScene(){
   document.getElementById('stLines').textContent = runLines.filter(l => l.character === myCharacter).length;
   const before = streakCount();
   markPracticedToday(); renderStreak(); renderDaily();
+  try{ const D = JSON.parse(lsGet('sp_done') || '[]'); if(!D.includes(sceneTitle)){ D.push(sceneTitle); lsSet('sp_done', JSON.stringify(D.slice(-300))); } }catch(e){}
+  if(CLEAN) renderSceneList();
   lsSet('sp_last', JSON.stringify({title: sceneTitle, role: myCharacter, mode: MODE, t: Date.now()})); renderResume();
   if(!isPro()){ lsSet(weekKey(), String(weekUsed() + 1)); renderQuota(); }
   const st = streakCount();
