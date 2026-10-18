@@ -988,12 +988,12 @@ html.clean.dark .feat .go,html.clean.dark .srow .sp{color:#111}
 .srow .membar{margin:0;flex:0 0 120px}
 .rolesheet .rtip{margin:0 2px 14px;font-size:14px;line-height:1.55;color:var(--pencil,#6E675B)}
 @media (min-width: 1000px){
-  html.clean body #screen-input.tab-work.tab-work .home-grid{display:grid;max-width:none;grid-template-columns:380px minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:48px;align-items:start}
-  html.clean body #screen-input.tab-work.tab-work .home-side{grid-column:1;grid-row:1}
+  html.clean body #screen-input.tab-work.tab-work .home-grid{display:grid;max-width:none;grid-template-columns:360px minmax(0,1fr);grid-template-rows:auto auto;column-gap:44px;align-items:start}
+  html.clean body #screen-input.tab-work.tab-work .home-side{grid-column:1 / -1;grid-row:1}
   html.clean body #screen-input.tab-work.tab-work .home-main{display:contents}
   html.clean body #screen-input.tab-work.tab-work .desk-mine{grid-column:1;grid-row:2;position:sticky;top:90px;max-height:calc(100vh - 110px);overflow:auto;padding:0 4px 20px}
   html.clean body #screen-input.tab-work.tab-work .desk-mine .workhead{margin-top:0}
-  html.clean body #screen-input.tab-work.tab-work .desk-lib{grid-column:2;grid-row:1 / span 2}
+  html.clean body #screen-input.tab-work.tab-work .desk-lib{grid-column:2;grid-row:2}
   html.clean body #screen-input.tab-work.tab-work .desk-lib h2.sec.lib{margin-top:8px!important}
   html.clean #sceneList{display:grid!important;grid-template-columns:1fr 1fr;gap:22px 24px}
   html.clean .shelf{margin:0;display:flex;flex-direction:column}
@@ -1246,7 +1246,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 .daily button{width:100%;border:0;border-radius:12px;background:#1F1D1A;color:#FFF8E6;font-family:var(--sans);font-weight:700;font-size:17px;padding:13px;cursor:pointer}
 /* ===== motion: small, quick animations that make the app feel alive. Off when the phone asks for less motion ===== */
 html.clean body .rolesheet .sw[aria-pressed=true] i::after{right:3px!important;left:auto!important;transform:translateX(-18px)}
-@media (prefers-reduced-motion: no-preference){
+@media all{
   @keyframes mUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
   @keyframes mFade{from{opacity:0}to{opacity:1}}
   @keyframes mSheet{from{transform:translateY(100%)}to{transform:none}}
@@ -1316,7 +1316,7 @@ html.clean body .rolesheet .sw[aria-pressed=true] i::after{right:3px!important;l
   html.clean body #screen-done.active .stats > div:nth-child(3){animation-delay:.2s!important}
 }
 /* ===== motion, part 2: the places that were still standing still ===== */
-@media (prefers-reduced-motion: no-preference){
+@media all{
   @keyframes mClap{0%,100%{transform:rotate(-8deg)}35%{transform:rotate(-24deg)}55%{transform:rotate(-6deg)}70%{transform:rotate(-11deg)}}
   @keyframes mStamp{0%{opacity:0;transform:scale(2.2) rotate(-8deg)}60%{opacity:1;transform:scale(.94) rotate(-3deg)}100%{opacity:1;transform:rotate(-2deg)}}
   @keyframes mFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
@@ -1397,7 +1397,7 @@ html.clean body .rolesheet .sw[aria-pressed=true] i::after{right:3px!important;l
   html.clean body #nextStep:not([hidden]){animation:mUp .45s cubic-bezier(.2,.85,.25,1) .7s both!important}
 }
 /* ===== motion, part 3: the computer — mouse and keyboard ===== */
-@media (min-width: 1000px) and (prefers-reduced-motion: no-preference){
+@media (min-width: 1000px){
   @keyframes mFromR{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
   @keyframes mFromL{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
   @keyframes mKey{0%{transform:translateY(2px) scale(.94);background:#FFE14D}100%{transform:none}}
@@ -1432,6 +1432,66 @@ html.clean body .rolesheet .sw[aria-pressed=true] i::after{right:3px!important;l
   html.clean body .keys kbd{transition:background-color .2s,transform .12s!important}
   html.clean body .keys kbd.hit{animation:mKey .35s ease-out!important}
 }
+
+/* ===== computer: a real app — side menu on the right, wide content, focus mode while rehearsing ===== */
+.sidenav,.desktitle{display:none}
+@media (prefers-reduced-motion: reduce){ html.clean body *{animation-iteration-count:1!important} }
+@media (min-width: 1000px){
+  html.clean body{background:var(--paper)!important}
+  html.clean.dark body{background:#0E0E0F!important}
+  html.clean .wrap{max-width:none!important;margin:0 260px 0 0!important;padding:34px 52px 70px!important;box-shadow:none!important;background:transparent!important;min-height:100vh}
+  html.clean .wrap > header{display:none!important}
+  html.clean .screen{max-width:1180px;margin:0 auto}
+  html.clean .fab,html.clean .desk-mine .tipsbtn,html.clean .learnback{display:none!important}
+  html.clean .sidenav{display:flex;flex-direction:column;position:fixed;top:0;right:0;bottom:0;width:260px;z-index:30;padding:26px 18px 20px;background:#EFEBE1;border-left:1px solid var(--rule);font-family:var(--sans)}
+  html.clean.dark .sidenav{background:#141416;border-color:#26262A}
+  .sidenav .sbrand{display:flex;align-items:center;gap:10px;padding:0 8px 24px;cursor:pointer}
+  .sidenav .sbrand svg{width:40px;height:40px;flex-shrink:0}
+  .sidenav .sbrand b{display:block;font-family:'David Libre',serif;font-size:19px;line-height:1.1;color:var(--ink);direction:ltr;text-align:right}
+  .sidenav .sbrand small{display:block;font-family:var(--hand);font-size:20px;color:var(--red);line-height:1}
+  .sidenav .snew{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;margin-bottom:20px;border:0;border-radius:12px;background:var(--red);color:#fff;font:inherit;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 10px 22px -12px rgba(194,54,44,.7);transition:transform .15s,box-shadow .2s}
+  .sidenav .snew:hover{transform:translateY(-2px);box-shadow:0 14px 26px -12px rgba(194,54,44,.8)}
+  .sidenav .snew span{font-size:22px;line-height:1;font-weight:400}
+  .sidenav nav{display:grid;gap:4px}
+  .sidenav .slab{font-size:11.5px;font-weight:800;letter-spacing:.12em;color:var(--pencil);padding:16px 12px 6px}
+  .sidenav nav button{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;border:0;border-radius:10px;background:transparent;color:var(--ink);font:inherit;font-size:15.5px;font-weight:600;text-align:right;cursor:pointer;position:relative;transition:background-color .18s,transform .15s}
+  .sidenav nav button i{font-style:normal;width:22px;text-align:center;font-size:17px}
+  .sidenav nav button:hover{background:rgba(0,0,0,.05);transform:translateX(-3px)}
+  html.clean.dark .sidenav nav button:hover{background:rgba(255,255,255,.06)}
+  .sidenav nav button[aria-current=true]{background:var(--sheet);font-weight:800;box-shadow:0 4px 12px -8px var(--shadow)}
+  .sidenav nav button[aria-current=true]::before{content:"";position:absolute;right:-18px;top:8px;bottom:8px;width:4px;border-radius:4px 0 0 4px;background:var(--red)}
+  .sidenav .sfoot{margin-top:auto;display:grid;gap:10px}
+  .sidenav .sstreak{padding:14px;border-radius:12px;background:var(--sheet);border:1px solid var(--rule);font-size:13.5px;color:var(--pencil);line-height:1.45}
+  .sidenav .sstreak b{display:block;font-size:22px;color:var(--ink);font-family:'David Libre',serif}
+  .sidenav .stheme{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--rule);border-radius:10px;background:transparent;color:var(--ink);font:inherit;font-size:14px;cursor:pointer;transition:background-color .18s}
+  .sidenav .stheme:hover{background:var(--sheet)}
+  /* page title on the home screen */
+  html.clean body #screen-input.tab-work:not(.adding) .desktitle{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin:0 0 22px}
+  .desktitle h1{margin:0;font-family:'David Libre',serif;font-size:34px;line-height:1.1;color:var(--ink)}
+  .desktitle p{margin:6px 0 0;color:var(--pencil);font-size:16px}
+  .desktitle .dk{font-size:13px;color:var(--pencil);white-space:nowrap}
+  html.clean body #screen-input.tab-work.tab-work .desk-mine{top:30px!important;max-height:calc(100vh - 60px)!important}
+  /* add page: the text on one side, the tips beside it */
+  html.clean body #screen-input.adding{max-width:1100px!important;display:grid!important;grid-template-columns:minmax(0,1fr) 340px;column-gap:40px;align-items:start}
+  html.clean body #screen-input.adding > *{grid-column:1}
+  html.clean body #screen-input.adding > .addhead{grid-column:1 / -1}
+  html.clean body #screen-input.adding > .tips{grid-column:2;grid-row:2 / span 20;position:sticky;top:30px;margin-top:0!important}
+  html.clean body #screen-input.adding #scriptInput{min-height:52vh}
+  /* rehearsal: focus mode — the menu steps aside, the script takes the middle */
+  html.clean body.rehearsing .sidenav{display:none}
+  html.clean body.rehearsing .wrap{margin:0!important;padding-top:24px!important}
+  html.clean body.rehearsing #screen-rehearse{max-width:880px}
+  html.clean body.rehearsing #screen-rehearse > #feed{min-height:calc(100vh - 330px)}
+  html.clean body #screen-done .donebox{max-width:620px;margin:40px auto 0}
+  html.clean body #screen-input.tab-learn{max-width:1180px}
+  /* the menu slides in once */
+  html.clean body .sidenav{animation:mFromR .5s cubic-bezier(.2,.85,.25,1) both}
+  html.clean body .sidenav nav button{animation:mUp .4s cubic-bezier(.2,.85,.25,1) both}
+  html.clean body .sidenav nav button:nth-of-type(2){animation-delay:.05s}html.clean body .sidenav nav button:nth-of-type(3){animation-delay:.1s}
+  html.clean body .sidenav nav button:nth-of-type(4){animation-delay:.15s}html.clean body .sidenav nav button:nth-of-type(5){animation-delay:.2s}
+  html.clean body .desktitle{animation:mUp .5s cubic-bezier(.2,.85,.25,1) both}
+}
+@media (prefers-reduced-motion: reduce){ html.clean body .resume .go,html.clean body .empty .big,html.clean body .prepv svg{animation:none!important} }
 </style>
 </head>
 <body>
@@ -1687,6 +1747,7 @@ function show(name){
   if(name !== 'rehearse') try{ stopAudio(); }catch(e){}
   document.body.classList.toggle('rehearsing', name === 'rehearse');
   document.body.classList.toggle('is-done', name === 'done');
+  if(typeof syncNav === 'function') setTimeout(syncNav, 0);
   if(typeof hostSays === 'function'){
     if(name === 'input'){ const a = nextAudition(); hostSays(a ? (a.n === 0 ? 'היום האודישן של "' + a.title + '"! טייק אחד רגוע ויוצאים. בהצלחה!' : audText(a.n) + ' ("' + a.title + '"). בוא נעשה עוד טייק!') : 'היי! תעלה סצנה או תבחר אחת מוכנה, ואני אשחק את כל השאר.'); }
     if(name === 'roles') hostSays('את מי אתה משחק? את כל השאר אני לוקחת.');
@@ -2704,7 +2765,7 @@ function renderResume(){
   const src = L && (myScenes().find(x => x.title === L.title) || SCENES.find(x => x.title === L.title));
   if(!CLEAN || !src){ box.hidden = true; return; }
   const modeName = {run:'חזרה', learn:'שינון', italian:'איטלקי', test:'בדיקה'}[L.mode] || 'חזרה';
-  box.innerHTML = `<span class="tx"><span class="k">להמשיך מאיפה שעצרת</span><b>${esc(L.title)}</b><small>${esc(L.role || '')} · ${modeName}</small>${memBar(L.title)}</span><span class="go" aria-hidden="true">▶</span>`;
+  box.innerHTML = `<span class="tx"><span class="k">להמשיך מאיפה שעצרת</span><b>${esc(L.title)}</b><small>${L.role ? 'את/ה ' + esc(L.role) : ''}</small>${memBar(L.title)}</span><span class="go" aria-hidden="true">▶</span>`;
   box.setAttribute('aria-label', 'להמשיך: ' + L.title);
   box.hidden = false;
   box.onclick = () => {
@@ -2734,7 +2795,6 @@ function renderDaily(){
 document.addEventListener('DOMContentLoaded', renderDaily);
 
 function confetti(){
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const cv = document.createElement('canvas'); cv.className = 'confetti-cv';
   cv.style.cssText = 'position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:60';
   document.body.appendChild(cv);
@@ -2882,6 +2942,7 @@ function homeTab(t){
   document.documentElement.classList.toggle('tab-learn-on', t === 'learn');
   document.querySelectorAll('#homeTabs button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.t === t)));
   lsSet('sp_hometab', t);
+  if(typeof syncNav === 'function') syncNav();
 }
 document.addEventListener('DOMContentLoaded', () => {
   if(!CLEAN) return;
@@ -3323,6 +3384,7 @@ function openAdd(on){
   document.getElementById('screen-input').classList.toggle('adding', on);
   document.getElementById('analyzeBtn').textContent = on && CLEAN ? 'הוספת הסצנה ←' : 'המשך לבחירת תפקיד';
   document.documentElement.classList.toggle('adding-open', on);
+  if(typeof syncNav === 'function') setTimeout(syncNav, 0);
   scrollTo(0, 0);
 }
 document.getElementById('addBtn').onclick = () => openAdd(true);
@@ -4986,6 +5048,47 @@ document.getElementById('againBtn').onclick = () => { setupRehearsal(); show('re
 document.getElementById('newSceneBtn').onclick = () => { show('input'); };
 if(/[?&]key\b/.test(location.search)){ document.documentElement.classList.add('showkey'); const vb = document.getElementById('voiceBox'); if(vb) vb.open = true; }
 if('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(()=>{});
+
+/* ---- computer: side menu ---- */
+let navSel = 'home';
+function syncNav(){
+  const nav = document.querySelector('.sidenav'); if(!nav) return;
+  const sc = document.getElementById('screen-input');
+  let cur = null;
+  if(currentScreen === 'input') cur = sc.classList.contains('adding') ? 'new' : sc.classList.contains('tab-learn') ? 'tips' : navSel;
+  nav.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-current', String(b.dataset.n === cur)));
+  const st = nav.querySelector('.sstreak');
+  if(st){ const n = typeof streakCount === 'function' ? streakCount() : 0; st.innerHTML = n ? `<b>🎟️ ${n} ${n === 1 ? 'יום' : 'ימים'}</b>ברצף של חזרות. ממשיכים!` : '<b>🎬 היום</b>עוד לא תרגלת היום. סצנה אחת קצרה?'; }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  if(!CLEAN) return;
+  const logo = document.querySelector('header .logo');
+  const side = document.createElement('aside'); side.className = 'sidenav'; side.setAttribute('aria-label', 'תפריט');
+  side.innerHTML = `<div class="sbrand" data-n="home">${logo ? logo.outerHTML : ''}<span><b>Audition Partner</b><small>שותף לתפקיד</small></span></div>
+    <button type="button" class="snew"><span>+</span> סצנה חדשה</button>
+    <nav><button type="button" data-n="home"><i>🏠</i>בית</button><button type="button" data-n="mine"><i>📄</i>הסצנות שלי</button><button type="button" data-n="takes"><i>🎬</i>הטייקים שלי</button><button type="button" data-n="lib"><i>📚</i>ספריית סצנות</button>
+    <div class="slab">ללמוד</div><button type="button" data-n="tips"><i>💡</i>טיפים לשחקן</button></nav>
+    <div class="sfoot"><div class="sstreak"></div><button type="button" class="stheme">🌓 מצב לילה / יום</button></div>`;
+  document.body.prepend(side);
+  const home = () => { show('input'); openAdd(false); homeTab('work'); };
+  const go = n => {
+    if(n === 'tips'){ show('input'); openAdd(false); homeTab('learn'); scrollTo({top: 0, behavior: 'smooth'}); syncNav(); return; }
+    navSel = n; home();
+    if(n === 'mine' || n === 'takes'){ myOpen = null; myTab(n); }
+    const target = n === 'lib' ? document.querySelector('h2.sec.lib') : (n === 'mine' || n === 'takes') ? document.querySelector('.desk-mine') : null;
+    if(target) setTimeout(() => target.scrollIntoView({behavior: 'smooth', block: 'start'}), 60); else scrollTo({top: 0, behavior: 'smooth'});
+    syncNav();
+  };
+  side.querySelectorAll('[data-n]').forEach(b => b.onclick = () => go(b.dataset.n));
+  side.querySelector('.snew').onclick = () => { show('input'); homeTab('work'); openAdd(true); syncNav(); };
+  side.querySelector('.stheme').onclick = () => document.getElementById('themeBtn').click();
+  // a greeting at the top of the home page
+  const t = document.createElement('div'); t.className = 'desktitle work-only';
+  const h = new Date().getHours();
+  t.innerHTML = `<div><h1>${h < 5 ? 'לילה טוב' : h < 12 ? 'בוקר טוב' : h < 17 ? 'צהריים טובים' : h < 21 ? 'ערב טוב' : 'לילה טוב'} 👋</h1><p>מה מתרגלים היום?</p></div><span class="dk">${new Date().toLocaleDateString('he-IL', {weekday: 'long', day: 'numeric', month: 'long'})}</span>`;
+  const grid = document.querySelector('.home-grid'); if(grid) grid.before(t);
+  syncNav();
+});
 </script>
 </body>
 </html>
