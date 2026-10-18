@@ -1236,6 +1236,77 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 .daily .tally{display:flex;align-items:center;gap:8px;margin:10px 0 14px;font-size:14px;color:#5D574C}
 .daily .tally b{font-family:'Amatic SC',cursive;font-size:30px;color:#2B4FA8;letter-spacing:2px;line-height:1}
 .daily button{width:100%;border:0;border-radius:12px;background:#1F1D1A;color:#FFF8E6;font-family:var(--sans);font-weight:700;font-size:17px;padding:13px;cursor:pointer}
+/* ===== motion: small, quick animations that make the app feel alive. Off when the phone asks for less motion ===== */
+html.clean body .rolesheet .sw[aria-pressed=true] i::after{right:3px!important;left:auto!important;transform:translateX(-18px)}
+@media (prefers-reduced-motion: no-preference){
+  @keyframes mUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @keyframes mFade{from{opacity:0}to{opacity:1}}
+  @keyframes mSheet{from{transform:translateY(100%)}to{transform:none}}
+  @keyframes mPop{0%{opacity:0;transform:scale(.4) rotate(-90deg)}70%{transform:scale(1.08) rotate(0)}100%{opacity:1;transform:none}}
+  @keyframes mCard{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+  @keyframes mGrow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+  @keyframes mSweep{from{background-size:0% 100%}to{background-size:100% 100%}}
+  @keyframes mBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.09)}}
+  @keyframes mDots{50%{opacity:1}}
+
+  /* screens slide in softly */
+  html.clean body .screen.active{animation:mFade .28s ease-out both!important}
+  html.clean body #screen-input.active .resume:not([hidden]){animation:mUp .45s cubic-bezier(.2,.85,.25,1) both!important}
+  html.clean body #screen-input.active .resume .go{animation:mBeat 1.6s ease-in-out .7s 2!important}
+  html.clean body #screen-input.active .mytabs{animation:mUp .45s cubic-bezier(.2,.85,.25,1) .06s both!important}
+  html.clean body #screen-input.active .fitem{animation:mUp .4s cubic-bezier(.2,.85,.25,1) both!important}
+  html.clean body #screen-input.active h2.sec.lib{animation:mFade .5s ease-out .1s both!important}
+  html.clean body #screen-input.active .shelf{animation:mUp .5s cubic-bezier(.2,.85,.25,1) both!important}
+  html.clean body #screen-input.active .shelf:nth-child(1){animation-delay:.12s!important}
+  html.clean body #screen-input.active .shelf:nth-child(2){animation-delay:.2s!important}
+  html.clean body #screen-input.active .shelf:nth-child(3){animation-delay:.28s!important}
+  html.clean body #screen-input.active .shelf:nth-child(4){animation-delay:.36s!important}
+  html.clean body .srow{animation:mUp .3s cubic-bezier(.2,.85,.25,1) both!important}
+  html.clean body .srow:nth-child(2){animation-delay:.04s!important}html.clean body .srow:nth-child(3){animation-delay:.08s!important}
+  html.clean body .srow:nth-child(4){animation-delay:.12s!important}html.clean body .srow:nth-child(5){animation-delay:.16s!important}
+  html.clean body .srow:nth-child(n+6){animation-delay:.2s!important}
+
+  /* the + button pops in and turns when pressed */
+  html.clean body #screen-input.active .fab{animation:mPop .55s cubic-bezier(.3,1.4,.5,1) .35s both!important;transition:transform .18s cubic-bezier(.3,1.5,.5,1),box-shadow .18s!important}
+  html.clean body .fab:active{transform:scale(.9) rotate(90deg)!important}
+  @media (hover:hover){ html.clean body .fab:hover{transform:rotate(90deg) scale(1.05)!important} }
+
+  /* everything you tap answers your finger */
+  html.clean body :is(.feat,.srow,.fitem,.resume,.char,.sw,.mytabs button,.mseg button,.shead .all,#actionBtn,.primary,.tipsbtn,#ctxSkip,.go){transition:transform .14s ease,box-shadow .2s ease,background-color .2s ease,border-color .2s ease,color .2s ease!important}
+  html.clean body :is(.feat,.srow,.fitem,.resume,.char,.sw,.mytabs button,#actionBtn,.primary,.tipsbtn,#ctxSkip):active{transform:scale(.975)!important}
+  @media (hover:hover){
+    html.clean body :is(.feat,.resume):hover{transform:translateY(-3px)!important;box-shadow:0 20px 36px -22px var(--shadow)!important}
+    html.clean body :is(.srow,.char):hover{transform:translateX(-3px)!important}
+    html.clean body .feat:hover .go{transform:scale(1.05)!important}
+  }
+
+  /* memory meter fills up */
+  html.clean body .membar .mt i{transform-origin:right center;animation:mGrow .9s cubic-bezier(.2,.85,.25,1) .25s both!important}
+
+  /* sheets and cards */
+  html.clean body .intro:not([hidden]){animation:mFade .22s ease-out both!important}
+  html.clean body .intro.sheet:not([hidden]) .card{animation:mSheet .38s cubic-bezier(.2,.9,.3,1) both!important}
+  html.clean body .intro:not(.sheet):not([hidden]) .card{animation:mCard .32s cubic-bezier(.2,.9,.3,1) both!important}
+  html.clean body .rolesheet:not([hidden]) .char{animation:mUp .35s cubic-bezier(.2,.85,.25,1) both!important}
+  html.clean body .rolesheet .char:nth-child(1){animation-delay:.12s!important}
+  html.clean body .rolesheet .char:nth-child(2){animation-delay:.18s!important}
+  html.clean body .rolesheet .char:nth-child(n+3){animation-delay:.24s!important}
+  html.clean body .rolesheet .sw i,html.clean body .rolesheet .sw i::after{transition:background-color .2s ease,transform .22s cubic-bezier(.3,1.4,.5,1)!important}
+  html.clean body .ctxm .reading i{animation:mDots 1.2s infinite!important}
+  html.clean body .ctxm .reading i:nth-child(2){animation-delay:.2s!important}
+  html.clean body .ctxm .reading i:nth-child(3){animation-delay:.4s!important}
+
+  /* rehearsal: each line slides in, and the yellow marker is drawn over your line */
+  html.clean body #feed .line{animation:mUp .34s cubic-bezier(.2,.85,.25,1) both!important}
+  html.clean body #feed .line.mine .txt mark{background-repeat:no-repeat!important;background-position:right center!important;animation:mSweep .55s cubic-bezier(.5,0,.3,1) .12s both!important}
+  html.clean body .progress-fill{transition:width .5s cubic-bezier(.2,.85,.25,1)!important}
+  html.clean body #statusDot{transition:background-color .3s!important}
+
+  /* the end */
+  html.clean body #screen-done.active .stats > div{animation:mCard .45s cubic-bezier(.3,1.4,.5,1) both!important}
+  html.clean body #screen-done.active .stats > div:nth-child(2){animation-delay:.1s!important}
+  html.clean body #screen-done.active .stats > div:nth-child(3){animation-delay:.2s!important}
+}
 </style>
 </head>
 <body>
@@ -2543,16 +2614,16 @@ function renderDaily(){
 document.addEventListener('DOMContentLoaded', renderDaily);
 
 function confetti(){
-  if(CLEAN) return;
   const box = document.createElement('div'); box.className = 'confetti';
-  const colors = ['#FFC24B','#7BD3A4','#FF8FA3','#8FB8FF','#FFFFFF','#C9A2FF'];
-  for(let i = 0; i < 70; i++){
+  const colors = CLEAN ? ['#C2362C','#FFE14D','#1F1D1A','#E6E0D3','#C2362C','#FFE14D'] : ['#FFC24B','#7BD3A4','#FF8FA3','#8FB8FF','#FFFFFF','#C9A2FF'];
+  for(let i = 0; i < (CLEAN ? 46 : 70); i++){
     const c = document.createElement('i');
     c.style.left = Math.random()*100 + 'vw';
     c.style.background = colors[i % colors.length];
     c.style.animationDuration = (1.6 + Math.random()*1.6) + 's';
     c.style.animationDelay = (Math.random()*0.5) + 's';
     c.style.transform = 'rotate(' + Math.random()*360 + 'deg)';
+    if(CLEAN) c.style.setProperty('animation', 'fall ' + c.style.animationDuration + ' linear ' + c.style.animationDelay + ' forwards', 'important');
     box.appendChild(c);
   }
   document.body.appendChild(box);
