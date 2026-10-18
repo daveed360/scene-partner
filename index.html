@@ -1008,7 +1008,7 @@ html.clean.dark .feat .go,html.clean.dark .srow .sp{color:#111}
   html.clean body #screen-input.tab-work.tab-work .workhead h2{display:block!important;margin:0!important;text-align:right;align-self:flex-start;font-family:var(--sans)!important;font-size:13px!important;font-weight:800;letter-spacing:.12em;color:#B8860B}
   html.clean .desk-mine .tipsbtn{margin-top:26px}
   html.clean .rehearsing .keys{display:block!important;text-align:center;margin-top:14px;font-size:13px;color:var(--pencil)}
-  html.clean .keys kbd{font:inherit;font-weight:700;padding:1px 7px;border:1px solid var(--rule);border-bottom-width:2px;border-radius:6px;background:var(--sheet)}
+  html.clean .keys kbd{font:inherit;font-weight:700;padding:1px 7px;border:1px solid var(--rule);border-bottom-width:2px;border-radius:6px;background:var(--sheet);color:var(--ink)}
 }
 
 /* continue card */
@@ -3176,10 +3176,8 @@ function openRoleSheet(){
   const draw = () => {
     card.innerHTML = `<span class="k">${esc(sceneTitle)}</span><h3>${characters.length === 1 ? 'מוכן?' : 'את מי אתה משחק?'}</h3>
       <div class="chars">${characters.map(c => `<button type="button" class="char" data-c="${esc(c)}"><span class="nm">${esc(c)}</span><small>${cnt(c)} ${characters.length === 1 ? 'קטעים' : 'שורות'}</small><span class="go">←</span></button>`).join('')}</div>
-      <div class="mseg">${[['run', '🎬 חזרה'], ['learn', '🧩 שינון'], ['test', '✅ בדיקה']].map(([m, t]) => `<button type="button" data-m="${m}" aria-pressed="${MODE === m}">${t}</button>`).join('')}</div>
-      ${memBar(sceneTitle, true)}<p class="rtip">${memTip(sceneTitle)}</p>
+      ${memBar(sceneTitle, true)}
       <div class="sws">${MODE === 'run' ? sw('hide', '👁️ הסתר את השורות שלי', 'רק אותיות ראשונות') + sw('fast', '⚡ מהר (איטלקי)', 'בלי הפסקות, לבדוק שהטקסט יושב') : ''}${sw('tape', '🎥 צילום self-tape', 'נשמר ב"הטייקים שלי"')}</div>
-      <button type="button" class="more" id="rsMore">🎙️ קולות ועוד הגדרות</button>
       <button type="button" class="skip" id="rsClose">ביטול</button>`;
     card.querySelectorAll('.mseg button').forEach(b => b.onclick = () => { setMode(b.dataset.m); draw(); });
     card.querySelectorAll('.sw').forEach(b => b.onclick = () => {
@@ -3188,9 +3186,9 @@ function openRoleSheet(){
       b.setAttribute('aria-pressed', String(OPTS[k]));
     });
     card.querySelectorAll('.char').forEach(b => b.onclick = () => startAs(b.dataset.c));
-    card.querySelector('#rsMore').onclick = () => { dlg.hidden = true; show('roles'); };
     card.querySelector('#rsClose').onclick = () => { dlg.hidden = true; };
   };
+  if(MODE !== 'run') setMode('run');
   draw(); dlg.hidden = false;
 }
 function startAs(name){
@@ -4254,7 +4252,14 @@ function stageShowPartner(line, still){
 // keep the newest line in view, also after its pictures finish loading and change the height
 function feedToBottom(div){
   const f = document.getElementById('feed');
-  const go = () => f.scrollTo({top: f.scrollHeight, behavior: 'smooth'});
+  const go = () => {
+    if(f.scrollHeight > f.clientHeight + 2) f.scrollTo({top: f.scrollHeight, behavior: 'smooth'});
+    if(div && div.isConnected){
+      const ctl = document.querySelector('#screen-rehearse .controls'), room = innerHeight - (ctl ? Math.max(120, innerHeight - ctl.getBoundingClientRect().top + 24) : 160);
+      const r = div.getBoundingClientRect();
+      if(r.bottom > room) scrollBy({top: r.bottom - room, behavior: 'smooth'});
+    }
+  };
   requestAnimationFrame(go); setTimeout(go, 250); setTimeout(go, 700);
   if(div) div.querySelectorAll('img').forEach(i => i.addEventListener('load', go, {once: true}));
 }
@@ -4629,6 +4634,7 @@ function advance(myRun){
   updateProgress();
 
   if(line.character === myCharacter){
+    buzz(35);
     document.getElementById('actionBtn').classList.remove('skipbtn');
     const el = addLineToFeed(line, true);
     stageShowMine(line);
@@ -4715,13 +4721,15 @@ function finishScene(){
   const an = audDays(sceneTitle);
   document.getElementById('doneLine').textContent = an !== null ? (an === 0 ? 'מוכן לאודישן. תנשום, תיהנה, ותזכור מה הדמות רוצה. בהצלחה!' : 'עוד ' + (an === 1 ? 'יום אחד' : an + ' ימים') + ' לאודישן, וכבר ' + take + ' טייקים. ממשיכים ככה!')
     : st > 1 ? 'סיימת את הסצנה. ' + st + ' ימים ברצף, ככה בונים תפקיד!' : 'סיימת את הסצנה. עוד טייק?';
-  if(MODE === 'test' || MODE === 'learn'){
-    const myIdx = runLines.map((l, i) => l.character === myCharacter && l.hide ? i : -1).filter(i => i >= 0);
+  if(MODE === 'test' || MODE === 'learn' || (MODE === 'run' && OPTS.hide && !isFast())){
+    const hidOf = l => l.hide !== undefined ? l.hide : (MODE === 'run' && OPTS.hide);
+    const myIdx = runLines.map((l, i) => l.character === myCharacter && hidOf(l) && (hidOf(l) === 'full' || l.text.trim().split(/\s+/).length > 1) ? i : -1).filter(i => i >= 0);
     const clean = myIdx.filter(i => !helped.has(i)).length;
     if(myIdx.length) lsSet('sp_mem_' + sceneTitle, JSON.stringify({p: Math.round(clean / myIdx.length * 100), t: Date.now(), m: MODE}));
     renderMyScenes(); if(CLEAN) renderSceneList();
     document.getElementById('doneLine').textContent = MODE === 'test'
       ? (clean === myIdx.length ? 'כל ' + myIdx.length + ' השורות מהזיכרון, בלי עזרה אחת. הטקסט יושב!' : 'זכרת ' + clean + ' מתוך ' + myIdx.length + ' שורות בלי עזרה. עוד סיבוב ותגיע לכולן.')
+      : MODE === 'run' ? (clean === myIdx.length ? 'כל ' + myIdx.length + ' השורות מהזיכרון, בלי להציץ אפילו פעם. הטקסט יושב!' : 'זכרת ' + clean + ' מתוך ' + myIdx.length + ' שורות בלי להציץ. עוד טייק ותגיע לכולן.')
       : 'סיימת שינון: ' + clean + ' מתוך ' + myIdx.length + ' פעמים מהזיכרון בלי עזרה. עכשיו נסה "בדיקה".';
   }
   if(isFast() && MODE === 'run' || MODE === 'italian') document.getElementById('doneLine').textContent = 'איטלקי ב־' + Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0') + '. אם לא נתקעת, הטקסט יושב. עכשיו אפשר לשחק אותו.';
