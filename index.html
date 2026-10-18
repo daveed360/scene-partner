@@ -1494,6 +1494,29 @@ html.clean body .rolesheet .sw[aria-pressed=true] i::after{right:3px!important;l
   html.clean body .desktitle{animation:mUp .5s cubic-bezier(.2,.85,.25,1) both}
 }
 @media (prefers-reduced-motion: reduce){ html.clean body .resume .go,html.clean body .empty .big,html.clean body .prepv svg{animation:none!important} }
+
+/* small + beside "my scenes / my takes" (computer), and the progress band */
+.tabplus{display:none}
+.progband{display:none}
+html.clean .progband{display:grid;gap:14px;margin:30px 0 10px}
+html.clean .progband .pstats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+html.clean .progband .pstats > div{padding:16px 12px;border-radius:14px;background:var(--sheet);border:1px solid var(--rule);text-align:center}
+html.clean .progband .pstats b{display:block;font-family:'David Libre',serif;font-size:30px;line-height:1;color:var(--ink)}
+html.clean .progband .pstats small{display:block;margin-top:6px;font-size:13px;color:var(--pencil)}
+html.clean .progband .ptip{padding:18px 20px;border-radius:14px;background:#1F1D1A;color:#F8F6F0;position:relative;overflow:hidden}
+html.clean .progband .ptip::before{content:"";position:absolute;inset:0 0 0 auto;width:5px;background:var(--hl)}
+html.clean .progband .ptip .k{display:block;font-size:12.5px;font-weight:800;letter-spacing:.06em;color:#FFE14D;margin-bottom:6px}
+html.clean .progband .ptip p{margin:0;font-size:16px;line-height:1.6;color:#E9E4D8}
+html.clean.dark .progband .ptip{background:#1E1C1A;border:1px solid #34302B}
+@media (min-width: 1000px){
+  html.clean .mytabs{display:flex!important;align-items:stretch;gap:8px}
+  html.clean .mytabs button:not(.tabplus){flex:1}
+  html.clean .tabplus{display:grid;place-items:center;flex:0 0 44px;width:44px;padding:0!important;border-radius:12px;border:0!important;background:var(--red)!important;color:#fff!important;font-size:24px;font-weight:300;line-height:1;cursor:pointer;box-shadow:0 8px 16px -10px rgba(194,54,44,.7);transition:transform .16s cubic-bezier(.3,1.5,.5,1),box-shadow .2s!important}
+  html.clean .tabplus:hover{transform:rotate(90deg) scale(1.06)!important;box-shadow:0 10px 20px -10px rgba(194,54,44,.85)}
+  html.clean body #screen-input.tab-work.tab-work .progband{grid-column:1 / -1;grid-row:3;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:stretch;margin-top:34px}
+  html.clean .progband .ptip{display:flex;flex-direction:column;justify-content:center}
+}
+html.clean body #screen-input.active .progband{animation:mUp .5s cubic-bezier(.2,.85,.25,1) .45s both!important}
 </style>
 </head>
 <body>
@@ -4894,7 +4917,7 @@ function finishScene(){
   const before = streakCount();
   markPracticedToday(); renderStreak(); renderDaily();
   try{ const D = JSON.parse(lsGet('sp_done') || '[]'); if(!D.includes(sceneTitle)){ D.push(sceneTitle); lsSet('sp_done', JSON.stringify(D.slice(-300))); } }catch(e){}
-  if(CLEAN) renderSceneList();
+  if(CLEAN){ renderSceneList(); renderProgressBand(); }
   lsSet('sp_last', JSON.stringify({title: sceneTitle, role: myCharacter, mode: MODE, t: Date.now()})); renderResume();
   if(!isPro()){ lsSet(weekKey(), String(weekUsed() + 1)); renderQuota(); }
   const st = streakCount();
@@ -5090,6 +5113,48 @@ document.addEventListener('DOMContentLoaded', () => {
   t.innerHTML = `<div><h1>${h < 5 ? 'לילה טוב' : h < 12 ? 'בוקר טוב' : h < 17 ? 'צהריים טובים' : h < 21 ? 'ערב טוב' : 'לילה טוב'} 👋</h1><p>מה מתרגלים היום?</p></div><span class="dk">${new Date().toLocaleDateString('he-IL', {weekday: 'long', day: 'numeric', month: 'long'})}</span>`;
   const grid = document.querySelector('.home-grid'); if(grid) grid.before(t);
   syncNav();
+});
+
+/* ---- small "+" next to my scenes / takes, and a progress band that fills the bottom of the home page ---- */
+const DAY_TIPS = [
+  ['לפני שאומרים מילה', 'תשאל את עצמך מה הדמות רוצה מהשני בסצנה. כל שורה היא דרך להשיג את זה.'],
+  ['להקשיב, לא לחכות', 'אל תחכה לקיו שלך. תשמע באמת מה נאמר, והתשובה תצא אחרת בכל טייק.'],
+  ['איטלקי', 'פעם אחת מהר ובלי רגש. אם לא נתקעת, הטקסט יושב, ואפשר להתחיל לשחק.'],
+  ['תת־טקסט', 'מה הדמות לא אומרת? תכתוב לעצמך משפט אחד מתחת לשורה הקשה, ותשחק אותו.'],
+  ['הרגע שלפני', 'הסצנה מתחילה דקה לפני השורה הראשונה. מאיפה הדמות הגיעה עכשיו?'],
+  ['שינון בקטנה', 'חמש דקות כל יום עובדות יותר טוב משעה אחת לילה לפני האודישן.'],
+  ['בסלף־טייפ', 'העיניים קצת מעל העדשה, לא לתוכה. הפרטנר עומד שם.'],
+  ['כשנתקעים', 'אל תעצור. תגיד את הרעיון במילים שלך ותמשיך. אחר כך חוזרים לשורה המדויקת.'],
+  ['הפסקות', 'שתיקה היא גם שורה. אל תמהר למלא אותה.'],
+  ['אנרגיה', 'במצלמה פחות זה יותר. על במה הכול גדול יותר. תדע לאן אתה מתכונן.'],
+  ['הגוף זוכר', 'תתאמן כשאתה זז, הולך, מבשל. ככה הטקסט לא נעלם כשאתה לחוץ.'],
+  ['שורה אחרונה', 'תחליט מה קרה לדמות בסוף הסצנה. אם לא השתנה כלום, משהו חסר.']
+];
+function renderProgressBand(){
+  const box = document.getElementById('progBand'); if(!box) return;
+  let D = []; try{ D = JSON.parse(lsGet('sp_done') || '[]'); }catch(e){}
+  const all = [...myScenes().map(x => x.title), ...SCENES.map(x => x.title)];
+  const known = all.filter(t => memOf(t) === 100).length;
+  const st = typeof streakCount === 'function' ? streakCount() : 0;
+  const tip = DAY_TIPS[Math.floor(Date.now() / 864e5) % DAY_TIPS.length];
+  box.innerHTML = `<div class="pstats">
+      <div><b>${D.length}</b><small>סצנות שסיימת</small></div>
+      <div><b>${known}</b><small>יושבות בעל פה</small></div>
+      <div><b>${st}</b><small>${st === 1 ? 'יום ברצף' : 'ימים ברצף'}</small></div></div>
+    <div class="ptip"><span class="k">💡 הטיפ של היום · ${esc(tip[0])}</span><p>${esc(tip[1])}</p></div>`;
+}
+document.addEventListener('DOMContentLoaded', () => {
+  if(!CLEAN) return;
+  const tabs = document.querySelector('.mytabs');
+  if(tabs){
+    const plus = document.createElement('button'); plus.type = 'button'; plus.className = 'tabplus'; plus.setAttribute('aria-label', 'סצנה חדשה'); plus.title = 'סצנה חדשה'; plus.textContent = '+';
+    plus.onclick = () => openAdd(true);
+    tabs.appendChild(plus);
+  }
+  const band = document.createElement('section'); band.id = 'progBand'; band.className = 'progband work-only';
+  const lib = document.querySelector('.desk-lib') || document.getElementById('sceneList');
+  if(lib) (lib.classList.contains('desk-lib') ? lib.parentNode.insertBefore(band, lib.nextSibling) : lib.after(band));
+  renderProgressBand();
 });
 </script>
 </body>
