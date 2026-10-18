@@ -978,6 +978,39 @@ html.clean .srow.locked .sp{background:var(--rule)}
 html.clean.dark .feat,html.clean.dark .srow{background:#1B1B1D;border-color:#2C2C30}
 html.clean.dark .feat .go,html.clean.dark .srow .sp{color:#111}
 
+/* memory meter */
+.membar{display:flex;align-items:center;gap:8px;margin:6px 0 2px}
+.membar .mt{flex:1;max-width:160px;height:6px;border-radius:99px;background:var(--rule);overflow:hidden}
+.membar .mt i{display:block;height:100%;border-radius:inherit;background:#E0A21B}
+.membar.full .mt i{background:#3FAE62}
+.membar .mp{font-size:12.5px;font-weight:800;color:var(--pencil);white-space:nowrap}
+.membar.big{margin:0 2px 8px}.membar.big .mt{max-width:none;height:8px}
+.srow .membar{margin:0;flex:0 0 120px}
+.rolesheet .rtip{margin:0 2px 14px;font-size:14px;line-height:1.55;color:var(--pencil,#6E675B)}
+@media (min-width: 1000px){
+  html.clean body #screen-input.tab-work.tab-work .home-grid{display:grid;max-width:none;grid-template-columns:380px minmax(0,1fr);grid-template-rows:auto 1fr;column-gap:48px;align-items:start}
+  html.clean body #screen-input.tab-work.tab-work .home-side{grid-column:1;grid-row:1}
+  html.clean body #screen-input.tab-work.tab-work .home-main{display:contents}
+  html.clean body #screen-input.tab-work.tab-work .desk-mine{grid-column:1;grid-row:2;position:sticky;top:90px;max-height:calc(100vh - 110px);overflow:auto;padding:0 4px 20px}
+  html.clean body #screen-input.tab-work.tab-work .desk-mine .workhead{margin-top:0}
+  html.clean body #screen-input.tab-work.tab-work .desk-lib{grid-column:2;grid-row:1 / span 2}
+  html.clean body #screen-input.tab-work.tab-work .desk-lib h2.sec.lib{margin-top:8px!important}
+  html.clean #sceneList{display:grid!important;grid-template-columns:1fr 1fr;gap:22px 24px}
+  html.clean .shelf{margin:0;display:flex;flex-direction:column}
+  html.clean .shelf .feat{flex:1}
+  html.clean .shelf:has(.srows){grid-column:1 / -1}
+  html.clean .feat{transition:transform .15s,box-shadow .15s}
+  html.clean .feat:hover{transform:translateY(-2px);box-shadow:0 18px 34px -20px var(--shadow)}
+  html.clean .srow:hover,html.clean .fitem:hover{border-color:var(--ink)}
+  html.clean .feat .ft{font-size:27px}
+  html.clean .desk-mine .mytabs{margin-top:4px}
+  html.clean .desk-mine .fitem .acts{flex-wrap:wrap}
+  html.clean body #screen-input.tab-work.tab-work .workhead h2{display:block!important;margin:0!important;text-align:right;align-self:flex-start;font-family:var(--sans)!important;font-size:13px!important;font-weight:800;letter-spacing:.12em;color:#B8860B}
+  html.clean .desk-mine .tipsbtn{margin-top:26px}
+  html.clean .rehearsing .keys{display:block!important;text-align:center;margin-top:14px;font-size:13px;color:var(--pencil)}
+  html.clean .keys kbd{font:inherit;font-weight:700;padding:1px 7px;border:1px solid var(--rule);border-bottom-width:2px;border-radius:6px;background:var(--sheet)}
+}
+
 /* simplified home */
 html.clean .fab{display:none!important}
 html.clean .workhead{flex-direction:column;align-items:stretch;gap:12px}
@@ -995,7 +1028,8 @@ html.clean #screen-input.tab-work .tipsbtn{display:flex}
 .rolesheet .card{text-align:right}
 .rolesheet .k{display:block;font-family:'Amatic SC',cursive;font-size:24px;color:#C2362C}
 .rolesheet h3{font-family:'David Libre',serif;font-size:27px;margin:2px 0 16px}
-.rolesheet .chars{display:grid;gap:10px;margin-bottom:16px;overflow-y:auto;max-height:38vh}
+.rolesheet .chars{display:grid;gap:10px;margin-bottom:16px}
+.rolesheet .card{max-height:92vh;overflow-y:auto}
 .rolesheet .char{display:grid;grid-template-columns:1fr auto;grid-template-areas:"nm go" "sm go";align-items:center;text-align:right;padding:16px 18px;border-radius:10px;border:1px solid var(--rule,#E6E0D3);background:var(--sheet,#fff);color:var(--ink,#1F1D1A);font-family:var(--sans);cursor:pointer;box-shadow:0 8px 18px -14px var(--shadow,rgba(0,0,0,.3))}
 .rolesheet .char:active{transform:scale(.99)}
 .rolesheet .nm{grid-area:nm;font-family:'David Libre',serif;font-weight:700;font-size:21px}
@@ -1050,8 +1084,8 @@ html.clean #screen-input.adding .tips{margin-top:18px}
   html.clean .home-main{grid-column:1;grid-row:1;min-width:0}
   html.clean .home-side{grid-column:2;grid-row:1;position:sticky;top:96px}
   html.clean #screen-input.tab-learn .home-grid{grid-template-columns:minmax(0,1fr) 380px}
-  html.clean #screen-input.tab-work .home-grid{display:block;max-width:860px;margin:0 auto}
-  html.clean #screen-input.tab-work .home-side{position:static}
+  html.clean body #screen-input.tab-work .home-grid{display:block;max-width:860px;margin:0 auto}
+  html.clean body #screen-input.tab-work .home-side{position:static}
   html.clean #screen-input.tab-learn .workhead{display:none}
   html.clean .fab{display:none!important}
   html.clean .hometabs{max-width:520px}
@@ -2238,6 +2272,17 @@ function renderFolderBar(n){
   const q = bar.querySelector('#folderQ');
   if(q) q.oninput = () => { folderQuery = q.value; renderMyScenes(); setTimeout(() => { const q2 = document.getElementById('folderQ'); if(q2){ q2.focus(); q2.setSelectionRange(q2.value.length, q2.value.length); } }, 0); };
 }
+function memOf(title){ try{ const m = JSON.parse(lsGet('sp_mem_' + title) || 'null'); return m && typeof m.p === 'number' ? m.p : null; }catch(e){ return null; } }
+function memBar(title, big){
+  const p = memOf(title); if(p === null) return '';
+  return `<span class="membar${big ? ' big' : ''}${p >= 100 ? ' full' : ''}" title="כמה מהטקסט אתה זוכר, לפי השינון או הבדיקה האחרונים"><span class="mt"><i style="width:${p}%"></i></span><span class="mp">${p >= 100 ? 'יושב בעל פה ✓' : 'זוכר ' + p + '%'}</span></span>`;
+}
+function memTip(title){
+  const p = memOf(title), done = (() => { try{ return JSON.parse(lsGet('sp_done') || '[]').includes(title); }catch(e){ return false; } })();
+  if(p === null) return done ? '💡 שמעת את הסצנה. עכשיו "שינון": השורות שלך מוסתרות, ומה שתשכח יתגלה.' : '💡 פעם ראשונה? "חזרה" כדי לשמוע את הסצנה, ואז "שינון".';
+  if(p < 100) return '💡 אתה זוכר ' + p + '%. עוד "שינון" על הטקסט, ואז "בדיקה" בלי שום עזרה.';
+  return '💡 הטקסט יושב. עכשיו "חזרה" עם ⚡ מהר (איטלקי), ואז לשחק אותו באמת.';
+}
 function renderFolder(){
   const all = myScenes(), el = document.getElementById('myList');
   renderFolderBar(all.length);
@@ -2260,7 +2305,7 @@ function renderFolder(){
     row.innerHTML = `<span class="ic">${sc.src === 'file' ? '📄' : sc.src === 'link' ? '🔗' : cast.length === 1 ? '🎤' : '📋'}</span>
       <span class="fi"><b>${esc(sc.title)}</b>${audBadge(sc.title)}
       <small>${kind(sc)} · ${d.getDate()}/${d.getMonth() + 1}/${String(d.getFullYear()).slice(2)} · ${cast.length === 1 ? 'מונולוג' : cast.length + ' דמויות'} · ${lines.length} שורות${takes ? ' · ' + takes + ' טייקים' : ''}</small>
-      ${sc.fname ? `<small>${esc(sc.fname)}</small>` : ''}
+      ${sc.fname ? `<small>${esc(sc.fname)}</small>` : ''}${memBar(sc.title)}
       <span class="acts"><button type="button" data-a="ren">✏️ שינוי שם</button><button type="button" data-a="share">🔗 שיתוף</button><button type="button" data-a="del" class="danger">🗑️ מחיקה</button></span></span>
       <button type="button" class="more" aria-label="אפשרויות">⋯</button>`;
     row.onclick = e => { if(e.target.closest('.acts, .more, input')) return; loadScene(sc.text, sc.title); };
@@ -2437,7 +2482,7 @@ function renderShelves(){
       const lines = parseScript(sc.text), cast = [...new Set(lines.map(l => l.character))];
       const b = document.createElement('div'); b.className = 'feat' + (isLocked(sc) ? ' locked' : '') + (D.includes(sc.title) ? ' did' : '');
       b.innerHTML = `<span class="fm">⏱ ${time(sc)} · ${esc(sc.genre)}${D.includes(sc.title) ? ' · ✓ עשית' : ''}</span><span class="ft">${esc(sc.title)}</span>
-        <span class="fd">${esc(sc.blurb)}</span><span class="fr"><span class="fc">${cast.map(esc).join(' · ')}</span><button type="button" class="go">${isLocked(sc) ? '🔒 Pro' : 'התחל ▶'}</button></span>`;
+        <span class="fd">${esc(sc.blurb)}</span>${memBar(sc.title)}<span class="fr"><span class="fc">${cast.map(esc).join(' · ')}</span><button type="button" class="go">${isLocked(sc) ? '🔒 Pro' : 'התחל ▶'}</button></span>`;
       b.onclick = () => { if(isLocked(sc)){ openPro('הסצנה "' + sc.title + '" היא חלק מהגרסה המלאה.'); return; } loadScene(sc.text, sc.title); };
       return b;
     };
@@ -2445,7 +2490,7 @@ function renderShelves(){
       const rows = document.createElement('div'); rows.className = 'srows';
       group.forEach(sc => {
         const r = document.createElement('button'); r.type = 'button'; r.className = 'srow' + (isLocked(sc) ? ' locked' : '');
-        r.innerHTML = `<span class="st">${D.includes(sc.title) ? '✓ ' : ''}${esc(sc.title)}</span><span class="sm">⏱ ${time(sc)}</span><span class="sp">${isLocked(sc) ? '🔒' : '▶'}</span>`;
+        r.innerHTML = `<span class="st">${D.includes(sc.title) ? '✓ ' : ''}${esc(sc.title)}</span>${memBar(sc.title)}<span class="sm">⏱ ${time(sc)}</span><span class="sp">${isLocked(sc) ? '🔒' : '▶'}</span>`;
         r.onclick = () => { if(isLocked(sc)){ openPro('הסצנה "' + sc.title + '" היא חלק מהגרסה המלאה.'); return; } loadScene(sc.text, sc.title); };
         rows.appendChild(r);
       });
@@ -2537,7 +2582,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const workHead = document.createElement('div'); workHead.className = 'workhead work-only';
   workHead.innerHTML = '<h2>השולחן שלך</h2><button type="button" class="addwide" id="addBtn2">＋ סצנה חדשה</button>';
   side.append($('resumeCard'), $('pathCard'), $('daily'), $('quota'), $('glossCard'));
-  main.append(workHead, $('lessons'), document.querySelector('.mytabs'), $('folderBar'), $('myBox'), $('takesBox'), document.querySelector('h2.sec.lib'), $('libTabs'), $('sceneList'));
+  const dMine = document.createElement('div'); dMine.className = 'desk-mine';
+  const dLib = document.createElement('div'); dLib.className = 'desk-lib work-only';
+  dMine.append(workHead, document.querySelector('.mytabs'), $('folderBar'), $('myBox'), $('takesBox'));
+  dLib.append(document.querySelector('h2.sec.lib'), $('libTabs'), $('sceneList'));
+  main.append(dMine, $('lessons'), dLib);
   $('addBtn2').onclick = () => openAdd(true);
   side.append($('onbCard2'));
   tag('#pathCard, #lessons, #glossCard, #onbCard2', 'learn-only');
@@ -2560,7 +2609,7 @@ document.addEventListener('DOMContentLoaded', () => {
   homeTab('work');
   const tips = document.createElement('button'); tips.type = 'button'; tips.className = 'tipsbtn work-only'; tips.innerHTML = '<span>📖</span><b>טיפים לשחקן</b><small>שיעורים קצרים, מילון מונחים, ומסלול אישי</small>';
   tips.onclick = () => { homeTab('learn'); scrollTo(0, 0); };
-  main.append(tips);
+  (matchMedia('(min-width: 1000px)').matches ? dMine : main).append(tips);
   const back = document.createElement('button'); back.type = 'button'; back.className = 'learnback learn-only'; back.textContent = '→ חזרה לסצנות שלי';
   back.onclick = () => { homeTab('work'); scrollTo(0, 0); };
   grid.before(back);
@@ -2595,7 +2644,7 @@ async function renderTakes(){
     box.appendChild(row);
   }
 }
-document.addEventListener('DOMContentLoaded', () => { if(CLEAN) myTab(null, true); });
+document.addEventListener('DOMContentLoaded', () => { if(CLEAN) myTab(matchMedia('(min-width: 1000px)').matches ? 'mine' : null, true); });
 
 /* ---- short lessons: a little head start for an actor, each one ends in a real exercise ---- */
 const LESSONS = [
@@ -2932,6 +2981,7 @@ function openRoleSheet(){
     card.innerHTML = `<span class="k">${esc(sceneTitle)}</span><h3>${characters.length === 1 ? 'מוכן?' : 'את מי אתה משחק?'}</h3>
       <div class="chars">${characters.map(c => `<button type="button" class="char" data-c="${esc(c)}"><span class="nm">${esc(c)}</span><small>${cnt(c)} ${characters.length === 1 ? 'קטעים' : 'שורות'}</small><span class="go">←</span></button>`).join('')}</div>
       <div class="mseg">${[['run', '🎬 חזרה'], ['learn', '🧩 שינון'], ['test', '✅ בדיקה']].map(([m, t]) => `<button type="button" data-m="${m}" aria-pressed="${MODE === m}">${t}</button>`).join('')}</div>
+      ${memBar(sceneTitle, true)}<p class="rtip">${memTip(sceneTitle)}</p>
       <div class="sws">${MODE === 'run' ? sw('hide', '👁️ הסתר את השורות שלי', 'רק אותיות ראשונות') + sw('fast', '⚡ מהר (איטלקי)', 'בלי הפסקות, לבדוק שהטקסט יושב') : ''}${sw('tape', '🎥 צילום self-tape', 'נשמר ב"הטייקים שלי"')}</div>
       <button type="button" class="more" id="rsMore">🎙️ קולות ועוד הגדרות</button>
       <button type="button" class="skip" id="rsClose">ביטול</button>`;
@@ -4470,6 +4520,8 @@ function finishScene(){
   if(MODE === 'test' || MODE === 'learn'){
     const myIdx = runLines.map((l, i) => l.character === myCharacter && l.hide ? i : -1).filter(i => i >= 0);
     const clean = myIdx.filter(i => !helped.has(i)).length;
+    if(myIdx.length) lsSet('sp_mem_' + sceneTitle, JSON.stringify({p: Math.round(clean / myIdx.length * 100), t: Date.now(), m: MODE}));
+    renderMyScenes(); if(CLEAN) renderSceneList();
     document.getElementById('doneLine').textContent = MODE === 'test'
       ? (clean === myIdx.length ? 'כל ' + myIdx.length + ' השורות מהזיכרון, בלי עזרה אחת. הטקסט יושב!' : 'זכרת ' + clean + ' מתוך ' + myIdx.length + ' שורות בלי עזרה. עוד סיבוב ותגיע לכולן.')
       : 'סיימת שינון: ' + clean + ' מתוך ' + myIdx.length + ' פעמים מהזיכרון בלי עזרה. עכשיו נסה "בדיקה".';
