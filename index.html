@@ -1011,8 +1011,29 @@ html.clean.dark .feat .go,html.clean.dark .srow .sp{color:#111}
   html.clean .keys kbd{font:inherit;font-weight:700;padding:1px 7px;border:1px solid var(--rule);border-bottom-width:2px;border-radius:6px;background:var(--sheet)}
 }
 
+/* continue card */
+html.clean body .resume:not([hidden]){gap:16px;margin:4px 0 18px;padding:20px 20px 18px;border:0;border-radius:18px;background:#1F1D1A;color:#F8F6F0;box-shadow:0 16px 30px -18px rgba(0,0,0,.6);position:relative;overflow:hidden}
+html.clean body .resume:not([hidden])::before{content:"";position:absolute;inset:0 auto 0 0;width:6px;background:var(--red)}
+html.clean body .resume .k{display:block;font-size:12.5px;font-weight:800;letter-spacing:.1em;color:#FF8A7E;margin-bottom:4px}
+html.clean body .resume b{display:block;font-size:24px;line-height:1.2;color:#fff}
+html.clean body .resume small{color:#BDB6A8;font-size:14px;margin-top:3px}
+html.clean body .resume .membar .mt{background:rgba(255,255,255,.18);max-width:180px}
+html.clean body .resume .membar .mt i{background:#F8F6F0}
+html.clean body .resume .membar .mp{color:#BDB6A8}
+html.clean body .resume .go{display:grid;place-items:center;flex-shrink:0;width:54px;height:54px;border-radius:50%;background:#FFE14D;color:#1F1D1A;font-size:20px;padding-inline-start:3px}
+html.clean.dark body .resume:not([hidden]){background:#1E1C1A;border:1px solid #34302B}
+@media (min-width: 1000px){ html.clean body .resume:not([hidden]){margin:0 0 18px} html.clean body .resume:hover .go{transform:scale(1.07)} html.clean body .resume .go{transition:transform .15s} }
+
+/* three colors: cream/white paper, black ink, red pen. Yellow is only the highlighter */
+:root.clean{--pen:#C2362C;--hlg:var(--hl)}
+:root.clean.dark{--pen:#FF7A6E;--hlg:var(--hl)}
+html.clean h2.sec.lib,html.clean body #screen-input.tab-work.tab-work .workhead h2{color:var(--red)!important}
+html.clean .ctxm .k{color:var(--red)}
+html.clean .ctxm .k i{background:rgba(194,54,44,.1)}
+.membar .mt i{background:var(--ink)}
+
 /* simplified home */
-html.clean .fab{display:none!important}
+html.clean .addwide{display:none!important}
 html.clean .workhead{flex-direction:column;align-items:stretch;gap:12px}
 html.clean .workhead h2{display:none}
 html.clean .addwide{width:100%;padding:16px;font-size:18px;border-radius:12px}
@@ -1087,7 +1108,6 @@ html.clean #screen-input.adding .tips{margin-top:18px}
   html.clean body #screen-input.tab-work .home-grid{display:block;max-width:860px;margin:0 auto}
   html.clean body #screen-input.tab-work .home-side{position:static}
   html.clean #screen-input.tab-learn .workhead{display:none}
-  html.clean .fab{display:none!important}
   html.clean .hometabs{max-width:520px}
   html.clean #sceneList{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   html.clean #sceneList .scene{margin:0}
@@ -1102,7 +1122,11 @@ html.clean #screen-input.adding .tips{margin-top:18px}
 
 /* add-a-scene page */
 .fab,.addhead,.fld,.namein,.seg,.tips{display:none}
-html.clean .fab{display:grid;place-items:center;position:fixed;left:18px;bottom:calc(22px + env(safe-area-inset-bottom));z-index:25;width:62px;height:62px;border-radius:50%;border:0;background:var(--ink);color:var(--paper);font-size:34px;line-height:1;box-shadow:0 10px 24px -8px var(--shadow);cursor:pointer}
+html.clean .fab{display:grid;place-items:center;position:fixed;left:20px;bottom:calc(24px + env(safe-area-inset-bottom));z-index:25;width:64px;height:64px;border-radius:50%;border:0;background:var(--red);color:#fff;font-size:36px;font-weight:300;line-height:1;box-shadow:0 12px 26px -8px rgba(194,54,44,.55);cursor:pointer;transition:transform .15s}
+html.clean .fab:active{transform:scale(.94)}
+html.clean #screen-input.adding .fab,html.clean #screen-input.tab-learn .fab{display:none!important}
+html.clean #screen-input.tab-work{padding-bottom:90px}
+@media (min-width: 1000px){ html.clean .fab{left:max(24px, calc(50vw - 536px));width:70px;height:70px;font-size:40px} html.clean .fab:hover{transform:scale(1.06)} }
 html.clean #screen-input:not(.adding) #uploadBox,html.clean #screen-input:not(.adding) .or,html.clean #screen-input:not(.adding) #scriptInput,html.clean #screen-input:not(.adding) .hint,
 html.clean #screen-input:not(.adding) #analyzeBtn,html.clean #screen-input:not(.adding) h2.sec:not(.lib){display:none}
 html.clean #screen-input.adding .namein.about{min-height:64px;font-size:15px;line-height:1.5;background-image:none;padding-right:14px}
@@ -1746,6 +1770,21 @@ const SCENES = [
 ארז: (שתיקה) ובסוף נשארתי לבד במטבח, עם תפריט מושלם, ואף אחד לא רצה לבשל אותו איתי.
 ארז: אז מה למדתי? שאוכל טוב עושים ביחד. שהעגבנייה לא אכפת לה כמה אתה מוכשר. ושהטבח ההוא, אבי, עובד אצלי היום. הוא סו־שף. וכל בוקר הוא מזכיר לי את המחבת.
 ארז: ככה זה. אפשר לחתוך את זה מהשידור אם את רוצה. אבל אני מעדיף שלא.`},
+ {title:'האודישן הכי גרוע', genre:'מונולוג', level:4, blurb:'שחקן נכנס לחדר ליהוק, שוכח את הטקסט בשורה הראשונה, ומחליט לספר לצוות מה באמת קרה לו הבוקר.', text:
+`נועם: שלום. נועם. כן, אני יודע שקראתם לי לפני עשרים דקות. אני פה. פיזית. נפשית אני עדיין בתחנה של אוטובוס 18.
+נועם: אני אתחיל. "אמא, אני לא יכול להישאר כאן עוד..." (שתיקה) לא. רגע. זה היה בסדר. אני פשוט... שכחתי מה בא אחרי "עוד".
+נועם: אתם יודעים מה, אני אספר לכם מה קרה, ואז אני אעשה את הסצנה. הבוקר שפכתי קפה על החולצה. החלפתי לזאת. זאת של אבא שלי. היא גדולה עליי בשלוש מידות, שמתם לב, אני רואה שמתם לב.
+נועם: ואז האוטובוס לא הגיע, ורצתי. ותוך כדי ריצה חזרתי על הטקסט בקול, ואישה אחת ברחוב נתנה לי עשרה שקלים. כי היא חשבה שאני... כן.
+נועם: (צוחק, ואז מפסיק) ובאמצע הריצה הבנתי משהו. שאני רוצה את זה. לא את התפקיד הזה דווקא. את זה. את החדר הזה, את הפחד הזה, את הרגע שלפני שאתם אומרים "תודה, נהיה בקשר".
+נועם: אז אני מבקש עוד דקה אחת. אני אנשום, ואני אתחיל מההתחלה. ואם זה לא יילך, לפחות יהיה לכם סיפור טוב לספר בהפסקת צהריים.
+נועם: (נושם) "אמא, אני לא יכול להישאר כאן עוד יום אחד."`},
+ {title:'מכתב לעצמי בגיל 16', genre:'מונולוג', level:4, blurb:'אישה צעירה קוראת בקול מכתב שהיא כותבת לעצמה של פעם, ערב לפני שהיא עוזבת את הבית.', text:
+`מאיה: היי. זאת את, בעוד עשר שנים. אל תיבהלי, השיער שלך עדיין בסדר. פחות או יותר.
+מאיה: אני כותבת לך כי מחר אני עוזבת את הבית, ופתאום נזכרתי בך. יושבת על הרצפה בחדר, עם האוזניות, משוכנעת שאף אחד בעולם לא מבין אותך.
+מאיה: אז קודם כול, את צודקת. אף אחד לא הבין. אבל זה לא כי את מוזרה. זה כי עוד לא פגשת את האנשים שלך. הם מגיעים. אחת מהם תשב לידך בצבא ותצחק מהבדיחה הכי גרועה שלך, ותהיה החברה הכי טובה שלך עד היום.
+מאיה: (שתיקה) ואבא. אני יודעת שאת כועסת עליו. את תמשיכי לכעוס עוד כמה שנים. ואז יום אחד הוא יתקשר לשאול איך מכינים את המרק של סבתא, ואת תביני שגם הוא היה פעם בן שש־עשרה על רצפה של חדר.
+מאיה: ועוד דבר. תפסיקי למחוק את הסיפורים שאת כותבת. אני יודעת שאת מוחקת. הם טובים. אחד מהם יתפרסם, לא אגיד לך איזה, כדי שלא תתחילי להתרברב.
+מאיה: זהו. אני הולכת לסגור עוד ארגז. תשמרי לי על הלב שלנו, טוב? הוא עוד יעבור הרבה. והוא מחזיק.`},
  {title:'טסט', genre:'קומדיה', level:1, blurb:'טסט שלישי, בוחן עייף, ותלמידה שבטוחה שהפעם זה שלה.', text:
 `בוחן: תתחילי כשאת מוכנה.
 שני: אני מוכנה. אני מאוד מוכנה. זה הטסט השלישי שלי.
@@ -2414,7 +2453,8 @@ function renderResume(){
   const src = L && (myScenes().find(x => x.title === L.title) || SCENES.find(x => x.title === L.title));
   if(!CLEAN || !src){ box.hidden = true; return; }
   const modeName = {run:'חזרה', learn:'שינון', italian:'איטלקי', test:'בדיקה'}[L.mode] || 'חזרה';
-  box.innerHTML = `<span class="ic">↩️</span><span class="tx"><small>להמשיך מאיפה שעצרת</small><b>${esc(L.title)}</b><small>${esc(L.role || '')} · ${modeName}</small></span><span class="go">עוד טייק ←</span>`;
+  box.innerHTML = `<span class="tx"><span class="k">להמשיך מאיפה שעצרת</span><b>${esc(L.title)}</b><small>${esc(L.role || '')} · ${modeName}</small>${memBar(L.title)}</span><span class="go" aria-hidden="true">▶</span>`;
+  box.setAttribute('aria-label', 'להמשיך: ' + L.title);
   box.hidden = false;
   box.onclick = () => {
     setMode(L.mode || 'run'); loadScene(src.text, src.title);
@@ -2463,7 +2503,7 @@ function confetti(){
 const FREE_WEEK = 5;
 function isPro(){ return lsGet('sp_pro') === '1'; }
 function sceneSecs(text){ const w = (text.match(/\S+/g) || []).length; return Math.round(w / 2.2 + (text.match(/\n/g) || []).length * 0.8); }
-function isLocked(sc){ if(!CLEAN || isPro()) return false; const lv = sc.level || 1; if(lv === 1) return false; return !((lv === 2 || lv === 4) && SCENES.filter(x => (x.level || 1) === lv)[0] === sc); }
+function isLocked(sc){ if(!CLEAN || isPro()) return false; const lv = sc.level || 1; if(lv === 1 || lv === 4) return false; return !(lv === 2 && SCENES.filter(x => (x.level || 1) === lv)[0] === sc); }
 let libLevel = 1, libOpen = {};
 function renderShelves(){
   const list = document.getElementById('sceneList');
