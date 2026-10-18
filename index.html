@@ -934,6 +934,24 @@ html.clean.dark .ctxm #ctxSkip{background:#ECE9E2;color:#111}
 @keyframes rd{50%{opacity:1}}
 html.clean .ctxm .reading i{animation:rd 1.2s infinite!important}
 
+/* the narration card, Cold Read rhythm */
+html.clean .ctxm .card{padding:26px 24px 22px;border-radius:22px}
+html.clean .ctxm .k{display:flex;align-items:center;gap:10px;font-family:var(--sans);font-weight:800;font-size:13px;letter-spacing:.08em;color:#B8860B}
+html.clean .ctxm .k i{font-style:normal;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:rgba(184,134,11,.12);font-size:20px}
+html.clean .ctxm h3{font-size:30px;margin:16px 0 6px}
+html.clean .ctxm .set{font-size:15.5px;line-height:1.5;margin-bottom:16px}
+html.clean .ctxm .txt{font-size:19px;line-height:1.75;margin-bottom:24px}
+html.clean .ctxm #ctxSkip{background:#C2362C;color:#fff;padding:12px 26px}
+/* calmer rehearsal screen */
+html.clean #minorCtl{display:flex;justify-content:center;gap:28px;margin:6px 0 0}
+html.clean #minorCtl[hidden]{display:none}
+html.clean #minorCtl button{border:0;background:none;padding:6px 4px;font-size:14px;color:var(--pencil);box-shadow:none;min-height:0;width:auto;flex:0 0 auto}
+html.clean .keys{display:none}
+/* calmer home: practice cards say it once */
+html.clean .scene .m{display:none!important}
+html.clean #sceneList{gap:14px}
+html.clean .scene .d{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
 /* simplified home */
 html.clean .fab{display:none!important}
 html.clean .workhead{flex-direction:column;align-items:stretch;gap:12px}
@@ -1368,7 +1386,7 @@ html.clean .daily:not([hidden]){display:block;position:relative;margin:14px 0 6p
 <div class="intro sheet rolesheet" id="roleSheet" hidden role="dialog" aria-modal="true" aria-label="בחירת דמות"><div class="card" id="roleSheetCard"></div></div>
 <div class="intro onb" id="onb" hidden role="dialog" aria-modal="true" aria-label="היכרות"><div class="card" id="onbCard"></div></div>
 <div class="intro ctxm" id="ctxModal" hidden role="dialog" aria-modal="true" aria-label="על הסצנה"><div class="card">
-<span class="k">📖 על הסצנה</span>
+<span class="k"><i>📖</i>רקע הסצנה</span>
 <h3 id="ctxTitle"></h3>
 <p class="set" id="ctxSetting"></p>
 <p class="txt" id="ctxText"></p>
@@ -2184,7 +2202,7 @@ function saveMyScene(title, text, meta){
 let folderFilter = 'all', folderSort = lsGet('sp_fsort') || 'new', folderQuery = '';
 function renderFolderBar(n){
   const bar = document.getElementById('folderBar');
-  if(!CLEAN || !n){ bar.innerHTML = ''; return; }
+  if(!CLEAN || n <= 5){ bar.innerHTML = ''; if(folderFilter !== 'all' || folderQuery){ folderFilter = 'all'; folderQuery = ''; } return; }
   const f = (k, t) => `<button type="button" data-f="${k}" aria-pressed="${folderFilter === k}">${t}</button>`;
   bar.innerHTML = (n > 4 ? `<input id="folderQ" type="search" placeholder="חיפוש בסצנות שלי" value="${esc(folderQuery)}">` : '')
     + f('all', 'הכל') + f('file', '📄 קבצים') + f('paste', '📋 הודבקו') + f('mono', '🎤 מונולוגים')
@@ -2735,7 +2753,7 @@ function openOnb(){
   };
   draw(); dlg.hidden = false;
 }
-// the questionnaire is offered inside "tips", not forced on first launch
+document.addEventListener('DOMContentLoaded', () => { if(CLEAN && !lsGet('sp_onb') && !lsGet('sp_my') && !location.hash.startsWith('#s=')) setTimeout(openOnb, 400); });
 
 /* ---- header tucks away on scroll; light / dark ---- */
 addEventListener('scroll', () => { const h = document.querySelector('header'); if(h) h.classList.toggle('compact', scrollY > 30); }, {passive: true});
@@ -3761,25 +3779,7 @@ function setupRehearsal(){
   cursor = 0;
   assignVoices();
   document.getElementById('feed').innerHTML = '';
-  if(CLEAN){
-    const mine = runLines.filter(l => l.character === myCharacter).length;
-    const solo = characters.length === 1;
-    const written = aboutOf(sceneTitle);
-    sceneAbout = written || autoAbout();
-    document.getElementById('feed').innerHTML = `<div class="ctxcard"><span class="k">על הסצנה</span><b>${esc(sceneTitle)}</b>
-      <p>${written ? esc(written) + '<br>' : ''}${solo ? 'מונולוג, ' + mine + ' קטעים. האפליקציה מחכה לך בין קטע לקטע.' : 'אתה ' + esc(myCharacter) + ', ' + mine + ' שורות. את השאר אני קורא.'}</p>
-      ${myScenes().some(x => x.title === sceneTitle) ? `<button type="button" class="addabout" id="addAbout">✏️ ${written ? 'לערוך את הרקע' : 'להוסיף רקע לסצנה'}</button>` : ''}
-      <label class="narr"><input type="checkbox" id="narrOn" ${lsGet('sp_narr') === '0' ? '' : 'checked'}> להקריא לי את הרקע לפני שמתחילים</label></div>`;
-    const ab = document.getElementById('addAbout');
-    if(ab) ab.onclick = () => {
-      const card = document.querySelector('.ctxcard'); if(card.querySelector('textarea')) return;
-      const ta = document.createElement('textarea'); ta.className = 'abouted'; ta.rows = 3; ta.value = written; ta.placeholder = 'מה קורה בסצנה? מה קרה רגע לפני? מה הדמות שלך רוצה?';
-      const ok = document.createElement('button'); ok.type = 'button'; ok.className = 'addabout'; ok.textContent = 'שמור';
-      ab.replaceWith(ta); ta.after(ok); ta.focus();
-      ok.onclick = () => { const L = myScenes(), k = L.findIndex(x => x.title === sceneTitle); if(k >= 0){ L[k].about = ta.value.trim(); lsSet('sp_my', JSON.stringify(L)); } setupRehearsal(); toast('הרקע נשמר', '✏️'); };
-    };
-    const nb = document.getElementById('narrOn'); if(nb) nb.onchange = () => lsSet('sp_narr', nb.checked ? null : '0');
-  }
+  if(CLEAN){ sceneAbout = aboutOf(sceneTitle) || autoAbout(); }
   document.getElementById('progressFill').style.width = '0%';
   document.getElementById('actionBtn').textContent = 'התחל';
   document.getElementById('actionBtn').style.display = 'block';
@@ -3798,6 +3798,7 @@ function setupRehearsal(){
       ? 'כשתסיים משפט ותשתוק רגע, הסצנה ממשיכה לבד. הכי טוב במקום שקט.'
       : 'בתור שלך לחץ "סיימתי — הבא".');
   if(!elOn()) notice.classList.add('bad');
+  if(CLEAN) notice.style.display = 'none';
   setStatus('מוכן להתחיל', false);
 }
 
@@ -4228,12 +4229,14 @@ async function beginScene(){
     const ok = await openMic();
     if(myRun !== runId) { closeMic(); return; }
     if(!ok){
+      document.getElementById('micNotice').style.display = 'block';
       document.getElementById('micNotice').textContent = 'אין אישור למיקרופון — בתור שלך לחץ "סיימתי — הבא". (אפשר לאשר בהגדרות האתר בדפדפן)';
     }
   }
   await prepareVoices(myRun);
   if(myRun !== runId) return;
-  if(CLEAN && sceneAbout && lsGet('sp_narr') !== '0'){ await narrate(sceneAbout, myRun); if(myRun !== runId) return; }
+  if(CLEAN && sceneAbout){ await narrate(sceneAbout, myRun); if(myRun !== runId) return; }
+  if(OPTS.tape && tapeFailed) document.getElementById('micNotice').style.display = 'block';
   if(OPTS.tape && tapeFailed) document.getElementById('micNotice').textContent = 'אין גישה למצלמה, אז הסצנה רצה בלי צילום. אפשר לאשר מצלמה בהגדרות האתר בדפדפן.';
   await countdown();
   if(myRun !== runId) return;
