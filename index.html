@@ -1496,7 +1496,7 @@ html.clean body .rolesheet .sw[aria-pressed=true] i::after{right:3px!important;l
 @media (prefers-reduced-motion: reduce){ html.clean body .resume .go,html.clean body .empty .big,html.clean body .prepv svg{animation:none!important} }
 
 /* small + beside "my scenes / my takes" (computer), and the progress band */
-.tabplus{display:none}
+html.clean .mytabs .tabplus{display:none}
 .progband{display:none}
 html.clean .progband{display:grid;gap:14px;margin:30px 0 10px}
 html.clean .progband .pstats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
@@ -1511,7 +1511,7 @@ html.clean.dark .progband .ptip{background:#1E1C1A;border:1px solid #34302B}
 @media (min-width: 1000px){
   html.clean .mytabs{display:flex!important;align-items:stretch;gap:8px}
   html.clean .mytabs button:not(.tabplus){flex:1}
-  html.clean .tabplus{display:grid;place-items:center;flex:0 0 44px;width:44px;padding:0!important;border-radius:12px;border:0!important;background:var(--red)!important;color:#fff!important;font-size:24px;font-weight:300;line-height:1;cursor:pointer;box-shadow:0 8px 16px -10px rgba(194,54,44,.7);transition:transform .16s cubic-bezier(.3,1.5,.5,1),box-shadow .2s!important}
+  html.clean .mytabs .tabplus{display:grid;place-items:center;flex:0 0 44px;width:44px;padding:0!important;border-radius:12px;border:0!important;background:var(--red)!important;color:#fff!important;font-size:24px;font-weight:300;line-height:1;cursor:pointer;box-shadow:0 8px 16px -10px rgba(194,54,44,.7);transition:transform .16s cubic-bezier(.3,1.5,.5,1),box-shadow .2s!important}
   html.clean .tabplus:hover{transform:rotate(90deg) scale(1.06)!important;box-shadow:0 10px 20px -10px rgba(194,54,44,.85)}
   html.clean body #screen-input.tab-work.tab-work .progband{grid-column:1 / -1;grid-row:3;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);align-items:stretch;margin-top:34px}
   html.clean .progband .ptip{display:flex;flex-direction:column;justify-content:center}
