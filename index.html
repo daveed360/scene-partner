@@ -698,6 +698,7 @@ html.clean .themebtn + .themebtn{margin-inline-start:6px}
 html.clean .brand{min-width:0}
 html.clean .lockup{min-width:0;overflow:hidden}
 @media (max-width:430px){html.clean .lockup .sub{display:none}html.clean header h1{font-size:21px}}
+@media (max-width:430px){html.clean header h1{font-size:19px;white-space:nowrap}html.clean .probtn{padding:0 9px;font-size:13px}html.clean header .themebtn{width:38px;height:38px}}
 /* onboarding questionnaire */
 .onb .card{text-align:right;max-width:440px}
 .onb .step{font-family:'Amatic SC',cursive;font-size:24px;color:#C2362C}
@@ -1170,7 +1171,7 @@ html.clean.adding-open .fab,html.clean.adding-open .quota{display:none}
 .empty .big{display:block;font-size:44px;margin-bottom:6px}
 .empty b{display:block;font-family:var(--typed);font-size:20px;color:var(--ink);margin-bottom:4px}
 /* removed in this design: pronunciation fixes and the API-key box (?key brings the key box back) */
-html.clean .sayfix,html.clean #namesBox{display:none!important}
+html.clean #namesBox{display:none!important}
 html.clean #voiceBox{display:none}
 html.clean.showkey #voiceBox{display:block}
 html.clean .vswitch{display:block;text-align:center;margin:28px 0 0;font-size:14px}
@@ -1628,6 +1629,36 @@ html.clean body #proDlg .pbadge{position:relative}
 #proDlg .pdetail li::before{content:"✓";position:absolute;inset-inline-start:0;top:0;color:#FFE14D;font-weight:900}
 #proDlg .pdetail small{display:block;color:#A9A293;font-size:12.5px;line-height:1.45}
 html.clean body #proDlg .pdetail{animation:mFade .3s ease-out both!important}
+
+/* pronunciation chip on the partner's lines */
+html.clean .line .sayfix{display:inline-flex!important;opacity:.6;font-size:12px;padding:3px 9px;margin-top:6px;border-radius:99px}
+html.clean .line .sayfix:hover{opacity:1}
+.saycard .sayhelp small{display:block;margin-top:8px;color:var(--pencil);font-size:12.5px}
+#proDlg .pben small.pfine{color:#8F887B;font-size:12px;margin-top:4px}
+/* Pro on the computer: a gold pill beside the date, easy to find, never in the way */
+.dkside{display:flex;align-items:center;gap:16px}
+.dkpro{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:99px;border:0;cursor:pointer;background:linear-gradient(135deg,#2A2520,#1F1D1A);color:#FFE14D;font-family:var(--sans);font-weight:800;font-size:14.5px;box-shadow:inset 0 0 0 1px rgba(255,225,77,.4),0 10px 20px -14px rgba(0,0,0,.6);position:relative;overflow:hidden;transition:transform .16s}
+.dkpro:hover{transform:translateY(-2px)}
+.dkpro[hidden]{display:none}
+.dkpro::after{content:"";position:absolute;width:8px;height:8px;top:5px;left:9px;background:#FFE88A;clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%);filter:drop-shadow(0 0 4px rgba(255,225,120,.9))}
+html.clean body .dkpro::after{animation:bgTw 2.6s ease-in-out .4s infinite!important}
+/* a warm background: soft gold and red light, and faint notebook dots */
+html.clean body{background-color:var(--paper)!important;background-image:
+  radial-gradient(70% 45% at 100% 0%, rgba(255,214,64,.20), transparent 70%),
+  radial-gradient(60% 40% at 0% 100%, rgba(194,54,44,.09), transparent 70%),
+  radial-gradient(40% 30% at 0% 0%, rgba(255,236,170,.25), transparent 70%),
+  radial-gradient(circle at 1px 1px, rgba(31,29,26,.07) 1px, transparent 1.5px)!important;
+  background-size:auto,auto,auto,22px 22px!important;background-attachment:fixed!important}
+html.clean.dark body{background-color:#0E0E0F!important;background-image:
+  radial-gradient(70% 45% at 100% 0%, rgba(255,214,64,.08), transparent 70%),
+  radial-gradient(60% 40% at 0% 100%, rgba(194,54,44,.10), transparent 70%),
+  radial-gradient(circle at 1px 1px, rgba(255,255,255,.05) 1px, transparent 1.5px)!important;
+  background-size:auto,auto,22px 22px!important}
+html.clean header{background:rgba(248,246,240,.82)!important;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+html.clean.dark header{background:rgba(14,14,15,.82)!important}
+@media (min-width:760px) and (max-width:999px){ html.clean .wrap{background:rgba(248,246,240,.7)!important} html.clean.dark .wrap{background:rgba(14,14,15,.7)!important} }
+html.clean .sidenav{background:rgba(239,235,225,.88)!important;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+html.clean.dark .sidenav{background:rgba(20,20,22,.9)!important}
 </style>
 </head>
 <body>
@@ -1810,7 +1841,7 @@ html.clean body #proDlg .pdetail{animation:mFade .3s ease-out both!important}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="intro" id="sayDlg" hidden role="dialog" aria-modal="true" aria-label="תיקון הגייה"><div class="card saycard">
 <h3>איזו מילה נשמעת לא נכון?</h3>
-<p class="sayhelp">לוחצים על המילה, וכותבים איך היא נשמעת. בלי ניקוד: אותיות כמו שאומרים (ג'לאל), או באנגלית (Jalal). התיקון יעבוד בכל הסצנות.</p>
+<p class="sayhelp">לוחצים על המילה וכותבים איך אומרים אותה: עם ניקוד (לָךְ, שְׁעָתַיִם), בכתיב מלא (ליך), או באנגלית (Jalal). לוחצים "לשמוע" כדי לבדוק, והתיקון נשמר לכל הסצנות.<br><small>הקול קורא עברית בלי ניקוד, אז לא כל מילה תצא מושלמת. התיקון משפר מאוד, אבל לא תמיד ב־100%.</small></p>
 <div class="wordchips" id="sayWords"></div>
 <div id="sayEdit" hidden>
 <label for="sayText" style="margin-top:12px">איך אומרים "<span id="sayWord"></span>"?</label>
@@ -1842,7 +1873,7 @@ html.clean body #proDlg .pdetail{animation:mFade .3s ease-out both!important}
 <h3 id="proTitle">השותף המלא שלך לתפקיד</h3>
 <p id="proWhy" class="pwhy">כל מה שצריך כדי להגיע לאודישן כשהטקסט יושב, והפרטנר נשמע כמו שחקן אמיתי.</p>
 <ul class="pben">
-<li><b>🎙️ קולות טבעיים לכל הדמויות</b><small>הפרטנר נשמע כמו שחקן, לא כמו רובוט. גבר, אישה, צעיר, מבוגר</small></li>
+<li><b>🎙️ קולות טבעיים לכל הדמויות</b><small>הפרטנר נשמע כמו שחקן, לא כמו רובוט. גבר, אישה, צעיר, מבוגר</small><small class="pfine">* עברית בלי ניקוד: לפעמים מילה יוצאת לא מדויקת, ואפשר לתקן אותה בלחיצה</small></li>
 <li><b>♾️ חזרות בלי הגבלה</b><small>כמה טייקים שצריך, כל יום, בלי מכסה שבועית</small></li>
 <li><b>📚 כל ספריית הסצנות</b><small>הבינוניות והמאתגרות, ועוד סצנות חדשות שמתווספות כל הזמן</small></li>
 <li><b>☁️ הסצנות שלך בכל מקום</b><small>מתחילים בטלפון, ממשיכים במחשב</small></li>
@@ -5050,6 +5081,7 @@ function advance(myRun){
     else ab.style.display = 'none';
     setStatus(esc(line.character) + (guessGender(line.character) === 'female' ? ' מדברת…' : ' מדבר…'), false);
     speakDir = line.dir || '';
+    if(CLEAN && !lsGet('sp_pron_note')){ lsSet('sp_pron_note', '1'); setTimeout(() => toast('הקול קורא עברית בלי ניקוד, אז לפעמים מילה יוצאת לא מדויקת. נשמע לא נכון? 🗣️ ליד השורה מתקן', '🗣️'), 600); }
     stageShowPartner(line);
     isPartnerTalking = true;
     let moved = false;
@@ -5279,7 +5311,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // a greeting at the top of the home page
   const t = document.createElement('div'); t.className = 'desktitle work-only';
   const h = new Date().getHours();
-  t.innerHTML = `<div><h1>${h < 5 ? 'לילה טוב' : h < 12 ? 'בוקר טוב' : h < 17 ? 'צהריים טובים' : h < 21 ? 'ערב טוב' : 'לילה טוב'} 👋</h1><p>מה מתרגלים היום?</p></div><span class="dk">${new Date().toLocaleDateString('he-IL', {weekday: 'long', day: 'numeric', month: 'long'})}</span>`;
+  t.innerHTML = `<div><h1>${h < 5 ? 'לילה טוב' : h < 12 ? 'בוקר טוב' : h < 17 ? 'צהריים טובים' : h < 21 ? 'ערב טוב' : 'לילה טוב'} 👋</h1><p>מה מתרגלים היום?</p></div><span class="dkside"><button type="button" class="dkpro">✨ שדרוג ל־Pro</button><span class="dk">${new Date().toLocaleDateString('he-IL', {weekday: 'long', day: 'numeric', month: 'long'})}</span></span>`;
+  t.querySelector('.dkpro').onclick = () => openPro('');
+  if(isPro()) t.querySelector('.dkpro').hidden = true;
   const grid = document.querySelector('.home-grid'); if(grid) grid.before(t);
   syncNav();
 });
