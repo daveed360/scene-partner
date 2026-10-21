@@ -1659,6 +1659,20 @@ html.clean.dark header{background:rgba(14,14,15,.82)!important}
 @media (min-width:760px) and (max-width:999px){ html.clean .wrap{background:rgba(248,246,240,.7)!important} html.clean.dark .wrap{background:rgba(14,14,15,.7)!important} }
 html.clean .sidenav{background:rgba(239,235,225,.88)!important;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 html.clean.dark .sidenav{background:rgba(20,20,22,.9)!important}
+
+/* in-app browser bar + "can't hear" help */
+#iabBar{position:fixed;left:10px;right:10px;top:10px;z-index:9000;max-width:520px;margin:0 auto;background:#1E2226;color:#fff;border-radius:16px;padding:13px 15px;font-family:var(--sans);font-size:15.5px;line-height:1.45;box-shadow:0 16px 34px -12px rgba(0,0,0,.55);display:flex;flex-direction:column;gap:10px;direction:rtl}
+#iabBar b{color:var(--hl)}
+.vhrow{display:flex;gap:8px;flex-wrap:wrap}
+.vhbtn{flex:1;min-width:120px;border:0;border-radius:11px;padding:11px 12px;font:inherit;font-weight:700;background:var(--hl);color:#1E2226;text-align:center;text-decoration:none;cursor:pointer}
+.vhbtn.ghost{background:transparent;color:inherit;border:1px solid currentColor;opacity:.75}
+#voiceHelp{position:fixed;inset:0;z-index:9001;background:rgba(20,18,16,.55);display:flex;align-items:flex-end;justify-content:center;padding:12px;direction:rtl}
+#voiceHelp[hidden],#iabBar[hidden]{display:none}
+#voiceHelp .vhcard{width:100%;max-width:460px;background:var(--sheet);color:var(--ink);border-radius:20px;padding:20px 18px 16px;font-family:var(--sans);font-size:16px;line-height:1.5;box-shadow:0 20px 50px -20px rgba(0,0,0,.6)}
+#voiceHelp h3{margin:0 0 10px;font-size:20px}
+#voiceHelp ol{margin:0 0 12px;padding:0 20px 0 0;display:flex;flex-direction:column;gap:8px}
+#voiceHelp .vhnote{font-size:14px;color:var(--pencil);margin:0 0 14px}
+@media (min-width:700px){#voiceHelp{align-items:center}}
 </style>
 </head>
 <body>
@@ -4238,6 +4252,55 @@ function initVoices(){
 }
 initVoices();
 
+/* ---- In-app browsers (Facebook, Instagram...) often have no speech: point people to a real browser ---- */
+const UA_ = navigator.userAgent || '';
+const IS_ANDROID = /Android/i.test(UA_);
+const IS_IOS = /iPhone|iPad|iPod/i.test(UA_) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const IN_APP = /FBAN|FBAV|FB_IAB|FBIOS|FB4A|Instagram|Line\/|musical_ly|Bytedance|TikTok|Snapchat|LinkedInApp|; wv\)/i.test(UA_);
+function openInChrome(){
+  const here = location.host + location.pathname;
+  location.href = 'intent://' + here + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(location.href) + ';end';
+}
+function copyLink(){
+  const url = location.origin + location.pathname;
+  const ok = () => toast('הקישור הועתק. הדביקו אותו בכרום או בספארי', '📋');
+  try{ navigator.clipboard.writeText(url).then(ok, () => prompt('העתיקו את הקישור:', url)); }
+  catch(e){ prompt('העתיקו את הקישור:', url); }
+}
+function showIabBar(){
+  const bar = document.getElementById('iabBar');
+  if(!bar) return;
+  bar.innerHTML = IS_ANDROID
+    ? `<div><b>נכנסתם מתוך פייסבוק?</b> הדפדפן הפנימי לא משמיע קול. פתחו בכרום כדי לשמוע את הפרטנר 🎭</div><div class="vhrow"><button class="vhbtn" type="button" data-a="open">פתח בכרום</button><button class="vhbtn ghost" type="button" data-a="x">לא עכשיו</button></div>`
+    : `<div><b>נכנסתם מתוך פייסבוק?</b> כדי לשמוע את הפרטנר, לחצו למעלה על <b>•••</b> ובחרו <b>"פתח בדפדפן"</b> 🎭</div><div class="vhrow"><button class="vhbtn" type="button" data-a="copy">העתק קישור</button><button class="vhbtn ghost" type="button" data-a="x">לא עכשיו</button></div>`;
+  bar.onclick = (e) => {
+    const a = e.target.closest('[data-a]'); if(!a) return;
+    if(a.dataset.a === 'open') openInChrome();
+    else if(a.dataset.a === 'copy') copyLink();
+    else bar.hidden = true;
+  };
+  bar.hidden = false;
+}
+if(IN_APP) setTimeout(showIabBar, 600);
+
+let silentHits = 0, voiceHelpShown = false;
+function showVoiceHelp(){
+  const box = document.getElementById('voiceHelp');
+  if(!box) return;
+  box.querySelector('.vh-android').style.display = IS_IOS ? 'none' : '';
+  box.querySelector('.vh-open').style.display = IS_ANDROID ? '' : 'none';
+  box.querySelector('.vh-open').onclick = openInChrome;
+  box.querySelector('.vh-copy').onclick = copyLink;
+  box.querySelector('.vh-close').onclick = () => { box.hidden = true; };
+  box.onclick = (e) => { if(e.target === box) box.hidden = true; };
+  box.hidden = false;
+}
+function voiceWentSilent(){
+  silentHits++;
+  try{ gcEvent('no-voice' + (IN_APP ? '-inapp' : ''), 'no voice'); }catch(e){}
+  if(!voiceHelpShown){ voiceHelpShown = true; showVoiceHelp(); }
+}
+
 function assignVoices(){
   voiceByCharacter = {};
   if(heVoices.length === 0 && 'speechSynthesis' in window){
@@ -4282,18 +4345,21 @@ function speakBrowser(text, character, cb){
     setStatus(why + ' — קרא את השורה, ממשיך עוד רגע', true);
     setTimeout(cb, readingTime(text));
   };
-  if(!('speechSynthesis' in window)){ holdForReading('אין קול בדפדפן'); return; }
+  if(!('speechSynthesis' in window)){ if(!voiceHelpShown){ voiceHelpShown = true; showVoiceHelp(); } holdForReading('אין קול בדפדפן'); return; }
+  // two silent lines in a row: stop trying and just give reading time
+  if(silentHits >= 2){ holdForReading('אין קול'); return; }
   const synth = window.speechSynthesis;
   let done = false;
-  let watchdog = null;
+  let watchdog = null, silentCheck = null, started = false;
   const startedAt = Date.now();
   const finish = () => {
     if(done) return;
     done = true;
     if(watchdog) clearTimeout(watchdog);
+    if(silentCheck) clearTimeout(silentCheck);
     currentUtterance = null;
     // Ended almost instantly = the phone didn't actually speak (e.g. no Hebrew voice installed)
-    if(Date.now() - startedAt < Math.min(900, 120 + text.length * 25)) holdForReading('הטלפון לא השמיע קול');
+    if(Date.now() - startedAt < Math.min(900, 120 + text.length * 25)){ if(!started && !interrupted) voiceWentSilent(); holdForReading('הטלפון לא השמיע קול'); }
     else cb();
   };
   const u = new SpeechSynthesisUtterance(text);
@@ -4301,13 +4367,23 @@ function speakBrowser(text, character, cb){
   if(v) u.voice = v;
   u.lang = 'he-IL';
   u.rate = 0.95 * speechRate;
+  u.onstart = () => { started = true; silentHits = 0; };
+  let interrupted = false;
   u.onend = finish;
-  u.onerror = finish;
+  u.onerror = (e) => { if(e && (e.error === 'interrupted' || e.error === 'canceled')) interrupted = true; finish(); };
   currentUtterance = u;
   const go = () => {
     if(synth.paused) synth.resume();
     // Safety net: if the phone never reports "finished", move on anyway
     watchdog = setTimeout(finish, 3000 + text.length * 200);
+    // Never started speaking (in-app browser, no Hebrew voice...): tell the user why, give reading time
+    silentCheck = setTimeout(() => {
+      if(done || started || synth.speaking) return;
+      done = true; clearTimeout(watchdog); currentUtterance = null;
+      try{ synth.cancel(); }catch(e){}
+      voiceWentSilent();
+      holdForReading('הטלפון לא השמיע קול');
+    }, 3000);
     synth.speak(u);
   };
   // Something stuck in the queue blocks new lines on Android: clear it, then speak after a short gap
@@ -5362,5 +5438,16 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
 <script data-goatcounter="https://auditionpartner.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <div class="bgspark" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+<div id="iabBar" hidden></div>
+<div id="voiceHelp" hidden><div class="vhcard">
+  <h3>🔇 לא שומעים את הפרטנר?</h3>
+  <ol>
+    <li><b>פתחתם מתוך פייסבוק, אינסטגרם או וואטסאפ?</b> הדפדפן הפנימי שלהם לא משמיע קול. פתחו את הקישור בכרום או בספארי.</li>
+    <li>בדקו שהווליום פתוח. באייפון, גם שמתג השקט בצד כבוי.</li>
+    <li class="vh-android"><b>אנדרואיד:</b> הגדרות ← חפשו "המרת טקסט לדיבור" ← בחרו במנוע של Google ← התקינו את השפה עברית.</li>
+  </ol>
+  <p class="vhnote">בינתיים הסצנה ממשיכה: השורות של הפרטנר מופיעות על המסך, ויש לכם זמן לקרוא אותן.</p>
+  <div class="vhrow"><button class="vhbtn vh-open" type="button">פתח בכרום</button><button class="vhbtn vh-copy" type="button">העתק קישור</button><button class="vhbtn ghost vh-close" type="button">הבנתי</button></div>
+</div></div>
 </body>
 </html>
