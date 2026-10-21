@@ -4662,7 +4662,7 @@ async function openMic(){
   try{
     if(OPTS.tape){
       // self-tape: camera + a natural mic (the partner's voice from the speaker is part of the take)
-      try{ micStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user', width:{ideal:720}, height:{ideal:1280}}, audio:{echoCancellation:false, noiseSuppression:true, autoGainControl:true}}); }
+      try{ micStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user', width:{ideal:720}, height:{ideal:1280}}, audio:{echoCancellation:false, noiseSuppression:false, autoGainControl:false}}); }
       catch(e){ micStream = null; tapeFailed = true; }
     }
     // No echo-cancel / voice processing: with it, phones switch to "call mode" (quiet earpiece-style sound, volume keys change call volume).
