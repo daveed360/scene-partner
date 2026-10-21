@@ -10,7 +10,21 @@
 <meta name="apple-mobile-web-app-title" content="Audition Partner">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<title>Audition Partner</title>
+<title>Audition Partner · שותף לתפקיד – אפליקציה לשינון טקסט וחזרות לשחקנים</title>
+<meta name="description" content="משננים טקסט עם פרטנר שתמיד זמין: מדביקים סצנה, בוחרים דמות, והאפליקציה קוראת בקול את כל שאר הדמויות ומחכה לכם בתור. חינם, בעברית, בלי הרשמה, בטלפון ובמחשב.">
+<link rel="canonical" href="https://daveed360.github.io/scene-partner/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="Audition Partner">
+<meta property="og:url" content="https://daveed360.github.io/scene-partner/">
+<meta property="og:title" content="Audition Partner · פרטנר לחזרות ולשינון טקסט">
+<meta property="og:description" content="מדביקים סצנה, בוחרים דמות, והאפליקציה קוראת לכם את כל השאר. חינם, בלי הרשמה.">
+<meta property="og:image" content="https://daveed360.github.io/scene-partner/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://daveed360.github.io/scene-partner/og.png">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Audition Partner – שותף לתפקיד","url":"https://daveed360.github.io/scene-partner/","applicationCategory":"EducationalApplication","operatingSystem":"Any","inLanguage":"he","description":"אפליקציה לשינון טקסט וחזרות לשחקנים: קוראת בקול את שאר הדמויות ומחכה לכם בתור.","offers":{"@type":"Offer","price":"0","priceCurrency":"ILS"}}</script>
 <script>
 // the script-page design is the app. ?full opens the old illustrated version (remembered), ?clean returns. ?pro unlocks the full plan on this device.
 try{ const q = location.search, L = localStorage;
@@ -1506,6 +1520,8 @@ html.clean .progband .pstats small{display:block;margin-top:6px;font-size:13px;c
 html.clean .progband .ptip{padding:18px 20px;border-radius:14px;background:#1F1D1A;color:#F8F6F0;position:relative;overflow:hidden}
 html.clean .progband .ptip::before{content:"";position:absolute;inset:0 0 0 auto;width:5px;background:var(--hl)}
 html.clean .progband .ptip .k{display:block;font-size:12.5px;font-weight:800;letter-spacing:.06em;color:#FFE14D;margin-bottom:6px}
+html.clean .progband .ptip .pmore{display:inline-block;margin-top:10px;color:#FFE14D;font-weight:700;font-size:14.5px;text-decoration:none}
+html.clean .progband .ptip .pmore:hover{text-decoration:underline}
 html.clean .progband .ptip p{margin:0;font-size:16px;line-height:1.6;color:#E9E4D8}
 html.clean.dark .progband .ptip{background:#1E1C1A;border:1px solid #34302B}
 @media (min-width: 1000px){
@@ -5141,7 +5157,7 @@ function renderProgressBand(){
       <div><b>${D.length}</b><small>סצנות שסיימת</small></div>
       <div><b>${known}</b><small>יושבות בעל פה</small></div>
       <div><b>${st}</b><small>${st === 1 ? 'יום ברצף' : 'ימים ברצף'}</small></div></div>
-    <div class="ptip"><span class="k">💡 הטיפ של היום · ${esc(tip[0])}</span><p>${esc(tip[1])}</p></div>`;
+    <div class="ptip"><span class="k">💡 הטיפ של היום · ${esc(tip[0])}</span><p>${esc(tip[1])}</p><a class="pmore" href="tips/">עוד טיפים לשחקנים ←</a></div>`;
 }
 document.addEventListener('DOMContentLoaded', () => {
   if(!CLEAN) return;
