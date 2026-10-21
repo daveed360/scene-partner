@@ -3028,6 +3028,8 @@ function confetti(){
 /* ---- library: ready scenes, by level; the full plan opens the medium and hard ones ---- */
 const FREE_WEEK = 5;
 function isPro(){ return lsGet('sp_pro') === '1'; }
+// owner link: ?vip=dv7k29 unlocks everything on this device, then cleans the address
+try{ const q = new URLSearchParams(location.search); if(q.get('vip') === 'dv7k29'){ lsSet('sp_pro', '1'); q.delete('vip'); history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); } }catch(e){}
 function sceneSecs(text){ const w = (text.match(/\S+/g) || []).length; return Math.round(w / 2.2 + (text.match(/\n/g) || []).length * 0.8); }
 function isLocked(sc){ if(!CLEAN || isPro()) return false; const lv = sc.level || 1; if(lv === 1 || lv === 4) return false; return !(lv === 2 && SCENES.filter(x => (x.level || 1) === lv)[0] === sc); }
 let libLevel = 1, libOpen = {};
