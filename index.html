@@ -1711,6 +1711,16 @@ body.rehearsing .bgart{display:none}
   .bgart .clap{top:46%}
   .bgart .lamp{display:none}
 }
+
+.rolesheet .camseg{margin:-2px 0 12px}
+.rolesheet .camseg button{font-size:14px}
+.rolesheet .rsnote{margin:0 0 10px;padding:10px 12px;border-radius:10px;background:var(--hl-soft,#FFF8B8);color:var(--ink,#1F1D1A);font-family:var(--sans);font-size:13px;line-height:1.5}
+html.clean.dark .rolesheet .rsnote{background:rgba(255,239,92,.12);color:#F5EEE6}
+.rsnote a,.supp a,.vhsupp a{color:#1F8B4C;font-weight:700;text-decoration:none;white-space:nowrap}
+html.clean.dark .rsnote a,html.clean.dark .supp a{color:#5ED38C}
+.supp{display:block;text-align:center;font-family:var(--sans);font-size:14px;color:var(--pencil);margin:18px auto 8px}
+.supp[hidden],.wa-only[hidden]{display:none}
+#selfCam.back{transform:none}
 </style>
 </head>
 <body>
@@ -3283,6 +3293,11 @@ function confetti(){
 
 /* ---- library: ready scenes, by level; the full plan opens the medium and hard ones ---- */
 const FREE_WEEK = 5;
+// WhatsApp support: international number without + or leading 0 (e.g. 972501234567). Empty = support links hidden.
+const SUPPORT_WA = '';
+function supportUrl(topic){ return 'https://wa.me/' + SUPPORT_WA + '?text=' + encodeURIComponent('היי, לגבי Audition Partner' + (topic ? ' (' + topic + ')' : '') + ': '); }
+function supportLink(text, topic){ return SUPPORT_WA ? `<a href="${supportUrl(topic)}" target="_blank" rel="noopener">${text}</a>` : ''; }
+function camFacing(){ return lsGet('sp_cam') === 'environment' ? 'environment' : 'user'; }
 function isPro(){ return lsGet('sp_pro') === '1'; }
 // owner link: ?vip=dv7k29 unlocks everything on this device, then cleans the address
 try{ const q = new URLSearchParams(location.search); if(q.get('vip') === 'dv7k29'){ lsSet('sp_pro', '1'); q.delete('vip'); history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); } }catch(e){}
@@ -3851,13 +3866,17 @@ function openRoleSheet(){
       <div class="chars">${characters.map(c => `<button type="button" class="char" data-c="${esc(c)}"><span class="nm">${esc(c)}</span><small>${cnt(c)} ${characters.length === 1 ? 'קטעים' : 'שורות'}</small><span class="go">←</span></button>`).join('')}</div>
       ${memBar(sceneTitle, true)}
       <div class="sws">${MODE === 'run' ? sw('hide', '👁️ הסתר את השורות שלי', 'רק אותיות ראשונות') + sw('fast', '⚡ מהר (איטלקי)', 'בלי הפסקות, לבדוק שהטקסט יושב') : ''}${sw('tape', '🎥 צילום self-tape', 'נשמר ב"הטייקים שלי"')}</div>
+      ${OPTS.tape ? `<div class="mseg camseg" role="group" aria-label="מצלמה"><button type="button" data-cam="user" aria-pressed="${camFacing() === 'user'}">🤳 מצלמה קדמית</button><button type="button" data-cam="environment" aria-pressed="${camFacing() === 'environment'}">📷 מצלמה אחורית</button></div>` : ''}
+      <p class="rsnote">🗣️ הקול קורא עברית בלי ניקוד, אז לפעמים מילה יוצאת לא מדויקת. אפשר לתקן אותה בלחיצה על 🗣️ ליד השורה.${SUPPORT_WA ? ' משהו לא עובד? ' + supportLink('כתבו לנו בוואטסאפ', 'תמיכה') : ''}</p>
       <button type="button" class="skip" id="rsClose">ביטול</button>`;
     card.querySelectorAll('.mseg button').forEach(b => b.onclick = () => { setMode(b.dataset.m); draw(); });
     card.querySelectorAll('.sw').forEach(b => b.onclick = () => {
       const k = b.dataset.k; OPTS[k] = !OPTS[k]; lsSet(OPT_KEYS[k], OPTS[k] ? '1' : null);
       const ch = document.querySelector(`.chip[data-opt="${k}"]`); if(ch) ch.setAttribute('aria-pressed', String(OPTS[k]));
       b.setAttribute('aria-pressed', String(OPTS[k]));
+      if(k === 'tape') draw();
     });
+    card.querySelectorAll('[data-cam]').forEach(b => b.onclick = () => { lsSet('sp_cam', b.dataset.cam); draw(); });
     card.querySelectorAll('.char').forEach(b => b.onclick = () => startAs(b.dataset.c));
     card.querySelector('#rsClose').onclick = () => { dlg.hidden = true; };
   };
@@ -4546,6 +4565,7 @@ function showVoiceHelp(){
   const box = document.getElementById('voiceHelp');
   if(!box) return;
   box.querySelector('.vh-android').style.display = IS_IOS ? 'none' : '';
+  if(SUPPORT_WA){ box.querySelector('.vhsupp').hidden = false; box.querySelector('#vhWa').href = supportUrl('אין קול'); }
   box.querySelector('.vh-open').style.display = IS_ANDROID ? '' : 'none';
   box.querySelector('.vh-open').onclick = openInChrome;
   box.querySelector('.vh-copy').onclick = copyLink;
@@ -4662,7 +4682,7 @@ async function openMic(){
   try{
     if(OPTS.tape){
       // self-tape: camera + a natural mic (the partner's voice from the speaker is part of the take)
-      try{ micStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user', width:{ideal:720}, height:{ideal:1280}}, audio:{echoCancellation:false, noiseSuppression:false, autoGainControl:false}}); }
+      try{ micStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:camFacing(), width:{ideal:720}, height:{ideal:1280}}, audio:{echoCancellation:false, noiseSuppression:false, autoGainControl:false}}); }
       catch(e){ micStream = null; tapeFailed = true; }
     }
     // No echo-cancel / voice processing: with it, phones switch to "call mode" (quiet earpiece-style sound, volume keys change call volume).
@@ -5111,6 +5131,7 @@ function startRecording(){
   if(!OPTS.tape || !micStream || !micStream.getVideoTracks().length || !window.MediaRecorder) return;
   const cam = document.getElementById('selfCam');
   cam.srcObject = micStream; cam.hidden = false; cam.play().catch(()=>{});
+  cam.classList.toggle('back', camFacing() === 'environment');
   camVid = document.createElement('video');
   camVid.muted = true; camVid.playsInline = true; camVid.setAttribute('playsinline', '');
   camVid.style.cssText = 'position:fixed;width:2px;height:2px;opacity:0;pointer-events:none;left:0;top:0';
@@ -5635,7 +5656,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <button type="button" class="snew"><span>+</span> סצנה חדשה</button>
     <nav><button type="button" data-n="home"><i>🏠</i>בית</button><button type="button" data-n="mine"><i>📄</i>הסצנות שלי</button><button type="button" data-n="takes"><i>🎬</i>הטייקים שלי</button><button type="button" data-n="lib"><i>📚</i>ספריית סצנות</button>
     <div class="slab">ללמוד</div><button type="button" data-n="tips"><i>💡</i>טיפים לשחקן</button></nav>
-    <div class="sfoot"><button type="button" class="spro"><b>✨ Audition Partner Pro</b><small>קולות טבעיים, בלי הגבלה, כל הספרייה</small></button><div class="sstreak"></div><button type="button" class="stheme">🌓 מצב לילה / יום</button></div>`;
+    <div class="sfoot"><button type="button" class="spro"><b>✨ Audition Partner Pro</b><small>קולות טבעיים, בלי הגבלה, כל הספרייה</small></button><div class="sstreak"></div><button type="button" class="stheme">🌓 מצב לילה / יום</button>${SUPPORT_WA ? `<span class="supp" style="margin:6px 0 0;font-size:13px">${supportLink('💬 תמיכה בוואטסאפ', 'תמיכה')}</span>` : ''}</div>`;
   document.body.prepend(side);
   const home = () => { show('input'); openAdd(false); homeTab('work'); };
   const go = n => {
@@ -5700,6 +5721,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const lib = document.querySelector('.desk-lib') || document.getElementById('sceneList');
   if(lib) (lib.classList.contains('desk-lib') ? lib.parentNode.insertBefore(band, lib.nextSibling) : lib.after(band));
   renderProgressBand();
+  if(SUPPORT_WA && band.parentNode){ const sp = document.createElement('p'); sp.className = 'supp work-only'; sp.innerHTML = '💬 צריכים עזרה או רוצים להציע שיפור? ' + supportLink('כתבו לנו בוואטסאפ', 'תמיכה'); band.after(sp); }
 });
 </script>
 <script data-goatcounter="https://auditionpartner.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
@@ -5722,7 +5744,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <li>בדקו שהווליום פתוח. באייפון, גם שמתג השקט בצד כבוי.</li>
     <li class="vh-android"><b>אנדרואיד:</b> הגדרות ← חפשו "המרת טקסט לדיבור" ← בחרו במנוע של Google ← התקינו את השפה עברית.</li>
   </ol>
-  <p class="vhnote">בינתיים הסצנה ממשיכה: השורות של הפרטנר מופיעות על המסך, ויש לכם זמן לקרוא אותן.</p>
+  <p class="vhnote">בינתיים הסצנה ממשיכה: השורות של הפרטנר מופיעות על המסך, ויש לכם זמן לקרוא אותן.<span class="vhsupp wa-only" hidden> עדיין לא עובד? <a id="vhWa" href="#" target="_blank" rel="noopener">כתבו לנו בוואטסאפ</a></span></p>
   <div class="vhrow"><button class="vhbtn vh-open" type="button">פתח בכרום</button><button class="vhbtn vh-copy" type="button">העתק קישור</button><button class="vhbtn ghost vh-close" type="button">הבנתי</button></div>
 </div></div>
 </body>
