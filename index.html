@@ -1620,6 +1620,14 @@ html.clean body .probtn::after{animation:bgTw 2.4s ease-in-out .3s infinite!impo
 html.clean body .sidenav .spro::after{animation:bgTw 2.8s ease-in-out 1s infinite!important;top:10px;left:14px}
 html.clean body .resume:not([hidden])::after{animation:bgTw 3s ease-in-out .6s infinite!important;top:14px;left:auto;right:auto;inset-inline-end:auto;left:84px}
 html.clean body #proDlg .pbadge{position:relative}
+
+#proDlg .pdetail{margin:0 0 14px;padding:14px 16px;border-radius:14px;background:rgba(255,225,77,.07);border:1px solid rgba(255,225,77,.28)}
+#proDlg .pdetail b{display:block;color:#FFE14D;font-family:var(--sans);font-size:16px;margin-bottom:6px}
+#proDlg .pdetail ul{list-style:none;padding:0;margin:0 0 8px;display:grid;gap:5px}
+#proDlg .pdetail li{position:relative;padding-inline-start:22px;color:#EDE7DA;font-size:14.5px;line-height:1.45}
+#proDlg .pdetail li::before{content:"✓";position:absolute;inset-inline-start:0;top:0;color:#FFE14D;font-weight:900}
+#proDlg .pdetail small{display:block;color:#A9A293;font-size:12.5px;line-height:1.45}
+html.clean body #proDlg .pdetail{animation:mFade .3s ease-out both!important}
 </style>
 </head>
 <body>
@@ -1844,6 +1852,7 @@ html.clean body #proDlg .pbadge{position:relative}
 <button type="button" class="pplan" data-plan="month" role="radio" aria-checked="false"><span class="pn">חודש</span><span class="pp">14.90 ₪</span><span class="ps">בכל חודש</span></button>
 <button type="button" class="pplan best" data-plan="year" role="radio" aria-checked="true"><span class="ptag">הכי משתלם</span><span class="pn">שנה</span><span class="pp">119 ₪</span><span class="ps">כ־10 ₪ לחודש</span></button>
 </div>
+<div class="pdetail" id="proDetail" aria-live="polite"></div>
 <button type="button" class="primary pgo" id="proGo">אני רוצה Pro ✨</button>
 <p class="pnote">התשלום נפתח בקרוב. מי שמצטרף לרשימה עכשיו יקבל מחיר מיוחד של משתמשים ראשונים.</p>
 <button type="button" class="skip" id="proClose">אולי אחר כך</button>
@@ -3062,17 +3071,29 @@ function openPro(why){
   gcEvent('pro-open', 'Pro: נפתח חלון המנוי');
 }
 function bindProBody(){
-  document.querySelectorAll('#proDlg .pplan').forEach(b => { b.setAttribute('aria-checked', String(b.dataset.plan === 'year')); b.onclick = () => { proPlan = b.dataset.plan; document.querySelectorAll('#proDlg .pplan').forEach(x => x.setAttribute('aria-checked', String(x === b))); }; });
-  proPlan = 'year';
+  document.querySelectorAll('#proDlg .pplan').forEach(b => { b.setAttribute('aria-checked', String(b.dataset.plan === 'year')); b.onclick = () => { proPlan = b.dataset.plan; document.querySelectorAll('#proDlg .pplan').forEach(x => x.setAttribute('aria-checked', String(x === b))); renderPlanInfo(); }; });
+  proPlan = 'year'; renderPlanInfo();
   const go = document.getElementById('proGo'), cl = document.getElementById('proClose');
   if(go) go.onclick = PRO_GO; if(cl) cl.onclick = () => { document.getElementById('proDlg').hidden = true; };
 }
 document.addEventListener('DOMContentLoaded', () => { window.PRO_GO = document.getElementById('proGo').onclick; const pb = document.getElementById('proBtn'); if(pb){ pb.onclick = () => openPro(''); if(isPro()) pb.hidden = true; } });
 document.getElementById('proClose').onclick = () => { document.getElementById('proDlg').hidden = true; };
 let proPlan = 'year';
+const PLAN_INFO = {
+  week: {h: 'שבוע Pro · 9.90 ₪', lines: ['7 ימים של Pro מלא, מהרגע שמשלמים', 'תשלום אחד. בלי מנוי, בלי חידוש אוטומטי ובלי הפתעות', 'מושלם לשבוע שלפני אודישן: משננים, מתרגלים, ומגיעים מוכנים']},
+  month: {h: 'חודש Pro · 14.90 ₪ לחודש', lines: ['Pro מלא, מתחדש כל חודש', 'אפשר לבטל בכל רגע, בלחיצה אחת', 'למי שמתאמן באופן קבוע: שיעורים, הצגות ואודישנים']},
+  year: {h: 'שנה Pro · 119 ₪ לשנה', lines: ['12 חודשים של Pro מלא, תשלום אחד בשנה', 'יוצא כ־10 ₪ לחודש: חוסכים כ־60 ₪ לעומת התוכנית החודשית', 'לשחקנים שעובדים על טקסטים כל השנה']}
+};
+function renderPlanInfo(){
+  const box = document.getElementById('proDetail'); if(!box) return;
+  const i = PLAN_INFO[proPlan] || PLAN_INFO.year;
+  box.innerHTML = `<b>${i.h}</b><ul>${i.lines.map(l => `<li>${l}</li>`).join('')}</ul><small>בכל התוכניות: קולות טבעיים, חזרות בלי הגבלה, כל הספרייה, והסצנות שלך בכל מקום.</small>`;
+}
+document.addEventListener('DOMContentLoaded', renderPlanInfo);
 document.querySelectorAll('#proDlg .pplan').forEach(b => b.onclick = () => {
   proPlan = b.dataset.plan;
   document.querySelectorAll('#proDlg .pplan').forEach(x => x.setAttribute('aria-checked', String(x === b)));
+  renderPlanInfo();
 });
 // interest is the demand test: kept on the device now, and counted once a visit counter is connected
 function gcEvent(name, title){ try{ if(window.goatcounter && window.goatcounter.count) window.goatcounter.count({path: name, title: title || name, event: true}); }catch(e){} }
