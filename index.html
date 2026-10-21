@@ -3294,7 +3294,7 @@ function confetti(){
 /* ---- library: ready scenes, by level; the full plan opens the medium and hard ones ---- */
 const FREE_WEEK = 5;
 // WhatsApp support: international number without + or leading 0 (e.g. 972501234567). Empty = support links hidden.
-const SUPPORT_WA = '';
+const SUPPORT_WA = '972506999498';
 function supportUrl(topic){ return 'https://wa.me/' + SUPPORT_WA + '?text=' + encodeURIComponent('היי, לגבי Audition Partner' + (topic ? ' (' + topic + ')' : '') + ': '); }
 function supportLink(text, topic){ return SUPPORT_WA ? `<a href="${supportUrl(topic)}" target="_blank" rel="noopener">${text}</a>` : ''; }
 function camFacing(){ return lsGet('sp_cam') === 'environment' ? 'environment' : 'user'; }
