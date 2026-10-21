@@ -4704,7 +4704,7 @@ function listenForLine(expectedLine, onDone, onLevel){
   const END_SILENCE_MS = words <= 6 ? 1300 : words <= 14 ? 1500 : 1700;
   const MIDLINE_SILENCE_MS = 3000;                  // a dramatic pause in the middle of a long line
   let floor = 0, calib = 0, calibN = 0;
-  let speechMs = 0, silenceMs = 0, talkedMs = 0, started = false, finished = false;
+  let speechMs = 0, silenceMs = 0, talkedMs = 0, started = false, finished = false, voiceLvl = 0, recent = [];
   if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
 
   const timer = setInterval(() => {
@@ -4713,9 +4713,15 @@ function listenForLine(expectedLine, onDone, onLevel){
     // First ~300ms: measure the room's background noise
     if(calibN < 6){ calib += lvl; calibN++; floor = calib/calibN; if(calibN === 6 && floor > 0.025 && !noiseWarned){ noiseWarned = true; toast('יש רעש ברקע. במקום שקט אשמע אותך הרבה יותר טוב', '🤫'); } return; }
     const threshold = Math.max(0.012, floor * 2.5);
-    if(onLevel) onLevel(Math.min(1, lvl / (threshold*3)), lvl > threshold);
-    if(lvl > threshold){
+    // Once you've spoken, "quiet" is judged against YOUR voice: a TV or street far away is much
+    // softer than you talking into the phone, so it no longer keeps the line from ending.
+    recent.push(lvl); if(recent.length > 12) recent.shift();          // last ~0.6s
+    const avg = recent.reduce((a, b) => a + b, 0) / recent.length;
+    const loud = started ? avg > Math.max(threshold, voiceLvl * 0.5) : lvl > threshold;
+    if(onLevel) onLevel(Math.min(1, lvl / (threshold*3)), loud);
+    if(loud){
       speechMs += TICK; silenceMs = 0;
+      if(lvl > threshold) voiceLvl = voiceLvl ? voiceLvl * 0.92 + lvl * 0.08 : lvl;
       if(speechMs >= MIN_SPEECH_MS) started = true;
     } else {
       if(!started){ speechMs = Math.max(0, speechMs - TICK); floor = floor*0.97 + lvl*0.03; }
