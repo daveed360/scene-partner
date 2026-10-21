@@ -3023,6 +3023,7 @@ function openPro(why){
   if(!body.dataset.orig) body.dataset.orig = body.innerHTML; else { body.innerHTML = body.dataset.orig; bindProBody(); }
   document.getElementById('proWhy').textContent = why || 'כל מה שצריך כדי להגיע לאודישן כשהטקסט יושב, והפרטנר נשמע כמו שחקן אמיתי.';
   document.getElementById('proDlg').hidden = false;
+  gcEvent('pro-open', 'Pro: נפתח חלון המנוי');
 }
 function bindProBody(){
   document.querySelectorAll('#proDlg .pplan').forEach(b => { b.setAttribute('aria-checked', String(b.dataset.plan === 'year')); b.onclick = () => { proPlan = b.dataset.plan; document.querySelectorAll('#proDlg .pplan').forEach(x => x.setAttribute('aria-checked', String(x === b))); }; });
@@ -3038,9 +3039,10 @@ document.querySelectorAll('#proDlg .pplan').forEach(b => b.onclick = () => {
   document.querySelectorAll('#proDlg .pplan').forEach(x => x.setAttribute('aria-checked', String(x === b)));
 });
 // interest is the demand test: kept on the device now, and counted once a visit counter is connected
+function gcEvent(name, title){ try{ if(window.goatcounter && window.goatcounter.count) window.goatcounter.count({path: name, title: title || name, event: true}); }catch(e){} }
 function trackInterest(plan){
   lsSet('sp_pro_interest', JSON.stringify({plan, t: Date.now()}));
-  try{ if(window.goatcounter && window.goatcounter.count) window.goatcounter.count({path: 'pro-interest-' + plan, title: 'Pro interest: ' + plan, event: true}); }catch(e){}
+  gcEvent('pro-interest-' + plan, 'Pro: נרשם לתוכנית ' + plan);
 }
 document.getElementById('proGo').onclick = () => {
   trackInterest(proPlan);
@@ -3606,6 +3608,7 @@ document.getElementById('analyzeBtn').onclick = () => {
   if(!typed){ const txt = toCleanScript(parsed), base = sceneTitle; let n = 2; while(myScenes().some(x => x.title === sceneTitle && x.text !== txt)) sceneTitle = base + ' ' + n++; }
   pendingTitle = null;
   document.getElementById('sceneTitle').textContent = sceneTitle;
+  gcEvent('scene-added', 'סצנה חדשה נוספה');
   saveMyScene(sceneTitle, toCleanScript(parsed), Object.assign(pendingFile ? {src: 'file', fname: pendingFile} : {src: 'paste'}, pendingAbout ? {about: pendingAbout} : {}, pendingSetting ? {setting: pendingSetting} : {}));
   document.getElementById('sceneAbout').value = '';
   pendingFile = null;
@@ -5011,6 +5014,7 @@ function advance(myRun){
 }
 
 function finishScene(){
+  gcEvent('scene-finished', 'סצנה הושלמה');
   sceneRunning = false;
   stopAudio();
   document.getElementById('minorCtl').hidden = true;
@@ -5265,5 +5269,6 @@ document.addEventListener('DOMContentLoaded', () => {
   renderProgressBand();
 });
 </script>
+<script data-goatcounter="https://auditionpartner.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
