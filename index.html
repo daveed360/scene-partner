@@ -3794,9 +3794,26 @@ function looksLikeName(s){
   const words = s.split(/\s+/);
   return words.length <= 3;
 }
+// lines that aren't part of the scene: screenwriting-software footers, dates, page numbers, "CUT TO"
+function isJunkLine(l){
+  if(/movie\s*magic|final\s*draft|celtx|screenwriter|\.(msd|fdx|mmsw|celtx)\b/i.test(l)) return true;
+  if(/^[\d\s\/.:_\-–—|]+$/.test(l)) return true;                                   // 12, 22/09/2026, 22:02, - 3 -
+  const heb = (l.match(/[א-ת]/g) || []).length;
+  if(/\b\d{1,2}[\/.]\d{1,2}[\/.]\d{2,4}\b/.test(l) && heb < 15) return true;          // a date with almost no words
+  if(/(דראפט|טיוטה|draft|revision|רוויזיה)/i.test(l) && /\d{3,}/.test(l) && heb < 25) return true;
+  if(/^(קאט|חתך|חיתוך|cut|cut to|דיזולב|dissolve( to)?|fade (in|out)|האפלה|סוף( הסצנה)?|המשך|\(המשך\)|\(?cont'?d\)?|\(?more\)?)[\s.:!]*$/i.test(l)) return true;
+  if(/^(עמוד|page)\s*\d+\s*$/i.test(l)) return true;
+  return false;
+}
+// "רוי (המשך)" / "ROY (V.O.)" -> "רוי"
+function stripNameTag(l){
+  const m = l.match(/^(.{1,22}?)\s*\((המשך|ממשיך|ממשיכה|cont'?d|v\.?o\.?|o\.?s\.?|o\.?c\.?|ק\.?ר\.?|קול)\)\s*$/i);
+  return m && looksLikeName(m[1]) ? m[1].trim() : l;
+}
 function parseScript(raw){
   parseScript.pre = [];
-  const lines = cleanRaw(raw).split('\n').map(l => l.trim()).filter(Boolean);
+  const rawLines = cleanRaw(raw).split('\n').map(l => stripNameTag(l.trim())).filter(l => !l || !isJunkLine(l));
+  const lines = rawLines.filter(Boolean);
   // 1) collect possible speaker labels and how often they appear
   const count = {};
   const bump = n => { n = n.trim(); count[n] = (count[n] || 0) + 1; };
@@ -3835,18 +3852,24 @@ function parseScript(raw){
     if(text) cur.text = (cur.text ? cur.text + ' ' : '') + text;
     if(dir) cur.dir = (cur.dir ? cur.dir + ' · ' : '') + dir;
   };
-  for(const l of lines){
+  // screenplay layout (NAME alone on a line, then the speech): the first paragraph after the name is
+  // the speech, and paragraphs after a blank line are action ("the door slams") - shown, not spoken
+  const screenplay = aloneSpeakers.size > 0 && speakers.size === 0 && dashSpeakers.size === 0;
+  let gap = false;
+  for(const l of rawLines){
+    if(!l){ if(cur && cur.text) gap = true; continue; }
     let m = l.match(/^([^:]{1,24}):\s*(.*)$/);
     if(m && speakers.has(m[1].trim())) { start(m[1], m[2]); continue; }
     m = l.match(/^(.{1,41}?)\s+[-–—]\s+(.+)$/);
     if(m && dashSpeakers.has(m[1].trim())) { start(m[1], m[2]); continue; }
-    if(aloneSpeakers.has(l)) { start(l, ''); continue; }
+    if(aloneSpeakers.has(l)) { start(l, ''); gap = false; continue; }
     if(!cur){                                // headers / background before the dialogue starts: keep it as the scene's background
       const hm = l.match(/^([^:]{1,16}):/);
       if(!(hm && META_KEYS.test(hm[1].trim())) && !/^\*/.test(l)) parseScript.pre.push(l.replace(/^[\(\[]|[\)\]]$/g, ''));
       continue;
     }
     if(/^[\(\[].*[\)\]]$/.test(l)) { add(l); continue; }   // stage direction on its own line
+    if(screenplay && gap){ add('(' + l.replace(/[()]/g, '') + ')'); continue; }   // action paragraph
     add(l);                                  // continuation of the current speech
   }
   const result = out.filter(x => x.text);
