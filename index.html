@@ -3802,7 +3802,7 @@ let myCharacter = null;
 
 /* Reads almost any pasted script: "שם: טקסט", "שם:" then text, a name alone on its own line,
    "שם - טקסט", headers and stage directions mixed in. Returns [{character, text, dir}] or null. */
-const META_KEYS = /^(מתוך|דמות|שם הדמות|גיל הדמות|אורך המונולוג|ז׳אנר המונולוג|נכתב על ידי|יוצרים|יוצר|יוצרת|יצירה|הפקה|מפיק|מפיקה|צילום|עריכה|ליהוק|שחקנים|בכיכוב|ערוץ|פלטפורמה|תרגום|עיבוד|סדרה|סרט|הצגה|מחזה|בימוי|במאי|במאית|תסריט|תסריטאי|תסריטאית|מחזאי|מאת|רקע|הוסיף למאגר|הוסיפה למאגר|עונה|פרק|סצנה|תמונה|מערכה|דמויות|משתתפים|הערה|הערות|מקור|תקציר|מיקום|זמן|שנה|ז׳אנר|ז'אנר|לוקיישן|INT|EXT|פנים|חוץ)(?=$|[\s.:])/i;
+const META_KEYS = /^(מתוך|תפקיד|תפקידים|אודישן|לשאלות|לפרטים|תאריך|שעה|כתובת|דמות|שם הדמות|גיל הדמות|אורך המונולוג|ז׳אנר המונולוג|נכתב על ידי|יוצרים|יוצר|יוצרת|יצירה|הפקה|מפיק|מפיקה|צילום|עריכה|ליהוק|שחקנים|בכיכוב|ערוץ|פלטפורמה|תרגום|עיבוד|סדרה|סרט|הצגה|מחזה|בימוי|במאי|במאית|תסריט|תסריטאי|תסריטאית|מחזאי|מאת|רקע|הוסיף למאגר|הוסיפה למאגר|עונה|פרק|סצנה|תמונה|מערכה|דמויות|משתתפים|הערה|הערות|מקור|תקציר|מיקום|זמן|שנה|ז׳אנר|ז'אנר|לוקיישן|INT|EXT|פנים|חוץ)(?=$|[\s.:])/i;
 function cleanRaw(raw){
   return String(raw)
     .replace(/\r/g, '')
@@ -3835,6 +3835,25 @@ function isJunkLine(l){
   if(/^(עמוד|page)\s*\d+\s*$/i.test(l)) return true;
   return false;
 }
+// logistics in a casting message, not part of the scene ("בהצלחה!", "נא לשלוח עד...", phone numbers, emoji)
+function isLogistics(l){
+  return /בהצלחה|נתראה|לשאלות|לפרטים|תודה רבה|תודה לכולם|אשמח ל|נא ל|יש להכין|תכינו|תכיני|מצרפ|מצורפ|^אודישן|לאודישן|אודישן מחר|סלף.?טייפ עד|לשלוח עד|עד יום|https?:\/\/|www\.|\b0\d{1,2}-?\d{3}-?\d{4}\b|@[a-z]|[\u{1F300}-\u{1FAFF}\u2764\u2705\u2B50]/iu.test(l);
+}
+// one line, as copied from WhatsApp / Word: drop "[26/10/2026, 13:45] Name:" prefixes, *bold* / _italic_ marks,
+// "1." numbering before a name, and move "NAME (quietly):" to "NAME: (quietly)"
+function normLine(l){
+  l = l.replace(/^\[\d{1,2}[\/.]\d{1,2}[\/.]\d{2,4},?\s+\d{1,2}:\d{2}(?::\d{2})?\s*(?:[AP]M)?\]\s*[^:]{1,40}:\s*/i, '')
+       .replace(/^\[\d{1,2}:\d{2}(?::\d{2})?\s*(?:[AP]M)?,?\s*\d{1,2}[\/.]\d{1,2}[\/.]\d{2,4}\]\s*[^:]{1,40}:\s*/i, '')
+       .replace(/^\d{1,2}[\/.]\d{1,2}[\/.]\d{2,4},?\s+\d{1,2}:\d{2}(?:\s*[AP]M)?\s+[-–]\s+[^:]{1,40}:\s*/i, '');
+  l = l.replace(/[*~]/g, '').replace(/(^|[\s(])_+|_+(?=$|[\s.,:!?)])/g, '$1').trim();
+  l = l.replace(/^\d{1,3}[.)]\s+(?=[^\s:]{1,20}(?:\s[^\s:]{1,20})?\s*(?:\([^)]*\))?\s*:)/, '');
+  const m = l.match(/^([^:()]{1,22}?)\s*\(([^)]{1,40})\)\s*:\s*(.*)$/);
+  if(m && looksLikeName(m[1])){
+    const d = /^(המשך|ממשיך|ממשיכה|cont'?d|v\.?o\.?|o\.?s\.?)$/i.test(m[2].trim()) ? '' : '(' + m[2].trim() + ') ';
+    l = m[1].trim() + ': ' + d + m[3];
+  }
+  return stripNameTag(l);
+}
 // "רוי (המשך)" / "ROY (V.O.)" -> "רוי"
 function stripNameTag(l){
   const m = l.match(/^(.{1,22}?)\s*\((המשך|ממשיך|ממשיכה|cont'?d|v\.?o\.?|o\.?s\.?|o\.?c\.?|ק\.?ר\.?|קול)\)\s*$/i);
@@ -3842,7 +3861,7 @@ function stripNameTag(l){
 }
 function parseScript(raw){
   parseScript.pre = [];
-  const rawLines = cleanRaw(raw).split('\n').map(l => stripNameTag(l.trim())).filter(l => !l || !isJunkLine(l));
+  const rawLines = cleanRaw(raw).split('\n').map(l => normLine(l.trim())).filter(l => !l || !isJunkLine(l));
   const lines = rawLines.filter(Boolean);
   // 1) collect possible speaker labels and how often they appear
   const count = {};
@@ -3860,9 +3879,36 @@ function parseScript(raw){
     if(META_KEYS.test(name)) return false;
     return n >= 2 || name.split(/\s+/).length === 1;
   };
+  // the role named in the header ("דמות: אלה, 30" / "תפקיד: נועה") is a speaker even if it talks once
+  const roleNames = new Set();
+  for(const l of lines){ const m = l.match(/^(דמות|תפקיד|שם הדמות|הדמות)\s*:\s*([^,\-–(\d]{1,20})/); if(m) roleNames.add(m[2].trim()); }
+  const ROLE_NOUN = /^(ה)?(אמא|אבא|שוטר|שוטרת|רופא|רופאה|אחות|מלצר|מלצרית|נהג|נהגת|מורה|מנהל|מנהלת|לקוח|לקוחה|חבר|חברה|ילד|ילדה|קול|סבא|סבתא|מוכר|מוכרת|שכן|שכנה|בוס|מראיין|מראיינת|כתב|כתבת|חייל|חיילת|מפקד|מפקדת|שופט|שופטת|עורך דין|עורכת דין)(\s|$)/;
   const speakers = new Set(Object.entries(count).filter(([k,n]) => !k.includes('\u0001') && isSpeaker(k,n)).map(([k]) => k));
-  const dashSpeakers = new Set(Object.entries(count).filter(([k,n]) => k.includes('\u0001') && n >= 2).map(([k]) => k.split('\u0001')[0]));
-  const aloneSpeakers = new Set(Object.entries(alone).filter(([k,n]) => n >= 2 && !META_KEYS.test(k)).map(([k]) => k));
+  // a once-only label like "שוטר 2" when "שוטר 1" talks, or a role like "מלצר"
+  Object.entries(count).forEach(([k,n]) => {
+    if(k.includes('\u0001') || speakers.has(k) || META_KEYS.test(k)) return;
+    const first = k.split(/\s+/)[0];
+    if(/\s\d{1,2}$/.test(k) || ROLE_NOUN.test(k) || roleNames.has(k) || [...speakers].some(x => x.split(/\s+/)[0] === first)) speakers.add(k);
+  });
+  const dashCounts = Object.entries(count).filter(([k]) => k.includes('\u0001')).map(([k,n]) => [k.split('\u0001')[0], n]);
+  const dashSpeakers = new Set(dashCounts.some(([,n]) => n >= 2) ? dashCounts.filter(([k,n]) => n >= 2 || k.split(/\s+/).length === 1).map(([k]) => k) : []);
+  const aloneSpeakers = new Set(Object.entries(alone).filter(([k,n]) => (n >= 2 || roleNames.has(k)) && !META_KEYS.test(k)).map(([k]) => k));
+  // screenplay layout: a character who talks only once ("אביב" alone, then a line) next to names that repeat
+  if(aloneSpeakers.size){
+    const COMMON = /^(בסדר|כן|לא|אוקיי|אוקי|טוב|נכון|מה|למה|די|יאללה|תודה|סליחה|רגע|שלום|היי|אוי|וואו|באמת|ברור|בטח|אולי|נו|הנה|תראה|תראי|תקשיב|תקשיבי|שקט|עכשיו|אז|ביי|מספיק|קדימה|המשך|סוף)$/;
+    const startAt = rawLines.findIndex(l => aloneSpeakers.has(l));
+    rawLines.forEach((l, j) => {
+      if(j <= startAt) return;
+      if(!l || aloneSpeakers.has(l) || !looksLikeName(l) || /[:(\[]/.test(l) || META_KEYS.test(l) || COMMON.test(l) || l.split(/\s+/).length > 2) return;
+      const prev = rawLines[j-1], next = rawLines.slice(j+1).find(Boolean);
+      if((j === 0 || !prev || aloneSpeakers.has(prev) === false) && next && !looksLikeName(next) && !aloneSpeakers.has(next)) aloneSpeakers.add(l);
+    });
+  }
+  // a monologue laid out as: header lines, the name alone, then the text
+  if(!speakers.size && !dashSpeakers.size && !aloneSpeakers.size){
+    const i = lines.findIndex((l, j) => looksLikeName(l) && !/[:]/.test(l) && !/^[\(\[]/.test(l) && !META_KEYS.test(l) && l.split(/\s+/).length <= 2 && lines[j+1] && !looksLikeName(lines[j+1]) && lines.slice(j+1).join(' ').length > 40);
+    if(i >= 0) aloneSpeakers.add(lines[i]);
+  }
 
   // a label that appears only once, before any repeated speaker shows up, is a header line ("יוצרים: ...")
   let firstRepeat = lines.findIndex(l => { const m = l.match(/^([^:]{1,24}):/); return m && (count[m[1].trim()] || 0) >= 2; });
@@ -3874,7 +3920,7 @@ function parseScript(raw){
   let cur = null;
   const start = (name, text) => {
     cur = {character: name.trim(), text: '', dir: ''};
-    out.push(cur);
+    out.push(cur); gap = false;
     if(text) add(text);
   };
   const add = (t) => {
@@ -3884,7 +3930,7 @@ function parseScript(raw){
   };
   // screenplay layout (NAME alone on a line, then the speech): the first paragraph after the name is
   // the speech, and paragraphs after a blank line are action ("the door slams") - shown, not spoken
-  const screenplay = aloneSpeakers.size > 0 && speakers.size === 0 && dashSpeakers.size === 0;
+  const screenplay = aloneSpeakers.size > 0 && speakers.size === 0 && dashSpeakers.size === 0 && (aloneSpeakers.size > 1 || [...aloneSpeakers].some(k => (alone[k] || 0) > 1));
   let gap = false;
   for(const l of rawLines){
     if(!l){ if(cur && cur.text) gap = true; continue; }
@@ -3895,10 +3941,11 @@ function parseScript(raw){
     if(aloneSpeakers.has(l)) { start(l, ''); gap = false; continue; }
     if(!cur){                                // headers / background before the dialogue starts: keep it as the scene's background
       const hm = l.match(/^([^:]{1,16}):/);
-      if(!(hm && META_KEYS.test(hm[1].trim())) && !/^\*/.test(l)) parseScript.pre.push(l.replace(/^[\(\[]|[\)\]]$/g, ''));
+      if(!(hm && META_KEYS.test(hm[1].trim())) && !/^\*/.test(l) && !isLogistics(l)) parseScript.pre.push(l.replace(/^[\(\[]|[\)\]]$/g, ''));
       continue;
     }
     if(/^[\(\[].*[\)\]]$/.test(l)) { add(l); continue; }   // stage direction on its own line
+    if(isLogistics(l) && (gap || /https?:|www\.|\d{3}-?\d{4}/.test(l))) continue;   // "בהצלחה! לשאלות: 050..." after the scene
     if(screenplay && gap){ add('(' + l.replace(/[()]/g, '') + ')'); continue; }   // action paragraph
     add(l);                                  // continuation of the current speech
   }
@@ -4010,10 +4057,10 @@ document.getElementById('analyzeBtn').onclick = () => {
   // no real dialogue (every "speaker" talks once and the text is one long speech): it's a monologue
   if(parsed && sceneKind !== 'mono'){
     const cnt = {}; parsed.forEach(l => cnt[l.character] = (cnt[l.character] || 0) + 1);
-    if(Object.values(cnt).every(n => n === 1) && parsed.length <= 4 && sc0.info.who) parsed = null;
+    if(Object.values(cnt).every(n => n === 1) && parsed.length <= 4 && sc0.info.who && !(Object.keys(cnt).length === 1 && Object.keys(cnt)[0] === sc0.info.who)) parsed = null;
   }
   if((!parsed || !parsed.length) && CLEAN && sc0.body.length > 20) parsed = monologueLines(sc0.body, sc0.info.who || 'אני');
-  const pre = (parseScript.pre || []).filter(l => l.length > 2);
+  const pre = (parseScript.pre || []).filter(l => l.length > 2 && !isLogistics(l) && !/^(תפקיד|דמות)\s*:/.test(l) && !(l.split(/\s+/).length <= 3 && !/[.!?]/.test(l)));   // no titles
   const setting = (pre.find(l => /^(פנים|חוץ|INT|EXT)[.\s]/i.test(l)) || '').trim();
   const preText = pre.filter(l => l !== setting && !(sc0.info.title && l.startsWith(sc0.info.title))).join(' ').replace(/\s+/g, ' ').trim().slice(0, 420);
   pendingSetting = setting;
@@ -4094,7 +4141,12 @@ async function readPdf(buf){
       const rtl = HEB.test(r.items.map(i => i.s).join(''));
       r.items.sort((a, b) => rtl ? (b.x - a.x) : (a.x - b.x));
       if(lastY !== null && lastY - r.y > 22) out.push('');      // paragraph gap
-      out.push(r.items.map(i => i.s).join(' ').replace(/\s+/g, ' ').trim());
+      // a table / two-column layout: "name" in one column, the line in the other -> "name: line"
+      const it = r.items, a0 = it[0], a1 = it[1];
+      const colGap = a1 ? (rtl ? a0.x - (a1.x + a1.w) : a1.x - (a0.x + a0.w)) : 0;
+      const nm = a0 && a0.s.trim().replace(/:$/, '');
+      if(a1 && colGap > 30 && looksLikeName(nm) && !/^[\(\[]/.test(nm)) out.push(nm + ': ' + it.slice(1).map(i => i.s).join(' ').replace(/\s+/g, ' ').trim());
+      else out.push(it.map(i => i.s).join(' ').replace(/\s+/g, ' ').trim());
       lastY = r.y;
     }
     out.push('');
@@ -4103,8 +4155,27 @@ async function readPdf(buf){
 }
 async function readDocx(buf){
   await loadScript(LIBS.mammoth);
-  const r = await mammoth.extractRawText({arrayBuffer: buf});
-  return r.value.replace(/\n{3,}/g, '\n\n');
+  const r = await mammoth.convertToHtml({arrayBuffer: buf});
+  const doc = new DOMParser().parseFromString('<div>' + r.value + '</div>', 'text/html');
+  const txt = el => { const c = el.cloneNode(true); c.querySelectorAll('br').forEach(b => b.replaceWith('\n')); return c.textContent.replace(/[ \t]+/g, ' ').trim(); };
+  const out = [];
+  const walk = node => {
+    for(const el of node.children){
+      const tag = el.tagName;
+      if(tag === 'TABLE'){
+        el.querySelectorAll('tr').forEach(tr => {
+          const cells = [...tr.children].map(txt).filter(Boolean);
+          if(cells.length >= 2 && looksLikeName(cells[0].replace(/:$/, ''))) out.push(cells[0].replace(/:$/, '') + ': ' + cells.slice(1).join(' '));
+          else cells.forEach(c => out.push(c));
+          out.push('');
+        });
+      } else if(tag === 'UL' || tag === 'OL'){ el.querySelectorAll('li').forEach(li => { out.push(txt(li)); out.push(''); }); }
+      else if(/^(P|H[1-6])$/.test(tag)){ out.push(txt(el)); out.push(''); }
+      else walk(el);
+    }
+  };
+  walk(doc.body.firstElementChild);
+  return out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
 function readRtf(t){
   // minimal: drop RTF control words, decode \'xx (Windows-1255 Hebrew) and \uN
@@ -4139,7 +4210,7 @@ document.getElementById('fileInput').addEventListener('change', async (e) => {
     try{ localStorage.setItem('sp_script', text); }catch(e2){}
     note.textContent = file.name;
     const parsed = parseScript(text);
-    if(parsed && parsed.length){
+    if((parsed && parsed.length) || text.length > 40){
       pendingTitle = file.name.replace(/\.[^.]+$/, ''); pendingFile = file.name;
       document.getElementById('analyzeBtn').click();
     } else {
