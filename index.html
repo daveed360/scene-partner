@@ -1153,7 +1153,7 @@ html.clean #screen-input.tab-work{padding-bottom:90px}
 html.clean #screen-input:not(.adding) #uploadBox,html.clean #screen-input:not(.adding) .or,html.clean #screen-input:not(.adding) #scriptInput,html.clean #screen-input:not(.adding) .hint,
 html.clean #screen-input:not(.adding) #analyzeBtn,html.clean #screen-input:not(.adding) h2.sec:not(.lib){display:none}
 html.clean #screen-input.adding .namein.about{min-height:64px;font-size:15px;line-height:1.5;background-image:none;padding-right:14px}
-html.clean #screen-input.adding > :not(.addhead):not(.fld):not(.namein):not(.seg):not(.moredet):not(#uploadBox):not(.or):not(#scriptInput):not(.hint):not(#inputErr):not(#analyzeBtn):not(.tips){display:none!important}
+html.clean #screen-input.adding > :not(.addhead):not(.fld):not(.namein):not(.seg):not(.moredet):not(#uploadBox):not(.or):not(#scriptInput):not(.pastebtn):not(.hint):not(#inputErr):not(#analyzeBtn):not(.tips){display:none!important}
 html.clean #screen-input.adding .addhead{display:flex;align-items:center;gap:10px;margin:4px 0 14px}
 html.clean .addhead h2{margin:0;font-family:var(--typed);font-size:26px}
 html.clean .backbtn{width:42px;height:42px;border-radius:50%;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);font-size:20px;cursor:pointer}
@@ -1721,6 +1721,11 @@ html.clean.dark .rsnote a,html.clean.dark .supp a{color:#5ED38C}
 .supp{display:block;text-align:center;font-family:var(--sans);font-size:14px;color:var(--pencil);margin:18px auto 8px}
 .supp[hidden],.wa-only[hidden]{display:none}
 #selfCam.back{transform:none}
+
+.pastebtn{display:none;width:100%;margin:0 0 10px;padding:14px 16px;border-radius:14px;border:1.5px dashed var(--ink,#1E2226);background:var(--hl-soft,#FFF8B8);color:var(--ink,#1E2226);font-family:var(--sans);font-size:16px;text-align:right;cursor:pointer}
+.pastebtn b{font-weight:800}.pastebtn small{display:block;margin-top:2px;font-size:13px;color:var(--pencil,#6E7177)}
+html.clean #screen-input.adding.src-paste .pastebtn,#screen-input.src-paste .pastebtn{display:block!important}
+html.clean.dark .pastebtn{background:rgba(255,239,92,.10);border-color:#F5EEE6;color:#F5EEE6}
 </style>
 </head>
 <body>
@@ -1780,7 +1785,7 @@ html.clean.dark .rsnote a,html.clean.dark .supp a{color:#5ED38C}
 <label class="upload" id="uploadBox">
 <input type="file" id="fileInput" accept=".docx,.pdf,.txt,.rtf,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" fill="#FFF3D6"/><path d="M14 3v5h5" fill="#FFC24B"/><path d="M12 17v-6m0 0-2.5 2.5M12 11l2.5 2.5" stroke="#2A1E14" stroke-width="1.8" stroke-linecap="round" fill="none"/></svg>
-<span><b>העלאת קובץ</b><small id="uploadNote">Word, PDF או טקסט</small></span>
+<span><b>העלאת קובץ</b><small id="uploadNote">Word, PDF או טקסט, גם קובץ שקיבלתם בוואטסאפ</small></span>
 </label>
 <div class="or">או להדביק כאן</div>
 <textarea id="scriptInput" aria-label="הטקסט של הסצנה" placeholder="דני: את לא חייבת להישאר.&#10;נועה: אני יודעת. אני פה כי אני רוצה.&#10;דני: זה לא מה שאמרת אתמול."></textarea>
@@ -3514,6 +3519,19 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('.addhead').after(seg);
   $('scriptInput').after(det);
   scr.classList.add('src-paste');
+  // one tap: paste what was copied in WhatsApp and go straight to choosing a role
+  if(navigator.clipboard && navigator.clipboard.readText){
+    const pb = document.createElement('button'); pb.type = 'button'; pb.className = 'pastebtn'; pb.innerHTML = '📋 <b>הדבק את הסצנה שהעתקת</b><small>מוואטסאפ, ממייל או מאתר</small>';
+    pb.onclick = async () => {
+      try{
+        const t = (await navigator.clipboard.readText() || '').trim();
+        if(!t){ toast('אין טקסט מועתק. העתיקו את הסצנה ונסו שוב', '📋'); return; }
+        const si = $('scriptInput'); si.value = t; si.dispatchEvent(new Event('input', {bubbles: true}));
+        $('analyzeBtn').click();
+      }catch(e){ toast('לחצו לחיצה ארוכה בתיבה ובחרו "הדבק"', '📋'); $('scriptInput').focus(); }
+    };
+    $('scriptInput').before(pb);
+  }
   seg.querySelectorAll('button').forEach(b => b.onclick = () => {
     seg.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
     scr.classList.toggle('src-paste', b.dataset.s === 'paste'); scr.classList.toggle('src-file', b.dataset.s === 'file');
