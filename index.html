@@ -1886,6 +1886,7 @@ html.clean.dark .rsnote a,html.clean.dark .supp a{color:#5ED38C}
 </div>
 <button type="button" class="nextstep" id="nextStep" hidden></button>
 <button class="primary" id="againBtn">עוד פעם מההתחלה</button>
+<button type="button" class="secondary" id="doneShare">📤 שלח את הסצנה לחבר</button>
 <button class="secondary" id="newSceneBtn">סצנה אחרת</button>
 </div>
 </div>
@@ -3056,7 +3057,7 @@ function showIntro(){
   document.getElementById('introSkip').onclick = close;
   box.hidden = false; draw();
 }
-document.addEventListener('DOMContentLoaded', () => { if(!CLEAN && !lsGet('sp_intro') && !location.hash.startsWith('#s=')) showIntro(); });
+document.addEventListener('DOMContentLoaded', () => { if(!CLEAN && !lsGet('sp_intro') && !/^#[szl]=/.test(location.hash)) showIntro(); });
 
 let pendingTitle = null, pendingFile = null, pendingAbout = '', pendingSetting = '';
 
@@ -3174,25 +3175,53 @@ document.addEventListener('DOMContentLoaded', renderMyScenes);
 /* ---- share a scene as a link (the scene travels inside the link, nothing is uploaded) ---- */
 function b64e(str){ const b = new TextEncoder().encode(str); let s = ''; b.forEach(c => s += String.fromCharCode(c)); return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
 function b64d(str){ const s = atob(str.replace(/-/g,'+').replace(/_/g,'/')); return new TextDecoder().decode(Uint8Array.from(s, c => c.charCodeAt(0))); }
-document.getElementById('shareBtn').onclick = async () => {
-  const url = location.origin + location.pathname + '#s=' + b64e(JSON.stringify({t: sceneTitle, x: toCleanScript(parsedLines)}));
-  const note = document.getElementById('shareNote');
+async function zipB64(str){
+  const cs = new CompressionStream('deflate-raw');
+  const buf = await new Response(new Blob([new TextEncoder().encode(str)]).stream().pipeThrough(cs)).arrayBuffer();
+  let bin = ''; new Uint8Array(buf).forEach(c => bin += String.fromCharCode(c));
+  return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+async function unzipB64(str){
+  const bin = atob(str.replace(/-/g,'+').replace(/_/g,'/'));
+  const ds = new DecompressionStream('deflate-raw');
+  return await new Response(new Blob([Uint8Array.from(bin, c => c.charCodeAt(0))]).stream().pipeThrough(ds)).text();
+}
+// the scene travels inside the link (nothing is uploaded). Library scenes get a short link by title.
+async function sceneLink(title, lines){
+  const base = location.origin + location.pathname;
+  if(SCENES.some(x => x.title === title)) return base + '#l=' + encodeURIComponent(title);
+  const json = JSON.stringify({t: title, x: toCleanScript(lines)});
+  if(window.CompressionStream && window.DecompressionStream){ try{ return base + '#z=' + await zipB64(json); }catch(e){} }
+  return base + '#s=' + b64e(json);
+}
+async function shareScene(title, lines){
+  const url = await sceneLink(title, lines);
+  const text = `קיבלת סצנה לתרגול: "${title}" 🎭\nפותחים את הקישור, בוחרים דמות, והאפליקציה מקריאה את שאר הדמויות ומחכה לך בתור שלך. חינם, בלי הרשמה:\n${url}`;
+  try{ gcEvent('scene-shared', 'סצנה נשלחה לחבר'); }catch(e){}
   try{
-    if(navigator.share){ await navigator.share({title: 'Audition Partner: ' + sceneTitle, text: 'בוא נתרגל את הסצנה הזו', url}); return; }
-    await navigator.clipboard.writeText(url);
-    note.textContent = 'הקישור הועתק. אפשר להדביק אותו בוואטסאפ.';
-    toast('הקישור הועתק', '🔗');
-  }catch(e){ if(e && e.name === 'AbortError') return; note.textContent = 'לא הצלחתי להעתיק. הקישור: ' + url; }
-  note.style.display = 'block';
-};
-document.addEventListener('DOMContentLoaded', () => {
-  const m = location.hash.match(/^#s=(.+)$/);
+    if(navigator.share){ await navigator.share({title: 'Audition Partner: ' + title, text}); return; }
+    await navigator.clipboard.writeText(text);
+    toast('הקישור הועתק. הדביקו אותו בוואטסאפ', '🔗');
+  }catch(e){
+    if(e && e.name === 'AbortError') return;
+    try{ window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank'); }catch(_){ prompt('העתיקו את הקישור:', url); }
+  }
+}
+document.getElementById('shareBtn').onclick = () => shareScene(sceneTitle, parsedLines);
+document.getElementById('doneShare').onclick = () => shareScene(sceneTitle, parsedLines);
+document.addEventListener('DOMContentLoaded', async () => {
+  const m = location.hash.match(/^#([szl])=(.+)$/);
   if(!m) return;
   try{
-    const {t, x} = JSON.parse(b64d(m[1]));
-    history.replaceState(null, '', location.pathname);
-    saveMyScene(t, x, {src: 'link'});
+    let t, x;
+    if(m[1] === 'l'){ const sc = SCENES.find(y => y.title === decodeURIComponent(m[2])); if(!sc) return; t = sc.title; x = sc.text; }
+    else ({t, x} = JSON.parse(m[1] === 'z' ? await unzipB64(m[2]) : b64d(m[2])));
+    history.replaceState(null, '', location.pathname + location.search);
+    if(m[1] !== 'l') saveMyScene(t, x, {src: 'link'});
+    lsSet('sp_onb', '1');
     loadScene(x, t);
+    setTimeout(() => toast('חבר שלח לך סצנה 🎭 בחר את הדמות שלך ומתחילים', '📩'), 500);
+    try{ gcEvent('scene-received', 'נפתחה סצנה מקישור של חבר'); }catch(e){}
   }catch(e){}
 });
 
@@ -3751,7 +3780,7 @@ function openOnb(){
   };
   draw(); dlg.hidden = false;
 }
-document.addEventListener('DOMContentLoaded', () => { if(CLEAN && !lsGet('sp_onb') && !lsGet('sp_my') && !location.hash.startsWith('#s=')) setTimeout(openOnb, 400); });
+document.addEventListener('DOMContentLoaded', () => { if(CLEAN && !lsGet('sp_onb') && !lsGet('sp_my') && !/^#[szl]=/.test(location.hash)) setTimeout(openOnb, 400); });
 
 /* ---- header tucks away on scroll; light / dark ---- */
 addEventListener('scroll', () => { const h = document.querySelector('header'); if(h) h.classList.toggle('compact', scrollY > 30); }, {passive: true});
