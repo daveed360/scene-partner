@@ -3917,7 +3917,8 @@ function parseScript(raw){
     const COMMON = /^(בסדר|כן|לא|אוקיי|אוקי|טוב|נכון|מה|למה|די|יאללה|תודה|סליחה|רגע|שלום|היי|אוי|וואו|באמת|ברור|בטח|אולי|נו|הנה|תראה|תראי|תקשיב|תקשיבי|שקט|עכשיו|אז|ביי|מספיק|קדימה|המשך|סוף)$/;
     const startAt = rawLines.findIndex(l => aloneSpeakers.has(l));
     rawLines.forEach((l, j) => {
-      if(j <= startAt) return;
+      // before the first repeated name only if we're already inside the scene (after "פנים./חוץ." and an action line)
+      if(j <= startAt && !(rawLines.slice(0, j).some(x => /^(פנים|חוץ|INT|EXT)[.\s]/i.test(x)) && rawLines[j-1] && (rawLines[j-1].length > 25 || /[.!?]$/.test(rawLines[j-1])))) return;
       if(!l || aloneSpeakers.has(l) || !looksLikeName(l) || /[:(\[]/.test(l) || META_KEYS.test(l) || COMMON.test(l) || l.split(/\s+/).length > 2) return;
       const prev = rawLines[j-1], next = rawLines.slice(j+1).find(Boolean);
       if((j === 0 || !prev || aloneSpeakers.has(prev) === false) && next && !looksLikeName(next) && !aloneSpeakers.has(next)) aloneSpeakers.add(l);
@@ -3966,6 +3967,11 @@ function parseScript(raw){
     if(/^[\(\[].*[\)\]]$/.test(l)) { add(l); continue; }   // stage direction on its own line
     if(isLogistics(l) && (gap || /https?:|www\.|\d{3}-?\d{4}/.test(l))) continue;   // "בהצלחה! לשאלות: 050..." after the scene
     if(screenplay && gap){ add('(' + l.replace(/[()]/g, '') + ')'); continue; }   // action paragraph
+    // pasted screenplay with no blank lines: "פזית תוקעת בה מבט" / "הנייד של ארז מצלצל" is action, not speech
+    if(screenplay && cur && cur.text){
+      const w = l.split(/\s+/);
+      if((aloneSpeakers.has(w[0]) && w[1] && !/[,?!.]$/.test(w[0]) && !/^[,?!.]/.test(w[1]) && !/[?]$/.test(l)) || /^(ה)?(נייד|טלפון|פעמון|דלת|אינטרקום)(\s|$)|^(נשמע|נשמעת|נשמעים|נשמעות|מוזיקה|חושך|הפסקה)(\s|$)/.test(l)){ add('(' + l.replace(/[()]/g, '') + ')'); continue; }
+    }
     add(l);                                  // continuation of the current speech
   }
   const result = out.filter(x => x.text);
