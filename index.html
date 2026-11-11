@@ -5995,6 +5995,36 @@ document.addEventListener('DOMContentLoaded', () => {
   renderProgressBand();
   if(SUPPORT_WA && band.parentNode){ const sp = document.createElement('p'); sp.className = 'supp work-only'; sp.innerHTML = '💬 צריכים עזרה או רוצים להציע שיפור? ' + supportLink('כתבו לנו בוואטסאפ', 'תמיכה'); band.after(sp); }
 });
+
+/* ---- phone back button: closes what's open, one step at a time, instead of leaving the app ---- */
+(function(){
+  const OVERLAYS = ['sayDlg', 'voiceDlg', 'warmDlg', 'proDlg', 'glossDlg', 'lessonDlg', 'roleSheet', 'voiceHelp', 'onb'];
+  let goingBack = false;
+  const mark = () => { if(!goingBack) try{ history.pushState({sp: 1}, ''); }catch(e){} };
+  // something to undo, top-most first
+  function backStep(){
+    for(const id of OVERLAYS){ const d = document.getElementById(id); if(d && !d.hidden){ if(id === 'onb') lsSet('sp_onb', '1'); d.hidden = true; return true; } }
+    if(currentScreen === 'rehearse' || currentScreen === 'done'){ show('input'); return true; }
+    if(currentScreen === 'roles'){ show('input'); return true; }
+    if(document.getElementById('screen-input').classList.contains('adding')){ openAdd(false); return true; }
+    if(document.getElementById('screen-input').classList.contains('tab-learn')){ homeTab('work'); return true; }
+    return false;
+  }
+  addEventListener('popstate', e => {
+    goingBack = true;
+    let did = false;
+    try{ did = backStep(); }catch(err){}
+    goingBack = false;
+    // a step whose thing was already closed by its own button: skip on to the next one
+    if(!did && e.state && e.state.sp) history.back();
+  });
+  // every opened dialog, screen, add page or tips tab gets its own back step
+  OVERLAYS.forEach(id => { const d = document.getElementById(id); if(!d) return;
+    new MutationObserver(() => { if(!d.hidden && !d.dataset.backMarked){ d.dataset.backMarked = '1'; mark(); } if(d.hidden) delete d.dataset.backMarked; }).observe(d, {attributes: true, attributeFilter: ['hidden']}); });
+  const _show = show; show = function(name){ const from = currentScreen; _show.apply(this, arguments); if(name !== 'input' && name !== from && !(from === 'rehearse' && name === 'done') && !(from === 'done' && name === 'rehearse')) mark(); };
+  const _openAdd = openAdd; openAdd = function(on){ const was = document.getElementById('screen-input').classList.contains('adding'); _openAdd.apply(this, arguments); if(on && !was) mark(); };
+  const _homeTab = homeTab; homeTab = function(t){ const was = document.getElementById('screen-input').classList.contains('tab-learn'); _homeTab.apply(this, arguments); if(t === 'learn' && !was) mark(); };
+})();
 </script>
 <script data-goatcounter="https://auditionpartner.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <div class="bgart" aria-hidden="true">
