@@ -1807,6 +1807,73 @@ html.clean.dark .pastebtn{background:rgba(255,239,92,.10);border-color:#F5EEE6;c
   html.clean body #screen-input.tab-work.tab-work[data-view=lib] .fgrid .feat .ft{font-size:24px}
 }
 @media (prefers-reduced-motion: reduce){ .pagehead.in .phx,html.clean body #screen-input .fgrid .feat{animation:none!important} }
+
+/* ===== phone menu ===== */
+.burger,.mdrawer{display:none}
+@media (max-width:999px){
+  html.clean header .brand{gap:10px}
+  html.clean header #glossBtn,html.clean header #themeBtn{display:none!important}
+  html.clean .burger{display:inline-flex;flex-direction:column;justify-content:center;gap:5px;flex:0 0 auto;width:46px;height:46px;padding:0 11px;border:0;border-radius:14px;background:var(--ink,#1F1D1A);box-shadow:0 8px 18px -10px rgba(0,0,0,.55),inset 0 -3px 0 rgba(0,0,0,.25);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s cubic-bezier(.3,1.5,.5,1),background-color .2s;order:-1}
+  html.clean .burger:active{transform:scale(.9)}
+  html.clean .burger span{display:block;height:3.5px;border-radius:2px;background:var(--paper,#F8F6F0);transition:transform .32s cubic-bezier(.5,1.6,.4,1),opacity .2s,width .25s}
+  /* the top bar is a clapper-board strip */
+  html.clean .burger .b1{height:7px;border-radius:2px 2px 1px 1px;background:repeating-linear-gradient(-55deg,#FFD84D 0 5px,#1F1D1A 5px 9px);box-shadow:0 0 0 1.5px var(--paper,#F8F6F0);transform-origin:16% 50%;animation:clapTap 4.5s ease-in-out 1.2s infinite}
+  html.clean .burger .b3{width:68%;align-self:flex-start}
+  @keyframes clapTap{0%,88%,100%{transform:none}92%{transform:rotate(-14deg)}95%{transform:none}}
+  html.md-open .burger{background:#B3282D}
+  html.md-open .burger .b1{animation:none;height:3.5px;background:#fff;box-shadow:none;transform:translateY(8.5px) rotate(45deg);transform-origin:50% 50%}
+  html.md-open .burger .b2{opacity:0;transform:scaleX(.2)}
+  html.md-open .burger .b3{width:100%;transform:translateY(-8.5px) rotate(-45deg)}
+  html.clean .mdrawer:not([hidden]){display:block;position:fixed;inset:0;z-index:80}
+  .mdrawer .mdback{position:absolute;inset:0;background:rgba(20,16,12,.48);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);animation:mdFade .25s ease both}
+  .mdrawer .mdpanel{position:absolute;top:0;bottom:0;right:0;width:min(84vw,330px);display:flex;flex-direction:column;padding:46px 18px max(18px,env(safe-area-inset-bottom));background:var(--paper,#F8F6F0);border-left:3px solid #E8B53A;box-shadow:-24px 0 50px -20px rgba(0,0,0,.5);overflow-y:auto;font-family:var(--sans);animation:mdIn .42s cubic-bezier(.2,1.1,.3,1) both}
+  .mdrawer.out .mdpanel{animation:mdOut .23s ease-in both}.mdrawer.out .mdback{animation:mdFade .23s ease reverse both}
+  @keyframes mdIn{from{transform:translateX(105%)}to{transform:none}}
+  @keyframes mdOut{to{transform:translateX(105%)}}
+  @keyframes mdFade{from{opacity:0}to{opacity:1}}
+  .mdrawer .valance{position:absolute;top:0;left:0;right:0;width:100%;height:34px;filter:drop-shadow(0 4px 4px rgba(0,0,0,.18));transform-origin:top;animation:valDrop .55s cubic-bezier(.3,1.5,.5,1) .08s both}
+  @keyframes valDrop{from{transform:scaleY(.2)}to{transform:none}}
+  .mdrawer .mdhead{position:relative;display:flex;flex-direction:column;padding:0 4px 14px}
+  .mdrawer .mdhead b{font-family:'David Libre',serif;font-size:22px;color:var(--ink)}
+  .mdrawer .mdhead small{color:#B3282D;font-size:14px;margin-top:2px}
+  .mdrawer .mdclose{position:absolute;left:0;top:0;width:36px;height:36px;border:1px solid var(--rule);border-radius:50%;background:var(--sheet,#fff);color:var(--ink);font-size:15px;cursor:pointer}
+  .mdrawer .mdnew{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;margin:4px 0 16px;border:0;border-radius:14px;background:#C8372D;color:#fff;font:inherit;font-weight:800;font-size:17px;box-shadow:0 10px 22px -12px rgba(200,55,45,.75);cursor:pointer}
+  .mdrawer .mdnew span{font-size:20px;line-height:1}
+  .mdrawer nav{display:flex;flex-direction:column;gap:4px}
+  .mdrawer nav button{display:flex;align-items:center;gap:12px;width:100%;padding:13px 12px;border:0;border-radius:12px;background:transparent;color:var(--ink);font:inherit;font-size:17px;font-weight:700;text-align:right;cursor:pointer;animation:mdItem .4s cubic-bezier(.2,1,.3,1) both;animation-delay:calc(.1s + var(--k) * 45ms);transition:background-color .15s}
+  .mdrawer nav button i{font-style:normal;font-size:20px;width:26px;text-align:center}
+  .mdrawer nav button span{flex:1}
+  .mdrawer nav button em{font-style:normal;opacity:.35;font-size:20px}
+  .mdrawer nav button:active{background:rgba(0,0,0,.06)}
+  .mdrawer nav button[aria-current=true]{background:var(--sheet,#fff);box-shadow:0 6px 16px -10px rgba(0,0,0,.35),inset -4px 0 0 #C8372D}
+  @keyframes mdItem{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+  .mdrawer .mdfoot{margin-top:auto;padding-top:18px;display:flex;flex-direction:column;gap:10px}
+  .mdrawer .mdstreak{padding:12px 14px;border-radius:12px;background:var(--sheet,#fff);border:1px solid var(--rule)}
+  .mdrawer .mdstreak b{display:block;font-size:16px;color:var(--ink)}.mdrawer .mdstreak small{color:var(--pencil);font-size:13px}
+  .mdrawer .mdpro{padding:12px 14px;border:0;border-radius:12px;background:#1F1D1A;color:#fff;text-align:right;font:inherit;cursor:pointer}
+  .mdrawer .mdpro b{display:block;color:#FFD84D;font-size:15px}.mdrawer .mdpro small{opacity:.75;font-size:12.5px}
+  .mdrawer .mdrow{display:flex;gap:8px}
+  .mdrawer .mdrow button{flex:1;padding:11px 8px;border:1px solid var(--rule);border-radius:12px;background:transparent;color:var(--ink);font:inherit;font-size:14px;cursor:pointer}
+  .mdrawer .mdwa{display:block;text-align:center;padding:6px;color:#1D8A4E;font-weight:700;font-size:14px;text-decoration:none}
+  html.clean.dark .mdrawer .mdpanel{background:#141416}
+  html.md-open body{overflow:hidden}
+
+  /* phone pages: the same split as on a computer */
+  html.clean body #screen-input.tab-work:not(.adding) .pagehead:not([hidden]){display:block!important;margin:2px 0 18px;padding:0 0 14px;border-bottom:1px solid var(--rule)}
+  html.clean .pagehead h1{margin:4px 0 0;font-family:'David Libre',serif;font-size:28px;color:var(--ink);display:flex;align-items:center;gap:10px}
+  html.clean .pagehead h1 i{font-style:normal;font-size:24px}
+  html.clean .pagehead p{margin:6px 0 0;color:var(--pencil);font-size:14.5px}
+  html.clean .pagehead .phback{border:0;background:none;padding:0;color:var(--pencil);font:inherit;font-size:14px;font-weight:700}
+  html.clean .pagehead .phadd{margin-top:14px;width:100%;padding:13px;border:0;border-radius:12px;background:#C8372D;color:#fff;font:inherit;font-weight:800;font-size:16px}
+  html.clean body #screen-input.tab-work:is([data-view=mine],[data-view=takes]) :is(.desk-lib,.progband,.supp,.mytabs,.workhead,.fab,.tipsbtn){display:none!important}
+  html.clean body #screen-input.tab-work[data-view=takes] .pastebtn{display:none!important}
+  html.clean body #screen-input.tab-work[data-view=lib] :is(.desk-mine,.progband,.supp,h2.sec.lib,#libTabs){display:none!important}
+  html.clean body #screen-input.tab-work[data-view=lib] .shelf{margin:0 0 26px}
+  html.clean body #screen-input.tab-work[data-view=lib] .shelf .shead .all{display:none!important}
+  html.clean body #screen-input.tab-work[data-view=lib] .fgrid{display:flex;flex-direction:column;gap:14px}
+  html.clean body #screen-input.tab-work[data-view=lib] .fgrid .feat{margin:0!important}
+}
+@media (prefers-reduced-motion: reduce){ .mdrawer *,.burger *{animation:none!important} }
 </style>
 </head>
 <body>
@@ -3443,7 +3510,7 @@ function renderShelves(){
       b.onclick = () => { if(isLocked(sc)){ openPro('הסצנה "' + sc.title + '" היא חלק מהגרסה המלאה.'); return; } loadScene(sc.text, sc.title); };
       return b;
     };
-    if(PAGE === 'lib' && innerWidth >= 1000){
+    if(PAGE === 'lib'){
       const g = document.createElement('div'); g.className = 'fgrid';
       group.forEach((sc, k) => { const c = card(sc); c.style.setProperty('--k', k); g.appendChild(c); });
       sec.appendChild(g);
@@ -3458,7 +3525,7 @@ function renderShelves(){
       sec.appendChild(rows);
     } else sec.appendChild(card(pick));
     sec.querySelector('.all').onclick = () => {
-      if(innerWidth >= 1000 && typeof pageView === 'function'){ pageView('lib'); setTimeout(() => { const t = document.querySelector('.shelf[data-lv="' + lv + '"]'); if(t) t.scrollIntoView({behavior: 'smooth', block: 'start'}); }, 80); return; }
+      if(typeof pageView === 'function'){ pageView('lib'); setTimeout(() => { const t = document.querySelector('.shelf[data-lv="' + lv + '"]'); if(t) t.scrollIntoView({behavior: 'smooth', block: 'start'}); }, 80); return; }
       libOpen[lv] = !libOpen[lv]; renderShelves(); };
     list.appendChild(sec);
   });
@@ -6083,7 +6150,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 /* ---- phone back button: closes what's open, one step at a time, instead of leaving the app ---- */
 (function(){
-  const OVERLAYS = ['sayDlg', 'voiceDlg', 'warmDlg', 'proDlg', 'glossDlg', 'lessonDlg', 'roleSheet', 'voiceHelp', 'onb'];
+  const OVERLAYS = ['mDrawer', 'sayDlg', 'voiceDlg', 'warmDlg', 'proDlg', 'glossDlg', 'lessonDlg', 'roleSheet', 'voiceHelp', 'onb'];
   let goingBack = false;
   const mark = () => { if(!goingBack) try{ history.pushState({sp: 1}, ''); }catch(e){} };
   window.__spMark = mark;
@@ -6098,6 +6165,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return false;
   }
   addEventListener('popstate', e => {
+    if(window.__spSkipBack){ window.__spSkipBack = false; return; }
     goingBack = true;
     let did = false;
     try{ did = backStep(); }catch(err){}
@@ -6112,6 +6180,67 @@ document.addEventListener('DOMContentLoaded', () => {
   const _openAdd = openAdd; openAdd = function(on){ const was = document.getElementById('screen-input').classList.contains('adding'); _openAdd.apply(this, arguments); if(on && !was) mark(); };
   const _homeTab = homeTab; homeTab = function(t){ const was = document.getElementById('screen-input').classList.contains('tab-learn'); _homeTab.apply(this, arguments); if(t === 'learn' && !was) mark(); };
 })();
+
+/* ---- phone menu: a clapper-board burger that opens a stage-curtain drawer ---- */
+document.addEventListener('DOMContentLoaded', () => {
+  if(!CLEAN) return;
+  const brand = document.querySelector('header .brand'); if(!brand) return;
+  const btn = document.createElement('button');
+  btn.type = 'button'; btn.className = 'burger'; btn.id = 'burgerBtn'; btn.setAttribute('aria-label', 'תפריט'); btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-controls', 'mDrawer');
+  btn.innerHTML = '<span class="b1"></span><span class="b2"></span><span class="b3"></span>';
+  brand.prepend(btn);
+  const dr = document.createElement('div'); dr.className = 'mdrawer'; dr.id = 'mDrawer'; dr.hidden = true; dr.setAttribute('role', 'dialog'); dr.setAttribute('aria-modal', 'true'); dr.setAttribute('aria-label', 'תפריט');
+  const items = [['home', '🏠', 'בית'], ['mine', '📄', 'הסצנות שלי'], ['takes', '🎬', 'הטייקים שלי'], ['lib', '📚', 'ספריית סצנות'], ['tips', '💡', 'טיפים לשחקן']];
+  dr.innerHTML = `<div class="mdback"></div><aside class="mdpanel">
+    <svg class="valance" viewBox="0 0 300 34" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0H300V14${Array.from({length: 10}, (_, k) => ` Q${300 - k * 30 - 15} 34 ${300 - (k + 1) * 30} 14`).join('')}Z" fill="#B3282D"/><path d="M0 12H300" stroke="#E8B53A" stroke-width="3"/></svg>
+    <div class="mdhead"><b>Audition Partner</b><small>שותף לתפקיד</small><button type="button" class="mdclose" aria-label="סגירה">✕</button></div>
+    <button type="button" class="mdnew"><span>＋</span> סצנה חדשה</button>
+    <nav>${items.map(([n, i, t], k) => `<button type="button" data-n="${n}" style="--k:${k}"><i>${i}</i><span>${t}</span><em>‹</em></button>`).join('')}</nav>
+    <div class="mdfoot">
+      <div class="mdstreak"></div>
+      <button type="button" class="mdpro"><b>✨ Audition Partner Pro</b><small>קולות טבעיים, בלי הגבלה, כל הספרייה</small></button>
+      <div class="mdrow"><button type="button" class="mdtheme">🌓 מצב לילה / יום</button><button type="button" class="mdgloss">📖 מילון</button></div>
+      ${SUPPORT_WA ? `<a class="mdwa" href="${supportUrl('תמיכה')}" target="_blank" rel="noopener">💬 תמיכה בוואטסאפ</a>` : ''}
+    </div></aside>`;
+  document.body.appendChild(dr);
+  const sync = () => {
+    const sc = document.getElementById('screen-input');
+    const cur = currentScreen !== 'input' ? '' : sc.classList.contains('tab-learn') ? 'tips' : (typeof PAGE !== 'undefined' ? PAGE : 'home');
+    dr.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-current', String(b.dataset.n === cur)));
+    const n = typeof streakCount === 'function' ? streakCount() : 0;
+    dr.querySelector('.mdstreak').innerHTML = n ? `<b>🎟️ ${n} ${n === 1 ? 'יום' : 'ימים'} ברצף</b><small>ממשיכים ככה!</small>` : '<b>🎬 היום</b><small>עוד לא תרגלת. סצנה אחת קצרה?</small>';
+    dr.querySelector('.mdpro').hidden = isPro();
+  };
+  let closing = null;
+  const open = () => { clearTimeout(closing); sync(); dr.classList.remove('out'); dr.hidden = false; if(window.__spMark) window.__spMark(); btn.setAttribute('aria-expanded', 'true'); document.documentElement.classList.add('md-open'); buzz(10); try{ SFX.select(); }catch(e){} };
+  const close = then => {
+    if(dr.hidden){ if(then) then(); return; }
+    btn.setAttribute('aria-expanded', 'false'); document.documentElement.classList.remove('md-open');
+    dr.classList.add('out');
+    closing = setTimeout(() => { dr.hidden = true; dr.classList.remove('out'); if(then) then(); }, 230);
+  };
+  // the back button hides the drawer directly; keep the burger in step
+  new MutationObserver(() => { if(dr.hidden){ btn.setAttribute('aria-expanded', 'false'); document.documentElement.classList.remove('md-open'); } }).observe(dr, {attributes: true, attributeFilter: ['hidden']});
+  btn.onclick = () => dr.hidden ? open() : close();
+  dr.querySelector('.mdback').onclick = () => close();
+  dr.querySelector('.mdclose').onclick = () => close();
+  const goNav = n => {
+    show('input'); openAdd(false);
+    if(n === 'tips'){ homeTab('learn'); scrollTo(0, 0); return; }
+    homeTab('work'); pageView(n);
+  };
+  // after a menu choice the drawer's own back step is spent, so the history stays one step per page
+  const leave = fn => close(() => {
+    if(history.state && history.state.sp){ window.__spSkipBack = true; addEventListener('popstate', () => setTimeout(fn, 0), {once: true}); history.back(); }
+    else fn();
+  });
+  dr.querySelectorAll('nav button').forEach(b => b.onclick = () => leave(() => goNav(b.dataset.n)));
+  dr.querySelector('.mdnew').onclick = () => leave(() => { show('input'); homeTab('work'); openAdd(true); });
+  dr.querySelector('.mdpro').onclick = () => leave(() => openPro(''));
+  dr.querySelector('.mdtheme').onclick = () => { document.getElementById('themeBtn').click(); };
+  dr.querySelector('.mdgloss').onclick = () => leave(() => { try{ openGloss(); }catch(e){ goNav('tips'); } });
+  addEventListener('keydown', e => { if(e.key === 'Escape' && !dr.hidden) close(); });
+});
 </script>
 <script data-goatcounter="https://auditionpartner.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <div class="bgart" aria-hidden="true">
