@@ -1751,6 +1751,62 @@ html.clean.dark .rsnote a,html.clean.dark .supp a{color:#5ED38C}
 .pastebtn b{font-weight:800}.pastebtn small{display:block;margin-top:2px;font-size:13px;color:var(--pencil,#6E7177)}
 html.clean #screen-input.adding.src-paste .pastebtn,#screen-input.src-paste .pastebtn{display:block!important}
 html.clean.dark .pastebtn{background:rgba(255,239,92,.10);border-color:#F5EEE6;color:#F5EEE6}
+
+/* ===== pages on a computer: home, my scenes, my takes, library ===== */
+.pagehead,.whall{display:none}
+@media (min-width:1000px){
+  html.clean body #screen-input .whall{display:none}
+  html.clean body #screen-input:not(.adding) > .pastebtn{display:none!important}
+  html.clean body #screen-input.tab-work:not(.adding) .pagehead:not([hidden]){display:flex!important;align-items:flex-end;justify-content:space-between;gap:24px;margin:0 0 26px;padding:0 0 20px;border-bottom:1px solid var(--rule)}
+  .pagehead.in .phx{animation:phIn .4s cubic-bezier(.2,.85,.25,1) both}
+  @keyframes phIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .pagehead h1{margin:6px 0 0;font-family:'David Libre',serif;font-size:36px;line-height:1.1;color:var(--ink);display:flex;align-items:center;gap:12px}
+  .pagehead h1 i{font-style:normal;font-size:30px}
+  .pagehead p{margin:8px 0 0;color:var(--pencil);font-size:15.5px}
+  .pagehead .phback{border:0;background:none;padding:0;color:var(--pencil);font:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:color .15s,transform .15s}
+  .pagehead .phback:hover{color:var(--ink);transform:translateX(4px)}
+  .pagehead .phadd{padding:12px 22px;border:0;border-radius:12px;background:var(--red,#C8372D);color:#fff;font:inherit;font-weight:800;font-size:15.5px;cursor:pointer;box-shadow:0 10px 22px -12px rgba(200,55,45,.7);transition:transform .15s,box-shadow .2s;white-space:nowrap}
+  .pagehead .phadd:hover{transform:translateY(-2px);box-shadow:0 14px 26px -12px rgba(200,55,45,.8)}
+
+  /* --- home: greeting, numbers, then two even columns --- */
+  html.clean body #screen-input.tab-work.tab-work[data-view=home] .progband{grid-column:1 / -1!important;grid-row:2!important;margin:0 0 30px!important}
+  html.clean body #screen-input.tab-work.tab-work[data-view=home] .desk-mine,
+  html.clean body #screen-input.tab-work.tab-work[data-view=home] .desk-lib{grid-row:3!important}
+  html.clean body #screen-input.tab-work.tab-work[data-view=home] .supp{grid-column:1 / -1;grid-row:4}
+  html.clean body #screen-input.tab-work.tab-work[data-view=home] .mytabs,
+  html.clean body #screen-input.tab-work.tab-work[data-view=home] #folderBar{display:none!important}
+  html.clean body #screen-input.tab-work.tab-work[data-view=home] .workhead{flex-direction:row!important;align-items:baseline!important;justify-content:space-between!important;margin:8px 0 14px!important}
+  html.clean body #screen-input.tab-work.tab-work[data-view=home] .workhead h2{font-size:0!important}
+  html.clean body #screen-input.tab-work.tab-work[data-view=home] .workhead h2::after{content:"הסצנות שלי";font-size:13px}
+  html.clean body #screen-input.tab-work.tab-work[data-view=home] .whall{display:inline-block;border:0;background:none;padding:0;color:var(--red,#C8372D);font:inherit;font-weight:800;font-size:14px;cursor:pointer;transition:transform .15s}
+  html.clean body #screen-input.tab-work.tab-work[data-view=home] .whall:hover{transform:translateX(-4px)}
+  html.clean body #screen-input.tab-work.tab-work[data-view=home] #myList > .fitem:nth-child(n+5){display:none!important}
+  html.clean body #screen-input.tab-work.tab-work[data-view=home] .desk-mine{position:static!important;max-height:none!important;overflow:visible!important}
+
+  /* --- my scenes / my takes: one wide page --- */
+  html.clean body #screen-input.tab-work.tab-work:is([data-view=mine],[data-view=takes]) :is(.desktitle,.home-side,.desk-lib,.progband,.supp,.workhead,.mytabs){display:none!important}
+  html.clean body #screen-input.tab-work.tab-work:is([data-view=mine],[data-view=takes]) .home-grid{display:block!important}
+  html.clean body #screen-input.tab-work.tab-work:is([data-view=mine],[data-view=takes]) .desk-mine{position:static!important;max-height:none!important;overflow:visible!important;padding:0!important;animation:mUp .45s cubic-bezier(.2,.85,.25,1) both!important}
+  html.clean body #screen-input.tab-work.tab-work[data-view=mine] #folderBar{margin:0 0 18px!important}
+  html.clean body #screen-input.tab-work.tab-work[data-view=mine] #myList{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px;align-items:stretch}
+  html.clean body #screen-input.tab-work.tab-work[data-view=mine] #myList > .fitem{margin:0!important;height:100%}
+  html.clean body #screen-input.tab-work.tab-work[data-view=mine] #myList > .empty{grid-column:1 / -1}
+  html.clean body #screen-input.tab-work.tab-work[data-view=takes] #takesList > .empty{grid-column:1 / -1}
+  html.clean body #screen-input.tab-work.tab-work[data-view=takes] #takesList{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+
+  /* --- library: every level, every scene --- */
+  html.clean body #screen-input.tab-work.tab-work[data-view=lib] :is(.desktitle,.home-side,.desk-mine,.progband,.supp,h2.sec.lib,#libTabs){display:none!important}
+  html.clean body #screen-input.tab-work.tab-work[data-view=lib] .home-grid{display:block!important}
+  html.clean body #screen-input.tab-work.tab-work[data-view=lib] #sceneList{display:block!important}
+  html.clean body #screen-input.tab-work.tab-work[data-view=lib] .shelf{margin:0 0 38px!important;scroll-margin-top:24px}
+  html.clean body #screen-input.tab-work.tab-work[data-view=lib] .shelf .shead{margin:0 0 14px;padding-bottom:10px;border-bottom:1px dashed var(--rule)}
+  html.clean body #screen-input.tab-work.tab-work[data-view=lib] .shelf .shead b{font-size:22px}
+  html.clean body #screen-input.tab-work.tab-work[data-view=lib] .shelf .shead .all{display:none!important}
+  html.clean body #screen-input.tab-work.tab-work[data-view=lib] .fgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+  html.clean body #screen-input.tab-work.tab-work[data-view=lib] .fgrid .feat{margin:0!important;animation:mUp .45s cubic-bezier(.2,.85,.25,1) both;animation-delay:calc(var(--k) * 40ms)}
+  html.clean body #screen-input.tab-work.tab-work[data-view=lib] .fgrid .feat .ft{font-size:24px}
+}
+@media (prefers-reduced-motion: reduce){ .pagehead.in .phx,html.clean body #screen-input .fgrid .feat{animation:none!important} }
 </style>
 </head>
 <body>
@@ -1785,7 +1841,7 @@ html.clean.dark .pastebtn{background:rgba(255,239,92,.10);border-color:#F5EEE6;c
 </header>
 
 <!-- SCREEN 1: CHOOSE A SCENE -->
-<div class="screen active" id="screen-input">
+<div class="screen active" id="screen-input" data-view="home">
 <div class="hometabs" id="homeTabs"><button type="button" data-t="work" aria-pressed="true">🎬 עבודה<small>הסצנות שלך, טייקים</small></button><button type="button" data-t="learn" aria-pressed="false">📚 לימוד<small>שיעורים, תרגול, מילון</small></button></div>
 <div class="daily" id="daily" hidden></div>
 <div class="quota" id="quota" hidden></div>
@@ -3365,7 +3421,7 @@ try{ if(localStorage.getItem('sp_pro') === '1') localStorage.setItem('skipgc', '
 try{ const q = new URLSearchParams(location.search); if(q.get('vip') === 'dv7k29'){ lsSet('sp_pro', '1'); try{ localStorage.setItem('skipgc', 't'); }catch(e){} q.delete('vip'); history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash); } }catch(e){}
 function sceneSecs(text){ const w = (text.match(/\S+/g) || []).length; return Math.round(w / 2.2 + (text.match(/\n/g) || []).length * 0.8); }
 function isLocked(sc){ if(!CLEAN || isPro()) return false; const lv = sc.level || 1; if(lv === 1 || lv === 4) return false; return !(lv === 2 && SCENES.filter(x => (x.level || 1) === lv)[0] === sc); }
-let libLevel = 1, libOpen = {};
+let libLevel = 1, libOpen = {}, PAGE = 'home';
 function renderShelves(){
   const list = document.getElementById('sceneList');
   let D = []; try{ D = JSON.parse(lsGet('sp_done') || '[]'); }catch(e){}
@@ -3377,7 +3433,7 @@ function renderShelves(){
     if(!group.length) return;
     const done = group.filter(sc => D.includes(sc.title)).length;
     const pick = group.find(sc => !D.includes(sc.title) && !isLocked(sc)) || group[0];
-    const sec = document.createElement('section'); sec.className = 'shelf';
+    const sec = document.createElement('section'); sec.className = 'shelf'; sec.dataset.lv = lv;
     sec.innerHTML = `<div class="shead"><b>${icons[lv]} ${names[lv]}</b><span class="cnt">${done}/${group.length}</span><button type="button" class="all">${libOpen[lv] ? 'סגור' : 'הכל ›'}</button></div>`;
     const card = sc => {
       const lines = parseScript(sc.text), cast = [...new Set(lines.map(l => l.character))];
@@ -3387,7 +3443,11 @@ function renderShelves(){
       b.onclick = () => { if(isLocked(sc)){ openPro('הסצנה "' + sc.title + '" היא חלק מהגרסה המלאה.'); return; } loadScene(sc.text, sc.title); };
       return b;
     };
-    if(libOpen[lv]){
+    if(PAGE === 'lib' && innerWidth >= 1000){
+      const g = document.createElement('div'); g.className = 'fgrid';
+      group.forEach((sc, k) => { const c = card(sc); c.style.setProperty('--k', k); g.appendChild(c); });
+      sec.appendChild(g);
+    } else if(libOpen[lv]){
       const rows = document.createElement('div'); rows.className = 'srows';
       group.forEach(sc => {
         const r = document.createElement('button'); r.type = 'button'; r.className = 'srow' + (isLocked(sc) ? ' locked' : '');
@@ -3397,7 +3457,9 @@ function renderShelves(){
       });
       sec.appendChild(rows);
     } else sec.appendChild(card(pick));
-    sec.querySelector('.all').onclick = () => { libOpen[lv] = !libOpen[lv]; renderShelves(); };
+    sec.querySelector('.all').onclick = () => {
+      if(innerWidth >= 1000 && typeof pageView === 'function'){ pageView('lib'); setTimeout(() => { const t = document.querySelector('.shelf[data-lv="' + lv + '"]'); if(t) t.scrollIntoView({behavior: 'smooth', block: 'start'}); }, 80); return; }
+      libOpen[lv] = !libOpen[lv]; renderShelves(); };
     list.appendChild(sec);
   });
 }
@@ -3526,6 +3588,7 @@ document.addEventListener('DOMContentLoaded', () => {
   $('homeTabs').after(grid); grid.append(side, main);
   const workHead = document.createElement('div'); workHead.className = 'workhead work-only';
   workHead.innerHTML = '<h2>השולחן שלך</h2><button type="button" class="addwide" id="addBtn2">＋ סצנה חדשה</button>';
+  { const all = document.createElement('button'); all.type = 'button'; all.className = 'whall'; all.textContent = 'כל הסצנות שלי ›'; all.onclick = () => pageView('mine'); workHead.appendChild(all); }
   side.append($('resumeCard'), $('pathCard'), $('daily'), $('quota'), $('glossCard'));
   const dMine = document.createElement('div'); dMine.className = 'desk-mine';
   const dLib = document.createElement('div'); dLib.className = 'desk-lib work-only';
@@ -5911,6 +5974,32 @@ if('serviceWorker' in navigator && location.protocol === 'https:') navigator.ser
 
 /* ---- computer: side menu ---- */
 let navSel = 'home';
+/* ---- on a computer every menu item is its own page: home, my scenes, my takes, library ---- */
+const PAGES = {
+  mine: ['📄', 'הסצנות שלי', () => { const n = myScenes().length; return n ? n + (n === 1 ? ' סצנה שמורה' : ' סצנות שמורות') + ' במכשיר הזה' : 'כאן נשמרות הסצנות שאתה מוסיף'; }],
+  takes: ['🎬', 'הטייקים שלי', () => 'הצילומים שלך מהחזרות. נשמרים רק במכשיר הזה'],
+  lib: ['📚', 'ספריית סצנות', () => { let D = []; try{ D = JSON.parse(lsGet('sp_done') || '[]'); }catch(e){} const d = SCENES.filter(x => D.includes(x.title)).length; return SCENES.length + ' סצנות מקוריות בעברית, מקל למאתגר' + (d ? ' · עשית ' + d : ''); }]
+};
+function pageView(v){
+  const sc = document.getElementById('screen-input'); if(!sc) return;
+  if(!PAGES[v]) v = 'home';
+  const prev = PAGE; PAGE = v; sc.dataset.view = v;
+  let ph = document.getElementById('pageHead');
+  if(!ph){ ph = document.createElement('div'); ph.id = 'pageHead'; ph.className = 'pagehead'; const g = sc.querySelector('.home-grid'); if(g) g.before(ph); else sc.prepend(ph); }
+  if(PAGES[v]){
+    const [ic, t, sub] = PAGES[v];
+    ph.hidden = false;
+    ph.innerHTML = `<div class="phx"><button type="button" class="phback">→ בית</button><h1><i>${ic}</i>${t}</h1><p>${esc(sub())}</p></div>${v === 'lib' ? '' : '<button type="button" class="phadd">＋ סצנה חדשה</button>'}`;
+    ph.querySelector('.phback').onclick = () => pageView('home');
+    const a = ph.querySelector('.phadd'); if(a) a.onclick = () => openAdd(true);
+    ph.classList.remove('in'); void ph.offsetWidth; ph.classList.add('in');
+  } else ph.hidden = true;
+  if(v === 'mine' || v === 'takes') myTab(v, true); else if(myOpen === 'takes' || !myOpen) myTab('mine', true);
+  if(typeof renderShelves === 'function' && CLEAN) renderShelves();
+  navSel = v; if(typeof syncNav === 'function') syncNav();
+  scrollTo(0, 0);
+  if(v !== 'home' && prev === 'home' && window.__spMark) window.__spMark();
+}
 function syncNav(){
   const nav = document.querySelector('.sidenav'); if(!nav) return;
   const sc = document.getElementById('screen-input');
@@ -5933,11 +6022,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const home = () => { show('input'); openAdd(false); homeTab('work'); };
   const go = n => {
     if(n === 'tips'){ show('input'); openAdd(false); homeTab('learn'); scrollTo({top: 0, behavior: 'smooth'}); syncNav(); return; }
-    navSel = n; home();
-    if(n === 'mine' || n === 'takes'){ myOpen = null; myTab(n); }
-    const target = n === 'lib' ? document.querySelector('h2.sec.lib') : (n === 'mine' || n === 'takes') ? document.querySelector('.desk-mine') : null;
-    if(target) setTimeout(() => target.scrollIntoView({behavior: 'smooth', block: 'start'}), 60); else scrollTo({top: 0, behavior: 'smooth'});
-    syncNav();
+    home(); pageView(n);
   };
   side.querySelectorAll('[data-n]').forEach(b => b.onclick = () => go(b.dataset.n));
   side.querySelector('.snew').onclick = () => { show('input'); homeTab('work'); openAdd(true); syncNav(); };
@@ -6001,6 +6086,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const OVERLAYS = ['sayDlg', 'voiceDlg', 'warmDlg', 'proDlg', 'glossDlg', 'lessonDlg', 'roleSheet', 'voiceHelp', 'onb'];
   let goingBack = false;
   const mark = () => { if(!goingBack) try{ history.pushState({sp: 1}, ''); }catch(e){} };
+  window.__spMark = mark;
   // something to undo, top-most first
   function backStep(){
     for(const id of OVERLAYS){ const d = document.getElementById(id); if(d && !d.hidden){ if(id === 'onb') lsSet('sp_onb', '1'); d.hidden = true; return true; } }
@@ -6008,6 +6094,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(currentScreen === 'roles'){ show('input'); return true; }
     if(document.getElementById('screen-input').classList.contains('adding')){ openAdd(false); return true; }
     if(document.getElementById('screen-input').classList.contains('tab-learn')){ homeTab('work'); return true; }
+    if(typeof PAGE !== 'undefined' && PAGE !== 'home'){ pageView('home'); return true; }
     return false;
   }
   addEventListener('popstate', e => {
