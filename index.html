@@ -683,6 +683,7 @@ html.clean .modes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margi
 html.clean.m-learn .chip[data-opt=hide],html.clean.m-test .chip[data-opt=hide],html.clean.m-learn .chip[data-opt=fast],html.clean.m-test .chip[data-opt=fast]{display:none}
 .feed .round{display:block;text-align:center;font-family:'Amatic SC',cursive;font-size:24px;color:var(--pen,#2B4FA8);margin:10px 0 0}
 .hw.full .r,.fl.full .r{filter:blur(6px)!important;opacity:.5}
+.line.mine .hw.full.shown .r{filter:none!important;opacity:1!important}
 /* glossary */
 .gloss .card{text-align:right}
 .glist{overflow-y:auto;margin:0 -6px;padding:0 6px}
@@ -1082,6 +1083,30 @@ html.clean #screen-input.tab-work .tipsbtn{display:flex}
 .rolesheet .mseg{display:flex;gap:4px;padding:4px;border-radius:12px;background:var(--rule,#E6E0D3);margin-bottom:12px}
 .rolesheet .mseg button{flex:1;padding:10px 4px;border:0;border-radius:9px;background:transparent;color:var(--ink,#1F1D1A);font-family:var(--sans);font-weight:700;font-size:14.5px;cursor:pointer}
 .rolesheet .mseg button[aria-pressed=true]{background:var(--sheet,#fff);box-shadow:0 2px 8px -4px rgba(0,0,0,.3)}
+/* step-by-step memorising + stuck lines */
+.rolesheet .modeseg button{font-size:14px;white-space:nowrap;transition:background-color .2s,box-shadow .2s,transform .12s}
+.rolesheet .modeseg button:active{transform:scale(.96)}
+.rolesheet .ladinfo{margin:-4px 0 12px;padding:12px 14px;border-radius:12px;background:rgba(232,196,64,.14);border:1px solid rgba(232,196,64,.35);animation:ladIn .28s ease both}
+.rolesheet .ladinfo b{display:block;font-size:14.5px}
+.rolesheet .ladinfo small{display:block;margin-top:3px;font-size:12.5px;opacity:.75;line-height:1.5}
+.rolesheet .ladinfo .steps{display:flex;gap:5px;margin-bottom:8px}
+.rolesheet .ladinfo .steps i{flex:1;height:6px;border-radius:3px;background:var(--rule,#E6E0D3)}
+.rolesheet .ladinfo .steps i.done{background:#5B8C51}
+.rolesheet .ladinfo .steps i.now{background:#E0A800;animation:ladPulse 1.6s ease-in-out infinite}
+.rolesheet .ladreset{border:0;background:none;padding:0;color:inherit;text-decoration:underline;font:inherit;cursor:pointer}
+.rolesheet .char .wk{color:#B23A2E;font-weight:700}
+@keyframes ladIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@keyframes ladPulse{50%{opacity:.45}}
+.line.mine .hw.lad{display:inline-block;position:relative;min-width:calc(var(--wl) * .52em);vertical-align:baseline}
+.line.mine .hw.lad:not(.shown) .r{filter:none!important;opacity:0!important}
+.line.mine .hw.lad:not(.shown)::after{content:"";position:absolute;inset:auto 2px .12em;height:.42em;border-radius:4px;background:currentColor;opacity:.16}
+.line.mine .hw.lad.shown .r{filter:none!important;opacity:1!important}
+.line.mine .hw.shown .r{animation:wordIn .32s ease both}
+@keyframes wordIn{from{opacity:0;filter:blur(4px)}to{opacity:1;filter:none}}
+.linecount{text-align:center;font-size:12.5px;font-weight:700;letter-spacing:.02em;opacity:.6;margin:6px 0 2px;min-height:1em;font-variant-numeric:tabular-nums}
+.weakbtn{margin-bottom:10px}
+.line.mine.past .reveal{display:none}
+@media (prefers-reduced-motion: reduce){.rolesheet .ladinfo,.rolesheet .ladinfo .steps i.now,.line.mine .hw.shown .r{animation:none}}
 .rolesheet .sws{display:grid;gap:8px;margin-bottom:12px}
 .rolesheet .sw{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:10px;border:1px solid var(--rule,#E6E0D3);background:var(--sheet,#fff);color:var(--ink,#1F1D1A);font-family:var(--sans);text-align:right;cursor:pointer}
 .rolesheet .sw b{display:block;font-size:15px}.rolesheet .sw small{display:block;font-size:12.5px;color:var(--pencil,#6E675B)}
@@ -1856,6 +1881,7 @@ html.clean.dark .pastebtn{background:rgba(255,239,92,.10);border-color:#F5EEE6;c
 <button type="button" class="viewtoggle" id="viewBtn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h11M4 12h16M4 17h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17 4l3 3-3 3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="viewLbl">תסריט</span></button>
 <span class="role" id="roleLabel"></span>
 </div>
+<div class="linecount" id="lineCount" aria-live="polite"></div>
 <div class="progress"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
 <div id="micNotice" class="notice" style="display:none"></div>
 <div class="feed" id="feed"></div>
@@ -1875,7 +1901,7 @@ html.clean.dark .pastebtn{background:rgba(255,239,92,.10);border-color:#F5EEE6;c
 <div class="controls">
 <button class="primary" id="actionBtn">התחל</button>
 </div>
-<div class="keys" aria-hidden="true"><kbd>רווח</kbd> סיימתי / התחל · <kbd>Backspace</kbd> שורה אחורה · <kbd>P</kbd> השהה</div>
+<div class="keys" aria-hidden="true"><kbd>רווח</kbd> סיימתי / התחל · <kbd>Backspace</kbd> שורה אחורה · <kbd>P</kbd> השהה · <kbd>H</kbd> גלה מילה</div>
 </div>
 
 <!-- SCREEN 4: DONE -->
@@ -1890,6 +1916,7 @@ html.clean.dark .pastebtn{background:rgba(255,239,92,.10);border-color:#F5EEE6;c
 <div class="row2"><a class="secondary-btn" id="tapeSave" download>שמור את הצילום</a><button type="button" class="secondary-btn" id="tapeShare" hidden>שלח</button></div>
 </div>
 <button type="button" class="nextstep" id="nextStep" hidden></button>
+<button type="button" class="nextstep weakbtn" id="weakBtn" hidden></button>
 <button class="primary" id="againBtn">עוד פעם מההתחלה</button>
 <button type="button" class="secondary" id="doneShare">📤 שלח את הסצנה לחבר</button>
 <button class="secondary" id="newSceneBtn">סצנה אחרת</button>
@@ -3990,11 +4017,21 @@ function openRoleSheet(){
     card.innerHTML = `<span class="k">${esc(sceneTitle)}</span><h3>${characters.length === 1 ? 'מוכן?' : 'את מי אתה משחק?'}</h3>
       <div class="chars">${characters.map(c => `<button type="button" class="char" data-c="${esc(c)}"><span class="nm">${esc(c)}</span><small>${cnt(c)} ${characters.length === 1 ? 'קטעים' : 'שורות'}</small><span class="go">←</span></button>`).join('')}</div>
       ${memBar(sceneTitle, true)}
+      <div class="mseg modeseg" role="radiogroup" aria-label="סוג התרגול">
+        <button type="button" data-m="run" aria-pressed="${MODE === 'run'}">🎬 חזרה</button>
+        <button type="button" data-m="ladder" aria-pressed="${MODE === 'ladder'}">🪜 שינון בשלבים</button>
+        <button type="button" data-m="test" aria-pressed="${MODE === 'test'}">✅ בדיקה</button>
+      </div>
+      ${MODE === 'ladder' ? (() => { const lv = ladderLevel(sceneTitle); return `<div class="ladinfo"><div class="steps">${LADDER.slice(1).map((x, i) => `<i class="${i + 1 < lv ? 'done' : i + 1 === lv ? 'now' : ''}"></i>`).join('')}</div><b>שלב ${lv} מתוך ${LADDER_TOP}: ${LADDER[lv].t}</b><small>בכל סיבוב שתגיד 80% מהשורות בלי עזרה, עולים שלב ומוסתר עוד.${lv > 1 ? ' <button type="button" class="ladreset">להתחיל משלב 1</button>' : ''}</small></div>`; })() : ''}
+      ${MODE === 'test' ? `<div class="ladinfo"><b>כל השורות שלך מוסתרות</b><small>נגיעה מגלה מילה כשנתקעים. בסוף רואים כמה יצאו נקיות, והשורות הקשות נשמרות לתרגול.</small></div>` : ''}
       <div class="sws">${MODE === 'run' ? sw('hide', '👁️ הסתר את השורות שלי', 'רק אותיות ראשונות') + sw('fast', '⚡ מהר (איטלקי)', 'בלי הפסקות, לבדוק שהטקסט יושב') : ''}${sw('tape', '🎥 צילום self-tape', 'נשמר ב"הטייקים שלי"')}</div>
       ${OPTS.tape ? `<div class="mseg camseg" role="group" aria-label="מצלמה"><button type="button" data-cam="user" aria-pressed="${camFacing() === 'user'}">🤳 מצלמה קדמית</button><button type="button" data-cam="environment" aria-pressed="${camFacing() === 'environment'}">📷 מצלמה אחורית</button></div>` : ''}
       <p class="rsnote">🗣️ הקול קורא עברית בלי ניקוד, אז לפעמים מילה יוצאת לא מדויקת. אפשר לתקן אותה בלחיצה על 🗣️ ליד השורה.${SUPPORT_WA ? ' משהו לא עובד? ' + supportLink('כתבו לנו בוואטסאפ', 'תמיכה') : ''}</p>
       <button type="button" class="skip" id="rsClose">ביטול</button>`;
-    card.querySelectorAll('.mseg button').forEach(b => b.onclick = () => { setMode(b.dataset.m); draw(); });
+    card.querySelectorAll('.modeseg button').forEach(b => b.onclick = () => { setMode(b.dataset.m); SFX.select(); buzz(10); draw(); });
+    const lr = card.querySelector('.ladreset'); if(lr) lr.onclick = () => { lsSet('sp_lad_' + sceneTitle, null); draw(); };
+    // a scene with lines you got stuck on offers them straight from here
+    characters.forEach(c => { const n = weakCount(sceneTitle, c), b = card.querySelector(`.char[data-c="${CSS.escape(c)}"]`); if(n && b) b.querySelector('small').insertAdjacentHTML('beforeend', ` · <span class="wk">🎯 ${n} קשות</span>`); });
     card.querySelectorAll('.sw').forEach(b => b.onclick = () => {
       const k = b.dataset.k; OPTS[k] = !OPTS[k]; lsSet(OPT_KEYS[k], OPTS[k] ? '1' : null);
       const ch = document.querySelector(`.chip[data-opt="${k}"]`); if(ch) ch.setAttribute('aria-pressed', String(OPTS[k]));
@@ -4005,7 +4042,7 @@ function openRoleSheet(){
     card.querySelectorAll('.char').forEach(b => b.onclick = () => startAs(b.dataset.c));
     card.querySelector('#rsClose').onclick = () => { dlg.hidden = true; };
   };
-  if(MODE !== 'run') setMode('run');
+  if(!['run', 'ladder', 'test'].includes(MODE)) setMode('run');
   draw(); dlg.hidden = false;
 }
 function startAs(name){
@@ -4954,16 +4991,51 @@ if(MODE === 'italian'){ MODE = 'run'; lsSet('sp_mode', null); lsSet('sp_o_fast',
 const BASE_RATE = () => parseFloat(lsGet('sp_rate') || '1') || 1;
 function setMode(m){
   if(m === 'italian'){ m = 'run'; OPTS.fast = true; lsSet('sp_o_fast', '1'); const c = document.querySelector('.chip[data-opt="fast"]'); if(c) c.setAttribute('aria-pressed', 'true'); }
-  MODE = m; lsSet('sp_mode', m === 'run' ? null : m);
+  MODE = m; lsSet('sp_mode', m === 'run' || m === 'weak' ? null : m);
   document.querySelectorAll('#modes button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.m === m)));
-  ['learn', 'italian', 'test'].forEach(x => document.documentElement.classList.toggle('m-' + x, x === m));
+  ['learn', 'italian', 'test', 'ladder', 'weak'].forEach(x => document.documentElement.classList.toggle('m-' + x, x === m));
 }
+/* ---- step-by-step memorising: each level hides more of your words ---- */
+const LADDER = [null,
+  {f: .3,  t: 'שליש מהמילים מוסתרות'},
+  {f: .55, t: 'חצי מהמילים מוסתרות'},
+  {f: .8,  t: 'רוב המילים מוסתרות'},
+  {f: 'first', t: 'רק המילה הראשונה גלויה'},
+  {f: 'full', t: 'הכול מהזיכרון'}];
+const LADDER_TOP = LADDER.length - 1;
+function ladderLevel(title){ const n = parseInt(lsGet('sp_lad_' + title) || '1', 10); return n >= 1 && n <= LADDER_TOP ? n : 1; }
+function wordHash(s){ let h = 2166136261; for(let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; }
+// which words of a line are hidden at a level; a higher level always hides everything a lower one did
+function ladderMask(words, lv){
+  const L = LADDER[lv] || LADDER[1];
+  if(L.f === 'full') return words.map(() => true);
+  if(L.f === 'first') return words.map((w, i) => i > 0);
+  const order = words.map((w, i) => ({i, s: wordHash(w + '|' + i) / 4294967296 - Math.min(w.length, 8) * .04})).sort((a, b) => a.s - b.s);
+  const n = Math.max(1, Math.round(words.length * L.f)), hid = words.map(() => false);
+  order.slice(0, Math.min(n, words.length - (words.length > 1 ? 1 : 0))).forEach(o => hid[o.i] = true);
+  return hid;
+}
+/* ---- lines you got stuck on, kept per scene ---- */
+function weakOf(title){ try{ const a = JSON.parse(lsGet('sp_weak_' + title) || '[]'); return Array.isArray(a) ? a.filter(i => Number.isInteger(i) && parsedLines[i] && parsedLines[i].character === myCharacter) : []; }catch(e){ return []; } }
+function weakCount(title, who){ try{ const a = JSON.parse(lsGet('sp_weak_' + title) || '[]'); return a.filter(i => parsedLines[i] && parsedLines[i].character === who).length; }catch(e){ return 0; } }
 document.querySelectorAll('#modes button').forEach(b => b.onclick = () => { setMode(b.dataset.m); SFX.select(); });
 document.addEventListener('DOMContentLoaded', () => setMode(MODE));
 let helped = new Set();
 function buildRun(){
   const base = buildBase();
   if(MODE === 'test') return base.map(l => l.character === myCharacter ? {...l, hide: 'full'} : l);
+  if(MODE === 'ladder'){ const lv = ladderLevel(sceneTitle); return parsedLines.map(l => l.character === myCharacter ? {...l, hide: {lv}} : l); }
+  if(MODE === 'weak'){
+    // only the lines you got stuck on, each with the cue line before it
+    const w = weakOf(sceneTitle).sort((a, b) => a - b), out = [];
+    w.forEach((i, k) => {
+      const prev = parsedLines[i - 1];
+      if(prev && prev.character !== myCharacter && !w.includes(i - 1)) out.push({...prev, round: k === 0 ? 'השורות שנתקעת בהן' : ''});
+      out.push({...parsedLines[i], hide: 'full'});
+    });
+    if(out.length) return out;
+    MODE = 'run';
+  }
   if(MODE === 'italian' || (OPTS.fast && MODE === 'run')) return base.map(l => ({...l, hide: OPTS.hide && !OPTS.fast ? undefined : false}));
   if(MODE !== 'learn') return base;
   // learn: two of my lines at a time, with the cue before them — once with the text, then again from memory
@@ -4991,8 +5063,13 @@ function buildBase(){
 }
 function setupRehearsal(){
   stopEverything();
-  runLines = buildRun();
+  { let at = 0; const same = (p, l) => p.character === l.character && p.text === l.text;
+    runLines = buildRun().map(l => {   // remember where each line sits in the scene (repeated lines like "כן." resolve in order)
+      let s = parsedLines.findIndex((p, i) => i >= at && same(p, l)); if(s < 0) s = parsedLines.findIndex(p => same(p, l));
+      if(s >= 0) at = s + 1; return {...l, src: s};
+    }); }
   hideMine = OPTS.hide;
+  updateLineCount();
   helped = new Set();
   speechRate = isFast() ? Math.max(1.3, BASE_RATE() + 0.25) : BASE_RATE();
   setView(!CLEAN && OPTS.face);
@@ -5035,6 +5112,14 @@ function setStatus(html, waiting){
 function updateProgress(){
   const pct = Math.round((cursor / runLines.length) * 100);
   document.getElementById('progressFill').style.width = pct + '%';
+  updateLineCount();
+}
+function updateLineCount(){
+  const el = document.getElementById('lineCount'); if(!el) return;
+  const mine = runLines.filter(l => l.character === myCharacter).length;
+  const done = runLines.slice(0, cursor).filter(l => l.character === myCharacter).length;
+  const lv = MODE === 'ladder' ? ' · 🪜 שלב ' + ladderLevel(sceneTitle) + '/' + LADDER_TOP : MODE === 'weak' ? ' · 🎯 שורות קשות' : MODE === 'test' ? ' · ✅ בדיקה' : '';
+  el.textContent = mine ? 'שורה ' + Math.max(1, Math.min(done + (runLines[cursor] && runLines[cursor].character === myCharacter ? 1 : 0), mine)) + ' מתוך ' + mine + lv : '';
 }
 
 let hideMine = lsGet('sp_hide') === '1';
@@ -5185,7 +5270,8 @@ function stageShowMine(line){
   document.getElementById('stageWho').textContent = 'התור שלך';
   const box = document.getElementById('stageLine');
   const words = line.text.trim().split(/\s+/);
-  const hid = line.hide !== undefined ? line.hide : hideMine;
+  let hid = line.hide !== undefined ? line.hide : hideMine;
+  if(hid && typeof hid === 'object') hid = hid.lv >= LADDER_TOP ? 'full' : true;
   let n = hid === 'full' ? 0 : hid ? 1 : words.length;
   const draw = () => {
     box.innerHTML = `<mark>${words.map((w, i) => i < n ? esc(w) : `<span class="fl">${esc(firstOf(w))}<span class="r">${esc(w.slice(firstOf(w).length))}</span></span>`).join(' ')}</mark>` + (n < words.length ? '<span class="tap">נגיעה מגלה מילה</span>' : '');
@@ -5355,11 +5441,17 @@ function addLineToFeed(line, isMine){
   let txt = esc(line.text);
   if(isMine){
     const words = line.text.trim().split(/\s+/);
-    const hid = line.hide !== undefined ? line.hide : hideMine, full = hid === 'full';
+    const hid = line.hide !== undefined ? line.hide : hideMine, full = hid === 'full', lad = hid && typeof hid === 'object';
     if(hid && (words.length > 1 || full)){
       div.classList.add('hidden');
+      if(lad){
+        // step-by-step: hidden words are blank bars the length of the word; the rest stay readable
+        const mask = ladderMask(words, hid.lv);
+        txt = `<mark>${words.map((w, i) => mask[i] ? `<span class="hw full lad" style="--wl:${Math.max(2, w.length)}"><span class="r">${esc(w)}</span></span>` : esc(w)).join(' ')}</mark><span class="reveal">נתקעת? נגיעה מגלה מילה</span>`;
+      } else {
       const shown = full ? [] : [words[0]], rest = full ? words : words.slice(1);
       txt = `<mark>${shown.map(esc).join(' ')} ${rest.map(w => full ? `<span class="hw full"><span class="r">${esc(w)}</span></span>` : `<span class="hw">${esc(firstOf(w))}<span class="r">${esc(w.slice(firstOf(w).length))}</span></span>`).join(' ')}</mark><span class="reveal">${full ? 'נתקעת? נגיעה מגלה מילה' : 'נגיעה מגלה מילה'}</span>`;
+      }
       const idx = cursor;
       div.onclick = () => {
         helped.add(idx);
@@ -5531,7 +5623,7 @@ document.getElementById('pauseBtn').onclick = () => {
 };
 document.getElementById('backLineBtn').onclick = () => jumpTo(cursor - 1);
 document.addEventListener('keydown', e => {
-  { const k = e.code === 'Space' ? 0 : e.key === 'Backspace' ? 1 : (e.key === 'p' || e.key === 'P' || e.key === 'פ') ? 2 : -1;
+  { const k = e.code === 'Space' ? 0 : e.key === 'Backspace' ? 1 : (e.key === 'p' || e.key === 'P' || e.key === 'פ') ? 2 : (e.key === 'h' || e.key === 'H' || e.key === 'י') ? 3 : -1;
     const kb = k >= 0 && document.querySelectorAll('#screen-rehearse .keys kbd')[k];
     if(kb && document.body.classList.contains('rehearsing')){ kb.classList.remove('hit'); void kb.offsetWidth; kb.classList.add('hit'); } }
   if(currentScreen !== 'rehearse' || e.target.closest('input, textarea, select') || !document.getElementById('sayDlg').hidden) return;
@@ -5541,7 +5633,9 @@ document.addEventListener('keydown', e => {
   } else if(e.key === 'Backspace'){
     if(sceneRunning){ e.preventDefault(); document.getElementById('backLineBtn').click(); }
   } else if(e.key === 'p' || e.key === 'P' || e.key === 'פ'){
-    if(!document.getElementById('minorCtl').hidden){ e.preventDefault(); document.getElementById('pauseBtn').click(); }
+    if(!document.getElementById('minorCtl').hidden){ e.preventDefault(); document.getElementById('pauseBtn').click(); }  } else if(e.key === 'h' || e.key === 'H' || e.key === 'י'){
+    const cur = document.querySelector('#feed .line.mine.current.hidden') || document.querySelector('#stageLine');
+    if(cur){ e.preventDefault(); cur.click(); }
   }
 });
 
@@ -5641,16 +5735,44 @@ function finishScene(){
   const an = audDays(sceneTitle);
   document.getElementById('doneLine').textContent = an !== null ? (an === 0 ? 'מוכן לאודישן. תנשום, תיהנה, ותזכור מה הדמות רוצה. בהצלחה!' : 'עוד ' + (an === 1 ? 'יום אחד' : an + ' ימים') + ' לאודישן, וכבר ' + take + ' טייקים. ממשיכים ככה!')
     : st > 1 ? 'סיימת את הסצנה. ' + st + ' ימים ברצף, ככה בונים תפקיד!' : 'סיימת את הסצנה. עוד טייק?';
-  if(MODE === 'test' || MODE === 'learn' || (MODE === 'run' && OPTS.hide && !isFast())){
+  const weakBtn = document.getElementById('weakBtn'); weakBtn.hidden = true;
+  const againBtn = document.getElementById('againBtn'); againBtn.textContent = 'עוד פעם מההתחלה'; againBtn.dataset.next = '';
+  if(['test', 'learn', 'ladder', 'weak'].includes(MODE) || (MODE === 'run' && OPTS.hide && !isFast())){
     const hidOf = l => l.hide !== undefined ? l.hide : (MODE === 'run' && OPTS.hide);
     const myIdx = runLines.map((l, i) => l.character === myCharacter && hidOf(l) && (hidOf(l) === 'full' || l.text.trim().split(/\s+/).length > 1) ? i : -1).filter(i => i >= 0);
     const clean = myIdx.filter(i => !helped.has(i)).length;
-    if(myIdx.length) lsSet('sp_mem_' + sceneTitle, JSON.stringify({p: Math.round(clean / myIdx.length * 100), t: Date.now(), m: MODE}));
+    if(myIdx.length && MODE !== 'weak') lsSet('sp_mem_' + sceneTitle, JSON.stringify({p: Math.round(clean / myIdx.length * 100), t: Date.now(), m: MODE}));
+    // remember the lines you needed help with; a line said clean comes off the list
+    try{
+      const W = new Set(JSON.parse(lsGet('sp_weak_' + sceneTitle) || '[]'));
+      myIdx.forEach(i => { const s = runLines[i].src; if(s >= 0){ if(helped.has(i)) W.add(s); else if(MODE !== 'learn') W.delete(s); } });
+      lsSet('sp_weak_' + sceneTitle, W.size ? JSON.stringify([...W]) : null);
+    }catch(e){}
+    const wn = weakOf(sceneTitle).length;
+    if(wn){ weakBtn.hidden = false; weakBtn.innerHTML = `<b>🎯 תרגל רק את ${wn === 1 ? 'השורה שנתקעת בה' : wn + ' השורות שנתקעת בהן'}</b><small>כל שורה עם הקיו שלפניה, מהזיכרון</small>`; }
+    const ratio = myIdx.length ? clean / myIdx.length : 1;
     renderMyScenes(); if(CLEAN) renderSceneList();
     document.getElementById('doneLine').textContent = MODE === 'test'
       ? (clean === myIdx.length ? 'כל ' + myIdx.length + ' השורות מהזיכרון, בלי עזרה אחת. הטקסט יושב!' : 'זכרת ' + clean + ' מתוך ' + myIdx.length + ' שורות בלי עזרה. עוד סיבוב ותגיע לכולן.')
       : MODE === 'run' ? (clean === myIdx.length ? 'כל ' + myIdx.length + ' השורות מהזיכרון, בלי להציץ אפילו פעם. הטקסט יושב!' : 'זכרת ' + clean + ' מתוך ' + myIdx.length + ' שורות בלי להציץ. עוד טייק ותגיע לכולן.')
       : 'סיימת שינון: ' + clean + ' מתוך ' + myIdx.length + ' פעמים מהזיכרון בלי עזרה. עכשיו נסה "בדיקה".';
+    if(MODE === 'ladder'){
+      const lv = ladderLevel(sceneTitle), up = ratio >= 0.8;
+      if(up && lv < LADDER_TOP){
+        lsSet('sp_lad_' + sceneTitle, String(lv + 1));
+        document.getElementById('doneLine').textContent = 'שלב ' + lv + ' עבר: ' + clean + ' מתוך ' + myIdx.length + ' שורות בלי עזרה. בשלב ' + (lv + 1) + ': ' + LADDER[lv + 1].t + '.';
+        againBtn.textContent = '🪜 לשלב ' + (lv + 1) + ' מתוך ' + LADDER_TOP; againBtn.dataset.next = '1';
+        setTimeout(() => toast('עלית לשלב ' + (lv + 1) + '!', '🪜'), 700);
+      } else if(up){
+        document.getElementById('doneLine').textContent = 'עברת את כל ' + LADDER_TOP + ' השלבים. כל הטקסט מהזיכרון, הוא יושב! עכשיו אפשר לשחק אותו.';
+      } else {
+        document.getElementById('doneLine').textContent = 'שלב ' + lv + ': ' + clean + ' מתוך ' + myIdx.length + ' שורות בלי עזרה. עוד סיבוב באותו שלב, וכשתגיע ל־80% עולים שלב.';
+        againBtn.textContent = '🪜 עוד סיבוב בשלב ' + lv;
+      }
+    }
+    if(MODE === 'weak') document.getElementById('doneLine').textContent = wn ? 'נשארו ' + wn + ' שורות שעדיין צריכות עבודה. עוד סיבוב עליהן?' : 'כל השורות הקשות יצאו נקיות. עכשיו הסצנה כולה מהזיכרון!';
+    if(MODE === 'weak' && wn){ againBtn.textContent = '🎯 עוד סיבוב על השורות הקשות'; weakBtn.hidden = true; }
+    if(MODE === 'weak' && !wn){ againBtn.textContent = 'כל הסצנה מההתחלה'; againBtn.dataset.mode = 'run'; }
   }
   if(isFast() && MODE === 'run' || MODE === 'italian') document.getElementById('doneLine').textContent = 'איטלקי ב־' + Math.floor(secs/60) + ':' + String(secs%60).padStart(2,'0') + '. אם לא נתקעת, הטקסט יושב. עכשיו אפשר לשחק אותו.';
   speechRate = BASE_RATE();
@@ -5781,7 +5903,8 @@ document.getElementById('exitBtn').onclick = () => {
   stopEverything();
   show('roles');
 };
-document.getElementById('againBtn').onclick = () => { setupRehearsal(); show('rehearse'); };
+document.getElementById('againBtn').onclick = () => { const b = document.getElementById('againBtn'); if(b.dataset.mode){ setMode(b.dataset.mode); b.dataset.mode = ''; } setupRehearsal(); show('rehearse'); };
+document.getElementById('weakBtn').onclick = () => { setMode('weak'); setupRehearsal(); show('rehearse'); };
 document.getElementById('newSceneBtn').onclick = () => { show('input'); };
 if(/[?&]key\b/.test(location.search)){ document.documentElement.classList.add('showkey'); const vb = document.getElementById('voiceBox'); if(vb) vb.open = true; }
 if('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(()=>{});
