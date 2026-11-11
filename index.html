@@ -1485,10 +1485,12 @@ html.clean body .rolesheet .sw[aria-pressed=true] i::after{right:3px!important;l
   html.clean .fab,html.clean .desk-mine .tipsbtn,html.clean .learnback{display:none!important}
   html.clean .sidenav{display:flex;flex-direction:column;position:fixed;top:0;right:0;bottom:0;width:260px;z-index:30;padding:26px 18px 20px;background:#EFEBE1;border-left:1px solid var(--rule);font-family:var(--sans)}
   html.clean.dark .sidenav{background:#141416;border-color:#26262A}
-  .sidenav .sbrand{display:flex;align-items:center;gap:10px;padding:0 8px 24px;cursor:pointer}
-  .sidenav .sbrand svg{width:40px;height:40px;flex-shrink:0}
-  .sidenav .sbrand b{display:block;font-family:'David Libre',serif;font-size:19px;line-height:1.1;color:var(--ink);direction:ltr;text-align:right}
-  .sidenav .sbrand small{display:block;font-family:var(--hand);font-size:20px;color:var(--red);line-height:1}
+  .sidenav .sbrand{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:0 4px 22px;cursor:pointer}
+  .sidenav .sbrand b{white-space:nowrap;text-align:center!important}
+  .sidenav .sbrand span{display:flex;flex-direction:column;align-items:center}
+  .sidenav .sbrand svg{width:54px;height:54px;flex-shrink:0}
+  .sidenav .sbrand b{display:block;font-family:'David Libre',serif;font-size:25px;line-height:1.1;color:var(--ink);direction:ltr;text-align:right}
+  .sidenav .sbrand small{display:block;font-family:var(--hand);font-size:26px;color:var(--red);line-height:1}
   .sidenav .snew{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;margin-bottom:20px;border:0;border-radius:12px;background:var(--red);color:#fff;font:inherit;font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 10px 22px -12px rgba(194,54,44,.7);transition:transform .15s,box-shadow .2s}
   .sidenav .snew:hover{transform:translateY(-2px);box-shadow:0 14px 26px -12px rgba(194,54,44,.8)}
   .sidenav .snew span{font-size:22px;line-height:1;font-weight:400}
@@ -1811,12 +1813,16 @@ html.clean.dark .pastebtn{background:rgba(255,239,92,.10);border-color:#F5EEE6;c
 /* ===== phone menu ===== */
 .burger,.mdrawer{display:none}
 @media (max-width:999px){
-  html.clean header .brand{gap:10px}
-  @media (max-width:430px){ html.clean header h1{font-size:16.5px!important} html.clean header .brand .logo{width:34px!important;height:34px!important} html.clean .burger{padding:0 12px 0 14px;font-size:15px} }
-  @media (max-width:430px){ html.clean header .lockup{display:none!important} html.clean header .brand{justify-content:space-between} }
+  /* phone header: menu · logo · Pro on top, the app's name big underneath */
+  html.clean header .brand{flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px 10px}
+  html.clean header .brand .logo{order:0;width:40px!important;height:40px!important;margin:0 auto}
+  html.clean header .brand .probtn{order:1}
+  html.clean header .brand .lockup{order:5;flex:1 0 100%;display:flex!important;flex-direction:column;align-items:center;gap:0;margin:6px 0 2px;overflow:visible;white-space:nowrap}
+  html.clean header .brand .lockup h1{font-family:'David Libre',serif!important;font-weight:700;font-size:clamp(30px,9vw,40px)!important;line-height:1.05;letter-spacing:.01em;color:var(--ink);text-shadow:0 2px 0 rgba(232,181,58,.35)}
+  html.clean header .brand .lockup .sub{display:block!important;font-family:var(--hand);font-size:clamp(22px,6.5vw,28px)!important;color:var(--red,#C8372D);line-height:1;margin-top:2px}
   html.clean header #glossBtn,html.clean header #themeBtn{display:none!important}
-  html.clean .burger{display:inline-flex;align-items:center;gap:9px;flex:0 0 auto;height:46px;padding:0 14px 0 16px;border:2px solid #E8B53A;border-radius:99px;background:#C8372D;color:#fff;font:inherit;font-family:var(--sans);font-weight:800;font-size:16px;box-shadow:0 10px 22px -10px rgba(200,55,45,.85),inset 0 -3px 0 rgba(0,0,0,.18);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background-color .2s,box-shadow .2s;order:-1}
-  html.clean .burger .bk{position:relative;display:flex;flex-direction:column;justify-content:space-between;width:22px;height:16px}
+  html.clean .burger{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:50px;height:50px;padding:0;border:2.5px solid #E8B53A;border-radius:50%;background:repeating-linear-gradient(90deg,rgba(0,0,0,.16) 0 3px,rgba(255,255,255,0) 3px 8px),radial-gradient(circle at 50% 30%,#E0433A,#9E1F25 75%);color:#fff;box-shadow:0 0 0 3px rgba(232,181,58,.25),0 10px 22px -10px rgba(158,31,37,.9),inset 0 -4px 8px rgba(0,0,0,.25);cursor:pointer;-webkit-tap-highlight-color:transparent;order:-1}
+  html.clean .burger .bk{position:relative;display:flex;flex-direction:column;justify-content:space-between;width:21px;height:16px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.35))}
   html.clean .burger .bk span{display:block;height:3px;border-radius:2px;background:#fff;transition:transform .34s cubic-bezier(.5,1.6,.4,1),opacity .2s}
   html.clean .burger .bl{line-height:1}
   html.md-open .burger{background:#1F1D1A;box-shadow:0 8px 18px -10px rgba(0,0,0,.6)}
@@ -6237,7 +6243,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const brand = document.querySelector('header .brand'); if(!brand) return;
   const btn = document.createElement('button');
   btn.type = 'button'; btn.className = 'burger'; btn.id = 'burgerBtn'; btn.setAttribute('aria-label', 'תפריט'); btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-controls', 'mDrawer');
-  btn.innerHTML = '<span class="bk"><span class="b1"></span><span class="b2"></span><span class="b3"></span></span><span class="bl">תפריט</span>';
+  btn.innerHTML = '<span class="bk"><span class="b1"></span><span class="b2"></span><span class="b3"></span></span>';
   if(!lsGet('sp_menu_seen')) btn.classList.add('hint');
   brand.prepend(btn);
   const dr = document.createElement('div'); dr.className = 'mdrawer'; dr.id = 'mDrawer'; dr.hidden = true; dr.setAttribute('role', 'dialog'); dr.setAttribute('aria-modal', 'true'); dr.setAttribute('aria-label', 'תפריט');
