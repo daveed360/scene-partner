@@ -4408,9 +4408,49 @@ async function readPdf(buf){
   }
   return fixReversedHebrew(out.join('\n'));
 }
+// screenplay programs (and Israeli production templates) mark every paragraph with a style:
+// character / dialog / action / scene heading. When a Word file has them, use them instead of guessing.
+const SP_STYLES = [
+  ['char', /^(character|char|דמות|שם[ _]?דמות|דובר)/i],
+  ['dlg', /^(dialog|dialogue|דיאלוג|טקסט[ _]?דמות|דיבור)/i],
+  ['par', /^(parenthetical|paren|הוראה|הוראת[ _]?משחק)/i],
+  ['act', /^(action|description|general|scene[ _]?description|תיאור|פעולה)/i],
+  ['head', /^(scene[ _-]?head(er|ing)?|slug(line)?|כותרת[ _]?סצנה)/i],
+  ['trans', /^(transition|מעבר)/i]
+];
+function spStyleOf(p){ const n = ((p.styleName || '') + '|' + (p.styleId || '')).split('|'); for(const [k, re] of SP_STYLES) if(n.some(x => re.test(x.trim()))) return k; return ''; }
+// "סבא צוק VO", "דני (המשך)" → the name, plus a note for the voice
+function spName(t){
+  let dir = '', n = t.replace(/\s+/g, ' ').trim().replace(/:$/, '');
+  n = n.replace(/\s*\((המשך|ממשיך|ממשיכה|cont'?d|continued)\)\s*$/i, '');
+  const vo = n.match(/\s*\(?\b(V\.?O\.?|O\.?S\.?|O\.?C\.?)\)?\s*$|\s*\((קריינות|קריין|קול|בטלפון|מחוץ לפריים)\)\s*$/i);
+  if(vo){ dir = /^O/i.test(vo[1] || '') ? 'מחוץ לפריים' : (vo[2] || 'קריינות'); n = n.slice(0, vo.index).trim(); }
+  return {n, dir};
+}
 async function readDocx(buf){
   await loadScript(LIBS.mammoth);
-  const r = await mammoth.convertToHtml({arrayBuffer: buf});
+  const marks = {};
+  const r = await mammoth.convertToHtml({arrayBuffer: buf}, {
+    transformDocument: mammoth.transforms.paragraph(p => { const k = spStyleOf(p); if(!k) return p; marks[k] = (marks[k] || 0) + 1; return Object.assign({}, p, {styleName: 'SP_' + k, styleId: 'SP_' + k}); }),
+    styleMap: SP_STYLES.map(([k]) => `p[style-name='SP_${k}'] => p.sp-${k}:fresh`)
+  });
+  if((marks.char || 0) >= 2 && (marks.dlg || 0) >= 2){
+    const doc = new DOMParser().parseFromString('<div>' + r.value + '</div>', 'text/html');
+    const out = []; let started = false, who = null, dir = '';
+    for(const el of doc.body.firstElementChild.querySelectorAll('p')){
+      const t = el.textContent.replace(/\s+/g, ' ').trim(); if(!t) continue;
+      const k = (el.className.match(/sp-(\w+)/) || [])[1] || '';
+      if(!started && !k) continue;                                // title page: show, version, date, actor/agency line
+      started = true;
+      if(k === 'char'){ const c = spName(t); who = c.n; dir = c.dir; continue; }
+      if(k === 'par'){ dir = [dir, t.replace(/^\(|\)$/g, '')].filter(Boolean).join(' · '); continue; }
+      if(k === 'dlg' && who){ out.push(who + ': ' + (dir ? '(' + dir + ') ' : '') + t); dir = ''; continue; }
+      if(k === 'trans') continue;
+      if(k === 'act'){ out.push('(' + t.replace(/^\(|\)$/g, '') + ')'); who = null; continue; }
+      who = null; out.push(t);                                     // scene heading, background, anything else
+    }
+    if(out.length) return out.join('\n\n');
+  }
   const doc = new DOMParser().parseFromString('<div>' + r.value + '</div>', 'text/html');
   const txt = el => { const c = el.cloneNode(true); c.querySelectorAll('br').forEach(b => b.replaceWith('\n')); return c.textContent.replace(/[ \t]+/g, ' ').trim(); };
   const out = [];
