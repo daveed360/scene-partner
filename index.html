@@ -1926,6 +1926,13 @@ html.clean:not(.rm) body .line.mine .hw.shown .r{animation:wordIn .32s ease both
 
 html.clean body #proDlg .pwa{display:block;text-align:center;text-decoration:none;background:#1FA855!important;color:#fff!important;border-color:#1FA855!important}
 html.clean body #proDlg #proDone{margin-top:6px;background:transparent!important;color:inherit!important;box-shadow:none!important;border:0!important;opacity:.7;font-weight:600;font-size:15px}
+
+html.clean body #proDlg .pfree{display:flex;gap:10px;align-items:flex-start;margin:4px 0 14px;padding:12px 14px;border-radius:14px;background:rgba(31,168,85,.12);border:1px solid rgba(31,168,85,.45);text-align:right}
+html.clean body #proDlg .pfree span{font-size:22px;line-height:1}
+html.clean body #proDlg .pfree p{margin:0;font-size:14.5px;line-height:1.5;color:#E6F4EA}
+html.clean body #proDlg .pfree b{color:#4FD486}
+html.clean body #proDlg #proGo{background:#1FA855!important;color:#fff!important;border-color:#1FA855!important;display:flex;flex-direction:column;align-items:center;gap:2px}
+html.clean body #proDlg #proGo small{font-size:12.5px;font-weight:600;opacity:.85}
 </style>
 </head>
 <body>
@@ -2148,14 +2155,15 @@ html.clean body #proDlg #proDone{margin-top:6px;background:transparent!important
 <li><b>📚 כל ספריית הסצנות</b><small>הבינוניות והמאתגרות, ועוד סצנות חדשות שמתווספות כל הזמן</small></li>
 <li><b>☁️ הסצנות שלך בכל מקום</b><small>מתחילים בטלפון, ממשיכים במחשב</small></li>
 </ul>
+<div class="pfree"><span>🕊️</span><p><b>שום תשלום עכשיו.</b> בוחרים תוכנית ושולחים לנו הודעה קצרה בוואטסאפ. כשהתשלום ייפתח, תקבל ראשון את המחיר של משתמשים ראשונים.</p></div>
 <div class="pplans" role="radiogroup" aria-label="בחירת תוכנית">
 <button type="button" class="pplan" data-plan="week" role="radio" aria-checked="false"><span class="pn">שבוע</span><span class="pp">9.90 ₪</span><span class="ps">לפני אודישן</span></button>
 <button type="button" class="pplan" data-plan="month" role="radio" aria-checked="false"><span class="pn">חודש</span><span class="pp">14.90 ₪</span><span class="ps">בכל חודש</span></button>
 <button type="button" class="pplan best" data-plan="year" role="radio" aria-checked="true"><span class="ptag">הכי משתלם</span><span class="pn">שנה</span><span class="pp">119 ₪</span><span class="ps">כ־10 ₪ לחודש</span></button>
 </div>
 <div class="pdetail" id="proDetail" aria-live="polite"></div>
-<button type="button" class="primary pgo" id="proGo">אני רוצה Pro ✨</button>
-<p class="pnote">התשלום נפתח בקרוב. מי שמצטרף לרשימה עכשיו יקבל מחיר מיוחד של משתמשים ראשונים.</p>
+<button type="button" class="primary pgo" id="proGo">📲 שמרו לי מקום בוואטסאפ<small>בלי תשלום · בלי כרטיס אשראי</small></button>
+<p class="pnote">נפתח וואטסאפ עם הודעה מוכנה אלינו. אין חיוב ואין התחייבות.</p>
 <button type="button" class="skip" id="proClose">אולי אחר כך</button>
 </div>
 </div></div>
@@ -3662,15 +3670,16 @@ function trackInterest(plan){
   lsSet('sp_pro_interest', JSON.stringify({plan, t: Date.now()}));
   gcEvent('pro-interest-' + plan, 'Pro: נרשם לתוכנית ' + plan);
 }
+function proWaUrl(plan){ return SUPPORT_WA ? 'https://wa.me/' + SUPPORT_WA + '?text=' + encodeURIComponent('היי! אני רוצה Audition Partner Pro, תוכנית ' + ({week: 'שבועית (9.90 ₪)', month: 'חודשית (14.90 ₪)', year: 'שנתית (119 ₪)'}[plan] || '') + ', במחיר של משתמשים ראשונים. תעדכנו אותי כשנפתח 🙏') : ''; }
 document.getElementById('proGo').onclick = () => {
   trackInterest(proPlan);
+  if(SUPPORT_WA){ gcEvent('pro-wa-' + proPlan, 'Pro: שלח וואטסאפ ' + proPlan); lsSet('sp_pro_wa', '1'); try{ window.open(proWaUrl(proPlan), '_blank', 'noopener'); }catch(e){} }
   const names = {week: 'השבוע', month: 'החודש', year: 'השנה'};
   document.getElementById('proBody').innerHTML = `<span class="pbadge">✨ PRO</span><h3>תודה, נרשמת! 🎉</h3>
-    <p class="pwhy">צעד אחרון: שלח לנו הודעה קצרה בוואטסאפ, וככה נדע לאן לשלוח לך את המחיר של משתמשים ראשונים לתוכנית ${names[proPlan] || ''} ברגע שהתשלום נפתח.</p>
-    ${SUPPORT_WA ? `<a class="primary pgo pwa" id="proWa" target="_blank" rel="noopener" href="https://wa.me/${SUPPORT_WA}?text=${encodeURIComponent('היי! אני רוצה Audition Partner Pro, תוכנית ' + ({week: 'שבועית (9.90 ₪)', month: 'חודשית (14.90 ₪)', year: 'שנתית (119 ₪)'}[proPlan] || '') + ', במחיר של משתמשים ראשונים. תעדכנו אותי כשנפתח 🙏')}">📲 שמרו לי מקום בוואטסאפ</a>` : ''}
+    <p class="pwhy">פתחנו לך וואטסאפ עם הודעה מוכנה. רק ללחוץ "שלח", וברגע שהתשלום נפתח תקבל ראשון את המחיר של משתמשים ראשונים לתוכנית ${names[proPlan] || ''}.</p>
+    ${SUPPORT_WA ? `<a class="primary pgo pwa" id="proWa" target="_blank" rel="noopener" href="${proWaUrl(proPlan)}">וואטסאפ לא נפתח? לחצו כאן</a>` : ''}
     <p class="pwhy" style="font-size:13px;opacity:.75">בינתיים כל מה שיש פה ממשיך לעבוד בשבילך.</p>
     <button type="button" class="secondary pgo" id="proDone">אחר כך, חזרה לחזרות</button>`;
-  { const w = document.getElementById('proWa'); if(w) w.onclick = () => { gcEvent('pro-wa-' + proPlan, 'Pro: שלח וואטסאפ ' + proPlan); lsSet('sp_pro_wa', '1'); }; }
   document.getElementById('proDone').onclick = () => { document.getElementById('proDlg').hidden = true; };
   confetti();
 };
