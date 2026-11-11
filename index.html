@@ -1830,9 +1830,10 @@ html.clean.dark .pastebtn{background:rgba(255,239,92,.10);border-color:#F5EEE6;c
   @keyframes bHint{0%,30%,100%{rotate:0deg}8%{rotate:-6deg}16%{rotate:5deg}24%{rotate:-3deg}}
   @keyframes bRing{0%{opacity:.8;transform:scale(1)}60%,100%{opacity:0;transform:scale(1.35)}}
   html.clean .mdrawer:not([hidden]){display:block;position:fixed;inset:0;z-index:80}
-  .mdrawer .mdback{position:absolute;inset:0;background:rgba(20,16,12,.48);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);animation:mdFade .25s ease both}
-  .mdrawer .mdpanel{position:absolute;top:0;bottom:0;right:0;width:min(84vw,330px);display:flex;flex-direction:column;padding:46px 18px max(18px,env(safe-area-inset-bottom));background:var(--paper,#F8F6F0);border-left:3px solid #E8B53A;box-shadow:-24px 0 50px -20px rgba(0,0,0,.5);overflow-y:auto;font-family:var(--sans);animation:mdIn .42s cubic-bezier(.2,1.1,.3,1) both}
-  .mdrawer.out .mdpanel{animation:mdOut .23s ease-in both}.mdrawer.out .mdback{animation:mdFade .23s ease reverse both}
+  .mdrawer .mdback{position:absolute;inset:0;background:rgba(20,16,12,.48);animation:mdFade .25s ease both}
+  .mdrawer .mdpanel{will-change:transform;position:absolute;top:0;bottom:0;right:0;width:min(84vw,330px);display:flex;flex-direction:column;padding:46px 18px max(18px,env(safe-area-inset-bottom));background:var(--paper,#F8F6F0);border-left:3px solid #E8B53A;box-shadow:-24px 0 50px -20px rgba(0,0,0,.5);overflow-y:auto;font-family:var(--sans);animation:mdIn .42s cubic-bezier(.2,1.1,.3,1) both}
+  .mdrawer.out .mdpanel{animation:mdOut .26s cubic-bezier(.4,0,.7,.2) both}.mdrawer.out .mdback{animation:mdFadeOut .26s ease both}
+  @keyframes mdFadeOut{from{opacity:1}to{opacity:0}}
   @keyframes mdIn{from{transform:translateX(105%)}to{transform:none}}
   @keyframes mdOut{to{transform:translateX(105%)}}
   @keyframes mdFade{from{opacity:0}to{opacity:1}}
@@ -1892,6 +1893,30 @@ html.clean.dark .pastebtn{background:rgba(255,239,92,.10);border-color:#F5EEE6;c
 #screen-input.pv-fwd .fgrid .feat,#screen-input.pv-fwd #myList > *{animation:pvUp .45s cubic-bezier(.2,.85,.25,1) both;animation-delay:calc(min(var(--k,0), 8) * 35ms + 80ms)}
 @keyframes pvUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion: reduce){ .rpl{display:none} #screen-input[class*=pv-] *{animation:none!important} }
+
+/* ===== the clean look switches every animation off (html.clean *); these are switched back on on purpose ===== */
+html.clean:not(.rm) body .mdrawer .mdback{animation:mdFade .25s ease both!important}
+html.clean:not(.rm) body .mdrawer .mdpanel{animation:mdIn .42s cubic-bezier(.2,1.1,.3,1) both!important}
+html.clean:not(.rm) body .mdrawer.out .mdpanel{animation:mdOut .26s cubic-bezier(.4,0,.7,.2) both!important}
+html.clean:not(.rm) body .mdrawer.out .mdback{animation:mdFadeOut .26s ease both!important}
+html.clean:not(.rm) body .mdrawer .valance{animation:valDrop .55s cubic-bezier(.3,1.5,.5,1) .08s both!important}
+html.clean:not(.rm) body .mdrawer nav button{animation:mdItem .4s cubic-bezier(.2,1,.3,1) both!important;animation-delay:calc(.1s + var(--k) * 45ms)!important;transition:background-color .15s,box-shadow .2s!important}
+html.clean:not(.rm) body .mdrawer.out nav button{animation:none!important}
+html.clean:not(.rm) body .burger{transition:background-color .2s,box-shadow .2s!important}
+html.clean:not(.rm) body .burger .bk span{transition:transform .34s cubic-bezier(.5,1.6,.4,1),opacity .2s!important}
+html.clean:not(.rm) body .burger.hint{animation:bHint 2.6s ease-in-out .8s 3!important}
+html.clean:not(.rm) body .burger.hint::after{animation:bRing 2.6s ease-out .8s 3!important}
+html.clean:not(.rm) body .rpl{animation:rpl .6s cubic-bezier(.2,.7,.3,1) forwards!important}
+html.clean:not(.rm) body #screen-input.pv-fwd :is(.home-grid,.pagehead,.lessons,.pathcard){animation:pvFwd .42s cubic-bezier(.2,.85,.25,1) both!important}
+html.clean:not(.rm) body #screen-input.pv-back :is(.home-grid,.pagehead,.lessons,.pathcard){animation:pvBack .42s cubic-bezier(.2,.85,.25,1) both!important}
+html.clean:not(.rm) body #screen-input.adding.pv-fwd > *{animation:pvFwd .4s cubic-bezier(.2,.85,.25,1) both!important}
+html.clean:not(.rm) body #screen-input:is(.pv-fwd,.pv-back) :is(.fgrid .feat,#myList > *,.shelf){animation:pvUp .45s cubic-bezier(.2,.85,.25,1) both!important;animation-delay:calc(min(var(--k,0), 8) * 35ms + 90ms)!important}
+html.clean:not(.rm) body .pagehead.in .phx{animation:phIn .4s cubic-bezier(.2,.85,.25,1) both!important}
+html.clean:not(.rm) body :is(.pagehead .phback,.pagehead .phadd,.whall,.mdrawer .mdnew,.mdrawer .mdrow button,.mdrawer .mdpro){transition:transform .15s,box-shadow .2s,color .15s,background-color .2s!important}
+html.clean:not(.rm) body .rolesheet .ladinfo{animation:ladIn .28s ease both!important}
+html.clean:not(.rm) body .rolesheet .ladinfo .steps i.now{animation:ladPulse 1.6s ease-in-out infinite!important}
+html.clean:not(.rm) body .rolesheet .modeseg button{transition:background-color .2s,box-shadow .2s,transform .12s!important}
+html.clean:not(.rm) body .line.mine .hw.shown .r{animation:wordIn .32s ease both!important}
 </style>
 </head>
 <body>
@@ -3518,7 +3543,7 @@ function renderShelves(){
     if(!group.length) return;
     const done = group.filter(sc => D.includes(sc.title)).length;
     const pick = group.find(sc => !D.includes(sc.title) && !isLocked(sc)) || group[0];
-    const sec = document.createElement('section'); sec.className = 'shelf'; sec.dataset.lv = lv;
+    const sec = document.createElement('section'); sec.className = 'shelf'; sec.dataset.lv = lv; sec.style.setProperty('--k', lv - 1);
     sec.innerHTML = `<div class="shead"><b>${icons[lv]} ${names[lv]}</b><span class="cnt">${done}/${group.length}</span><button type="button" class="all">${libOpen[lv] ? 'סגור' : 'הכל ›'}</button></div>`;
     const card = sc => {
       const lines = parseScript(sc.text), cast = [...new Set(lines.map(l => l.character))];
@@ -6177,7 +6202,7 @@ document.addEventListener('DOMContentLoaded', () => {
 (function(){
   const OVERLAYS = ['mDrawer', 'sayDlg', 'voiceDlg', 'warmDlg', 'proDlg', 'glossDlg', 'lessonDlg', 'roleSheet', 'voiceHelp', 'onb'];
   let goingBack = false;
-  const mark = () => { if(!goingBack) try{ history.pushState({sp: 1}, ''); }catch(e){} };
+  const mark = () => { if(!goingBack && !window.__spNoMark) try{ history.pushState({sp: 1}, ''); }catch(e){} };
   window.__spMark = mark;
   // something to undo, top-most first
   function backStep(){
@@ -6243,7 +6268,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(dr.hidden){ if(then) then(); return; }
     btn.setAttribute('aria-expanded', 'false'); document.documentElement.classList.remove('md-open');
     dr.classList.add('out');
-    closing = setTimeout(() => { dr.hidden = true; dr.classList.remove('out'); if(then) then(); }, 230);
+    closing = setTimeout(() => { dr.hidden = true; dr.classList.remove('out'); if(then) then(); }, 260);
   };
   // the back button hides the drawer directly; keep the burger in step
   new MutationObserver(() => { if(dr.hidden){ btn.setAttribute('aria-expanded', 'false'); document.documentElement.classList.remove('md-open'); } }).observe(dr, {attributes: true, attributeFilter: ['hidden']});
@@ -6256,10 +6281,12 @@ document.addEventListener('DOMContentLoaded', () => {
     homeTab('work'); pageView(n);
   };
   // after a menu choice the drawer's own back step is spent, so the history stays one step per page
-  const leave = fn => close(() => {
-    if(history.state && history.state.sp){ window.__spSkipBack = true; addEventListener('popstate', () => setTimeout(fn, 0), {once: true}); history.back(); }
-    else fn();
-  });
+  // the page changes right away behind the closing curtain; the drawer's back step becomes the page's back step
+  const leave = fn => {
+    window.__spNoMark = !!(history.state && history.state.sp);
+    try{ fn(); }finally{ window.__spNoMark = false; }
+    requestAnimationFrame(() => close());
+  };
   dr.querySelectorAll('nav button').forEach(b => b.onclick = () => leave(() => goNav(b.dataset.n)));
   dr.querySelector('.mdnew').onclick = () => leave(() => { show('input'); homeTab('work'); openAdd(true); });
   dr.querySelector('.mdpro').onclick = () => leave(() => openPro(''));
@@ -6268,6 +6295,7 @@ document.addEventListener('DOMContentLoaded', () => {
   addEventListener('keydown', e => { if(e.key === 'Escape' && !dr.hidden) close(); });
 });
 
+(function(){ const m = matchMedia('(prefers-reduced-motion: reduce)'); const f = () => document.documentElement.classList.toggle('rm', m.matches); f(); try{ m.addEventListener('change', f); }catch(e){} })();
 /* ---- every tap answers: a quick squeeze and a ripple from the finger ---- */
 (function(){
   const SEL = 'button, .feat, .fitem, .srow, .chip, label.upload, a.mdwa, .resume, .glosscard';
