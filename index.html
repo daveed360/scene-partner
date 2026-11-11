@@ -1923,6 +1923,9 @@ html.clean:not(.rm) body .rolesheet .ladinfo{animation:ladIn .28s ease both!impo
 html.clean:not(.rm) body .rolesheet .ladinfo .steps i.now{animation:ladPulse 1.6s ease-in-out infinite!important}
 html.clean:not(.rm) body .rolesheet .modeseg button{transition:background-color .2s,box-shadow .2s,transform .12s!important}
 html.clean:not(.rm) body .line.mine .hw.shown .r{animation:wordIn .32s ease both!important}
+
+html.clean body #proDlg .pwa{display:block;text-align:center;text-decoration:none;background:#1FA855!important;color:#fff!important;border-color:#1FA855!important}
+html.clean body #proDlg #proDone{margin-top:6px;background:transparent!important;color:inherit!important;box-shadow:none!important;border:0!important;opacity:.7;font-weight:600;font-size:15px}
 </style>
 </head>
 <body>
@@ -3663,9 +3666,11 @@ document.getElementById('proGo').onclick = () => {
   trackInterest(proPlan);
   const names = {week: 'השבוע', month: 'החודש', year: 'השנה'};
   document.getElementById('proBody').innerHTML = `<span class="pbadge">✨ PRO</span><h3>תודה, נרשמת! 🎉</h3>
-    <p class="pwhy">ברגע שהתשלום ייפתח, תקבל קודם את המחיר המיוחד של משתמשים ראשונים לתוכנית ${names[proPlan] || ''}.</p>
-    <p class="pwhy">בינתיים כל מה שיש פה ממשיך לעבוד בשבילך. בהצלחה בחזרות!</p>
-    <button type="button" class="primary pgo" id="proDone">יאללה, לחזרות</button>`;
+    <p class="pwhy">צעד אחרון: שלח לנו הודעה קצרה בוואטסאפ, וככה נדע לאן לשלוח לך את המחיר של משתמשים ראשונים לתוכנית ${names[proPlan] || ''} ברגע שהתשלום נפתח.</p>
+    ${SUPPORT_WA ? `<a class="primary pgo pwa" id="proWa" target="_blank" rel="noopener" href="https://wa.me/${SUPPORT_WA}?text=${encodeURIComponent('היי! אני רוצה Audition Partner Pro, תוכנית ' + ({week: 'שבועית (9.90 ₪)', month: 'חודשית (14.90 ₪)', year: 'שנתית (119 ₪)'}[proPlan] || '') + ', במחיר של משתמשים ראשונים. תעדכנו אותי כשנפתח 🙏')}">📲 שמרו לי מקום בוואטסאפ</a>` : ''}
+    <p class="pwhy" style="font-size:13px;opacity:.75">בינתיים כל מה שיש פה ממשיך לעבוד בשבילך.</p>
+    <button type="button" class="secondary pgo" id="proDone">אחר כך, חזרה לחזרות</button>`;
+  { const w = document.getElementById('proWa'); if(w) w.onclick = () => { gcEvent('pro-wa-' + proPlan, 'Pro: שלח וואטסאפ ' + proPlan); lsSet('sp_pro_wa', '1'); }; }
   document.getElementById('proDone').onclick = () => { document.getElementById('proDlg').hidden = true; };
   confetti();
 };
