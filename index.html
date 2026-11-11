@@ -1812,18 +1812,23 @@ html.clean.dark .pastebtn{background:rgba(255,239,92,.10);border-color:#F5EEE6;c
 .burger,.mdrawer{display:none}
 @media (max-width:999px){
   html.clean header .brand{gap:10px}
+  @media (max-width:430px){ html.clean header h1{font-size:16.5px!important} html.clean header .brand .logo{width:34px!important;height:34px!important} html.clean .burger{padding:0 12px 0 14px;font-size:15px} }
+  @media (max-width:430px){ html.clean header .lockup{display:none!important} html.clean header .brand{justify-content:space-between} }
   html.clean header #glossBtn,html.clean header #themeBtn{display:none!important}
-  html.clean .burger{display:inline-flex;flex-direction:column;justify-content:center;gap:5px;flex:0 0 auto;width:46px;height:46px;padding:0 11px;border:0;border-radius:14px;background:var(--ink,#1F1D1A);box-shadow:0 8px 18px -10px rgba(0,0,0,.55),inset 0 -3px 0 rgba(0,0,0,.25);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .15s cubic-bezier(.3,1.5,.5,1),background-color .2s;order:-1}
-  html.clean .burger:active{transform:scale(.9)}
-  html.clean .burger span{display:block;height:3.5px;border-radius:2px;background:var(--paper,#F8F6F0);transition:transform .32s cubic-bezier(.5,1.6,.4,1),opacity .2s,width .25s}
-  /* the top bar is a clapper-board strip */
-  html.clean .burger .b1{height:7px;border-radius:2px 2px 1px 1px;background:repeating-linear-gradient(-55deg,#FFD84D 0 5px,#1F1D1A 5px 9px);box-shadow:0 0 0 1.5px var(--paper,#F8F6F0);transform-origin:16% 50%;animation:clapTap 4.5s ease-in-out 1.2s infinite}
-  html.clean .burger .b3{width:68%;align-self:flex-start}
-  @keyframes clapTap{0%,88%,100%{transform:none}92%{transform:rotate(-14deg)}95%{transform:none}}
-  html.md-open .burger{background:#B3282D}
-  html.md-open .burger .b1{animation:none;height:3.5px;background:#fff;box-shadow:none;transform:translateY(8.5px) rotate(45deg);transform-origin:50% 50%}
-  html.md-open .burger .b2{opacity:0;transform:scaleX(.2)}
-  html.md-open .burger .b3{width:100%;transform:translateY(-8.5px) rotate(-45deg)}
+  html.clean .burger{display:inline-flex;align-items:center;gap:9px;flex:0 0 auto;height:46px;padding:0 14px 0 16px;border:2px solid #E8B53A;border-radius:99px;background:#C8372D;color:#fff;font:inherit;font-family:var(--sans);font-weight:800;font-size:16px;box-shadow:0 10px 22px -10px rgba(200,55,45,.85),inset 0 -3px 0 rgba(0,0,0,.18);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background-color .2s,box-shadow .2s;order:-1}
+  html.clean .burger .bk{position:relative;display:flex;flex-direction:column;justify-content:space-between;width:22px;height:16px}
+  html.clean .burger .bk span{display:block;height:3px;border-radius:2px;background:#fff;transition:transform .34s cubic-bezier(.5,1.6,.4,1),opacity .2s}
+  html.clean .burger .bl{line-height:1}
+  html.md-open .burger{background:#1F1D1A;box-shadow:0 8px 18px -10px rgba(0,0,0,.6)}
+  html.md-open .burger .b1{transform:translateY(6.5px) rotate(45deg)}
+  html.md-open .burger .b2{opacity:0;transform:scaleX(.1)}
+  html.md-open .burger .b3{transform:translateY(-6.5px) rotate(-45deg)}
+  /* until the menu has been opened once, it waves for attention */
+  html.clean .burger.hint{animation:bHint 2.6s ease-in-out .8s 3}
+  html.clean .burger.hint::after{content:"";position:absolute;inset:-5px;border-radius:99px;border:2px solid #C8372D;opacity:0;animation:bRing 2.6s ease-out .8s 3;pointer-events:none}
+  html.clean .burger{position:relative}
+  @keyframes bHint{0%,30%,100%{rotate:0deg}8%{rotate:-6deg}16%{rotate:5deg}24%{rotate:-3deg}}
+  @keyframes bRing{0%{opacity:.8;transform:scale(1)}60%,100%{opacity:0;transform:scale(1.35)}}
   html.clean .mdrawer:not([hidden]){display:block;position:fixed;inset:0;z-index:80}
   .mdrawer .mdback{position:absolute;inset:0;background:rgba(20,16,12,.48);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);animation:mdFade .25s ease both}
   .mdrawer .mdpanel{position:absolute;top:0;bottom:0;right:0;width:min(84vw,330px);display:flex;flex-direction:column;padding:46px 18px max(18px,env(safe-area-inset-bottom));background:var(--paper,#F8F6F0);border-left:3px solid #E8B53A;box-shadow:-24px 0 50px -20px rgba(0,0,0,.5);overflow-y:auto;font-family:var(--sans);animation:mdIn .42s cubic-bezier(.2,1.1,.3,1) both}
@@ -1874,6 +1879,19 @@ html.clean.dark .pastebtn{background:rgba(255,239,92,.10);border-color:#F5EEE6;c
   html.clean body #screen-input.tab-work[data-view=lib] .fgrid .feat{margin:0!important}
 }
 @media (prefers-reduced-motion: reduce){ .mdrawer *,.burger *{animation:none!important} }
+
+/* ===== taps and page changes ===== */
+.rp-host{overflow:hidden}
+.rpl{position:absolute;border-radius:50%;background:currentColor;opacity:.22;transform:scale(0);pointer-events:none;animation:rpl .6s cubic-bezier(.2,.7,.3,1) forwards;z-index:0}
+@keyframes rpl{to{transform:scale(1);opacity:0}}
+#screen-input.pv-fwd :is(.home-grid,.pagehead,.lessons,.pathcard){animation:pvFwd .42s cubic-bezier(.2,.85,.25,1) both}
+#screen-input.pv-back :is(.home-grid,.pagehead,.lessons,.pathcard){animation:pvBack .42s cubic-bezier(.2,.85,.25,1) both}
+#screen-input.adding.pv-fwd > *{animation:pvFwd .4s cubic-bezier(.2,.85,.25,1) both}
+@keyframes pvFwd{from{opacity:0;transform:translateX(-26px)}to{opacity:1;transform:none}}
+@keyframes pvBack{from{opacity:0;transform:translateX(26px)}to{opacity:1;transform:none}}
+#screen-input.pv-fwd .fgrid .feat,#screen-input.pv-fwd #myList > *{animation:pvUp .45s cubic-bezier(.2,.85,.25,1) both;animation-delay:calc(min(var(--k,0), 8) * 35ms + 80ms)}
+@keyframes pvUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){ .rpl{display:none} #screen-input[class*=pv-] *{animation:none!important} }
 </style>
 </head>
 <body>
@@ -6047,6 +6065,12 @@ const PAGES = {
   takes: ['🎬', 'הטייקים שלי', () => 'הצילומים שלך מהחזרות. נשמרים רק במכשיר הזה'],
   lib: ['📚', 'ספריית סצנות', () => { let D = []; try{ D = JSON.parse(lsGet('sp_done') || '[]'); }catch(e){} const d = SCENES.filter(x => D.includes(x.title)).length; return SCENES.length + ' סצנות מקוריות בעברית, מקל למאתגר' + (d ? ' · עשית ' + d : ''); }]
 };
+// every switch of page slides the new content in (forward from the side, back from the other)
+function pageAnim(dir){
+  const sc = document.getElementById('screen-input'); if(!sc) return;
+  sc.classList.remove('pv-fwd', 'pv-back'); void sc.offsetWidth; sc.classList.add(dir === 'back' ? 'pv-back' : 'pv-fwd');
+  clearTimeout(pageAnim.t); pageAnim.t = setTimeout(() => sc.classList.remove('pv-fwd', 'pv-back'), 600);
+}
 function pageView(v){
   const sc = document.getElementById('screen-input'); if(!sc) return;
   if(!PAGES[v]) v = 'home';
@@ -6065,6 +6089,7 @@ function pageView(v){
   if(typeof renderShelves === 'function' && CLEAN) renderShelves();
   navSel = v; if(typeof syncNav === 'function') syncNav();
   scrollTo(0, 0);
+  pageAnim(prev === 'home' && v !== 'home' ? 'fwd' : v === 'home' && prev !== 'home' ? 'back' : 'fwd');
   if(v !== 'home' && prev === 'home' && window.__spMark) window.__spMark();
 }
 function syncNav(){
@@ -6177,8 +6202,8 @@ document.addEventListener('DOMContentLoaded', () => {
   OVERLAYS.forEach(id => { const d = document.getElementById(id); if(!d) return;
     new MutationObserver(() => { if(!d.hidden && !d.dataset.backMarked){ d.dataset.backMarked = '1'; mark(); } if(d.hidden) delete d.dataset.backMarked; }).observe(d, {attributes: true, attributeFilter: ['hidden']}); });
   const _show = show; show = function(name){ const from = currentScreen; _show.apply(this, arguments); if(name !== 'input' && name !== from && !(from === 'rehearse' && name === 'done') && !(from === 'done' && name === 'rehearse')) mark(); };
-  const _openAdd = openAdd; openAdd = function(on){ const was = document.getElementById('screen-input').classList.contains('adding'); _openAdd.apply(this, arguments); if(on && !was) mark(); };
-  const _homeTab = homeTab; homeTab = function(t){ const was = document.getElementById('screen-input').classList.contains('tab-learn'); _homeTab.apply(this, arguments); if(t === 'learn' && !was) mark(); };
+  const _openAdd = openAdd; openAdd = function(on){ const was = document.getElementById('screen-input').classList.contains('adding'); _openAdd.apply(this, arguments); if(on && !was) mark(); if(!!on !== was && typeof pageAnim === 'function') pageAnim(on ? 'fwd' : 'back'); };
+  const _homeTab = homeTab; homeTab = function(t){ const was = document.getElementById('screen-input').classList.contains('tab-learn'); _homeTab.apply(this, arguments); if(t === 'learn' && !was) mark(); if((t === 'learn') !== was && typeof pageAnim === 'function') pageAnim(t === 'learn' ? 'fwd' : 'back'); };
 })();
 
 /* ---- phone menu: a clapper-board burger that opens a stage-curtain drawer ---- */
@@ -6187,7 +6212,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const brand = document.querySelector('header .brand'); if(!brand) return;
   const btn = document.createElement('button');
   btn.type = 'button'; btn.className = 'burger'; btn.id = 'burgerBtn'; btn.setAttribute('aria-label', 'תפריט'); btn.setAttribute('aria-expanded', 'false'); btn.setAttribute('aria-controls', 'mDrawer');
-  btn.innerHTML = '<span class="b1"></span><span class="b2"></span><span class="b3"></span>';
+  btn.innerHTML = '<span class="bk"><span class="b1"></span><span class="b2"></span><span class="b3"></span></span><span class="bl">תפריט</span>';
+  if(!lsGet('sp_menu_seen')) btn.classList.add('hint');
   brand.prepend(btn);
   const dr = document.createElement('div'); dr.className = 'mdrawer'; dr.id = 'mDrawer'; dr.hidden = true; dr.setAttribute('role', 'dialog'); dr.setAttribute('aria-modal', 'true'); dr.setAttribute('aria-label', 'תפריט');
   const items = [['home', '🏠', 'בית'], ['mine', '📄', 'הסצנות שלי'], ['takes', '🎬', 'הטייקים שלי'], ['lib', '📚', 'ספריית סצנות'], ['tips', '💡', 'טיפים לשחקן']];
@@ -6212,7 +6238,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dr.querySelector('.mdpro').hidden = isPro();
   };
   let closing = null;
-  const open = () => { clearTimeout(closing); sync(); dr.classList.remove('out'); dr.hidden = false; if(window.__spMark) window.__spMark(); btn.setAttribute('aria-expanded', 'true'); document.documentElement.classList.add('md-open'); buzz(10); try{ SFX.select(); }catch(e){} };
+  const open = () => { clearTimeout(closing); sync(); dr.classList.remove('out'); dr.hidden = false; if(window.__spMark) window.__spMark(); btn.classList.remove('hint'); lsSet('sp_menu_seen', '1'); btn.setAttribute('aria-expanded', 'true'); document.documentElement.classList.add('md-open'); buzz(10); try{ SFX.select(); }catch(e){} };
   const close = then => {
     if(dr.hidden){ if(then) then(); return; }
     btn.setAttribute('aria-expanded', 'false'); document.documentElement.classList.remove('md-open');
@@ -6241,6 +6267,24 @@ document.addEventListener('DOMContentLoaded', () => {
   dr.querySelector('.mdgloss').onclick = () => leave(() => { try{ openGloss(); }catch(e){ goNav('tips'); } });
   addEventListener('keydown', e => { if(e.key === 'Escape' && !dr.hidden) close(); });
 });
+
+/* ---- every tap answers: a quick squeeze and a ripple from the finger ---- */
+(function(){
+  const SEL = 'button, .feat, .fitem, .srow, .chip, label.upload, a.mdwa, .resume, .glosscard';
+  const still = matchMedia('(prefers-reduced-motion: reduce)');
+  document.addEventListener('pointerdown', e => {
+    if(still.matches || e.button > 0) return;
+    const el = e.target.closest(SEL); if(!el || el.disabled || el.closest('#feed, .stage')) return;
+    try{ el.animate([{scale: '1'}, {scale: '.955'}, {scale: '1.01'}, {scale: '1'}], {duration: 320, easing: 'ease-out'}); }catch(err){}
+    if(el.matches('.fitem')) return;            // its "…" menu opens inside it; no clipping there
+    const r = el.getBoundingClientRect(), d = Math.max(r.width, r.height) * 2.2;
+    const sp = document.createElement('span'); sp.className = 'rpl';
+    sp.style.cssText = `width:${d}px;height:${d}px;left:${e.clientX - r.left - d / 2}px;top:${e.clientY - r.top - d / 2}px`;
+    if(getComputedStyle(el).position === 'static') el.style.position = 'relative';
+    el.classList.add('rp-host'); el.appendChild(sp);
+    setTimeout(() => { sp.remove(); if(!el.querySelector('.rpl')) el.classList.remove('rp-host'); }, 650);
+  }, {passive: true});
+})();
 </script>
 <script data-goatcounter="https://auditionpartner.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 <div class="bgart" aria-hidden="true">
