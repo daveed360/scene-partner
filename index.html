@@ -7,6 +7,7 @@
 
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-title" content="Audition Partner">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -1178,7 +1179,7 @@ html.clean #screen-input.tab-work{padding-bottom:90px}
 html.clean #screen-input:not(.adding) #uploadBox,html.clean #screen-input:not(.adding) .or,html.clean #screen-input:not(.adding) #scriptInput,html.clean #screen-input:not(.adding) .hint,
 html.clean #screen-input:not(.adding) #analyzeBtn,html.clean #screen-input:not(.adding) h2.sec:not(.lib){display:none}
 html.clean #screen-input.adding .namein.about{min-height:64px;font-size:15px;line-height:1.5;background-image:none;padding-right:14px}
-html.clean #screen-input.adding > :not(.addhead):not(.fld):not(.namein):not(.seg):not(.moredet):not(#uploadBox):not(.or):not(#scriptInput):not(.pastebtn):not(.hint):not(#inputErr):not(#analyzeBtn):not(.tips){display:none!important}
+html.clean #screen-input.adding > :not(#waBox):not(.addhead):not(.fld):not(.namein):not(.seg):not(.moredet):not(#uploadBox):not(.or):not(#scriptInput):not(.pastebtn):not(.hint):not(#inputErr):not(#analyzeBtn):not(.tips){display:none!important}
 html.clean #screen-input.adding .addhead{display:flex;align-items:center;gap:10px;margin:4px 0 14px}
 html.clean .addhead h2{margin:0;font-family:var(--typed);font-size:26px}
 html.clean .backbtn{width:42px;height:42px;border-radius:50%;border:1px solid var(--rule);background:var(--sheet);color:var(--ink);font-size:20px;cursor:pointer}
@@ -1933,6 +1934,27 @@ html.clean body #proDlg .pfree p{margin:0;font-size:14.5px;line-height:1.5;color
 html.clean body #proDlg .pfree b{color:#4FD486}
 html.clean body #proDlg #proGo{background:#1FA855!important;color:#fff!important;border-color:#1FA855!important;display:flex;flex-direction:column;align-items:center;gap:2px}
 html.clean body #proDlg #proGo small{font-size:12.5px;font-weight:600;opacity:.85}
+
+/* ===== add a scene from WhatsApp ===== */
+.wabox{display:none}
+html.clean #screen-input.adding.src-wa > :not(.addhead):not(.srcseg):not(#waBox):not(.tips){display:none!important}
+html.clean body #screen-input.adding.src-wa > #waBox{display:flex!important;flex-direction:column;gap:14px;margin:0 0 18px}
+.wacard{padding:18px 18px 20px;border-radius:16px;background:var(--sheet,#fff);border:1px solid var(--rule,#E6E0D3);box-shadow:0 10px 24px -18px rgba(0,0,0,.35)}
+.wacard > b{display:block;font-size:18px;margin-bottom:8px;color:var(--ink)}
+.wacard ol{margin:0 0 14px;padding:0 22px 0 0;display:flex;flex-direction:column;gap:6px;font-size:15.5px;line-height:1.5;color:var(--ink)}
+.wacard ol small{display:block;font-size:13px;color:var(--pencil)}
+.wacard p{margin:0 0 12px;font-size:15px;line-height:1.55;color:var(--pencil)}
+.warow{display:flex;gap:10px;flex-wrap:wrap}
+.wacard .wapaste,.wacard .wafile,.wacard .wainstall{flex:1 1 220px;padding:14px 16px;border:0;border-radius:12px;background:#C8372D;color:#fff;font:inherit;font-weight:800;font-size:16px;cursor:pointer}
+.wacard .wafile{width:100%;background:var(--ink,#1F1D1A)}
+.wacard .waopen{flex:1 1 160px;display:flex;align-items:center;justify-content:center;padding:14px 16px;border-radius:12px;background:#1FA855;color:#fff;font-weight:800;font-size:15.5px;text-decoration:none}
+.wacard.wainst{background:rgba(232,181,58,.12);border-color:rgba(232,181,58,.5)}
+.wacard .wainstall{width:100%;background:#E8B53A;color:#1F1D1A}
+html.clean:not(.rm) body .wacard .wapaste.nudge{animation:waNudge 1s ease 3!important}
+@keyframes waNudge{0%,100%{transform:none;box-shadow:none}40%{transform:scale(1.05);box-shadow:0 0 0 8px rgba(200,55,45,.25)}}
+html.clean:not(.rm) body #screen-input.adding.src-wa #waBox .wacard{animation:pvUp .4s cubic-bezier(.2,.85,.25,1) both!important}
+html.clean:not(.rm) body #screen-input.adding.src-wa #waBox .wacard:nth-child(2){animation-delay:.07s!important}
+html.clean.dark .wacard{background:#1c1c1f;border-color:#2c2c30}
 </style>
 </head>
 <body>
@@ -3731,7 +3753,7 @@ document.addEventListener('DOMContentLoaded', () => {
   tag('#resumeCard, #daily, #quota, .mytabs, #folderBar, #myBox, #takesBox, h2.sec.lib, #libTabs, #sceneList', 'work-only');
   // the add page, simple: paste or file, a name, the text, and the extras folded away
   const seg = document.createElement('div'); seg.className = 'seg srcseg';
-  seg.innerHTML = '<button type="button" data-s="paste" aria-pressed="true">📋 הדבקת טקסט</button><button type="button" data-s="file" aria-pressed="false">📄 העלאת קובץ</button>';
+  seg.innerHTML = '<button type="button" data-s="paste" aria-pressed="true">📋 הדבקה</button><button type="button" data-s="file" aria-pressed="false">📄 קובץ</button><button type="button" data-s="wa" aria-pressed="false">💬 מוואטסאפ</button>';
   const det = document.createElement('details'); det.className = 'moredet';
   det.innerHTML = '<summary>עוד פרטים (לא חובה): רקע לסצנה, מונולוג</summary>';
   const aboutLbl = document.querySelector('label[for="sceneAbout"]');
@@ -3742,20 +3764,36 @@ document.addEventListener('DOMContentLoaded', () => {
   // one tap: paste what was copied in WhatsApp and go straight to choosing a role
   if(navigator.clipboard && navigator.clipboard.readText){
     const pb = document.createElement('button'); pb.type = 'button'; pb.className = 'pastebtn'; pb.innerHTML = '📋 <b>הדבק את הסצנה שהעתקת</b><small>מוואטסאפ, ממייל או מאתר</small>';
-    pb.onclick = async () => {
-      try{
-        const t = (await navigator.clipboard.readText() || '').trim();
-        if(!t){ toast('אין טקסט מועתק. העתיקו את הסצנה ונסו שוב', '📋'); return; }
-        const si = $('scriptInput'); si.value = t; si.dispatchEvent(new Event('input', {bubbles: true}));
-        $('analyzeBtn').click();
-      }catch(e){ toast('לחצו לחיצה ארוכה בתיבה ובחרו "הדבק"', '📋'); $('scriptInput').focus(); }
-    };
+    pb.onclick = () => pasteCopied();
     $('scriptInput').before(pb);
   }
-  seg.querySelectorAll('button').forEach(b => b.onclick = () => {
-    seg.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
-    scr.classList.toggle('src-paste', b.dataset.s === 'paste'); scr.classList.toggle('src-file', b.dataset.s === 'file');
-  });
+  // from WhatsApp: the two real cases (a message in the chat, or a file) and the share sheet once installed
+  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const installed = matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  const wa = document.createElement('div'); wa.id = 'waBox'; wa.className = 'wabox';
+  wa.innerHTML = `<div class="wacard"><b>💬 הסצנה כתובה בצ'אט</b>
+      <ol><li>פותחים את הצ'אט בוואטסאפ</li><li>לחיצה ארוכה על ההודעה ← <b>העתקה</b><small>אפשר לסמן כמה הודעות ביחד</small></li><li>חוזרים לכאן ולוחצים:</li></ol>
+      <div class="warow"><button type="button" class="wapaste">📋 הדבק את מה שהעתקתי</button><a class="waopen" href="whatsapp://send">פתיחת וואטסאפ</a></div></div>
+    <div class="wacard"><b>📄 קיבלתי קובץ (Word / PDF)</b>
+      <ol>${ios ? '<li>בוואטסאפ פותחים את הקובץ ← <b>שיתוף</b> ← <b>שמירה בקבצים</b></li><li>חוזרים לכאן ובוחרים אותו:</li>'
+        : installed ? '<li>בוואטסאפ: לחיצה ארוכה על הקובץ ← <b>שיתוף</b> ← <b>שותף לתפקיד</b>. וזהו!</li><li>או לבחור אותו מכאן:</li>'
+        : '<li>בוואטסאפ פותחים את הקובץ פעם אחת, כדי שיישמר בטלפון</li><li>חוזרים לכאן ובוחרים אותו<small>בדרך כלל בתיקייה WhatsApp ← Documents</small></li>'}</ol>
+      <button type="button" class="wafile">📂 בחירת הקובץ</button></div>
+    <div class="wacard wainst" hidden><b>⚡ שיתוף ישיר מוואטסאפ</b><p>מתקינים את שותף לתפקיד בטלפון (שנייה אחת, בלי חנות), ומאז שולחים אליו כל הודעה או קובץ ישר מכפתור השיתוף של וואטסאפ.</p><button type="button" class="wainstall">התקנה בטלפון</button></div>`;
+  seg.after(wa);
+  wa.querySelector('.wapaste').onclick = () => pasteCopied();
+  wa.querySelector('.wafile').onclick = () => $('fileInput').click();
+  let deferredInstall = null;
+  addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; wa.querySelector('.wainst').hidden = false; });
+  wa.querySelector('.wainstall').onclick = async () => { if(!deferredInstall) return; deferredInstall.prompt(); try{ const c = await deferredInstall.userChoice; if(c && c.outcome === 'accepted'){ wa.querySelector('.wainst').hidden = true; gcEvent('pwa-installed', 'האפליקציה הותקנה'); } }catch(e){} deferredInstall = null; };
+  // back from WhatsApp with the text copied: the paste button asks to be pressed
+  document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible' && scr.classList.contains('src-wa')){ const b = wa.querySelector('.wapaste'); b.classList.remove('nudge'); void b.offsetWidth; b.classList.add('nudge'); } });
+  const pickSrc = k => {
+    seg.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.s === k)));
+    scr.classList.toggle('src-paste', k === 'paste'); scr.classList.toggle('src-file', k === 'file'); scr.classList.toggle('src-wa', k === 'wa');
+    if(k === 'wa') gcEvent('add-from-wa', 'הוספה מוואטסאפ');
+  };
+  seg.querySelectorAll('button').forEach(b => b.onclick = () => pickSrc(b.dataset.s));
   document.querySelectorAll('#homeTabs button').forEach(b => b.onclick = () => { homeTab(b.dataset.t); scrollTo(0, 0); });
   homeTab('work');
   const tips = document.createElement('button'); tips.type = 'button'; tips.className = 'tipsbtn work-only'; tips.innerHTML = '<span>📖</span><b>טיפים לשחקן</b><small>שיעורים קצרים, מילון מונחים, ומסלול אישי</small>';
@@ -4207,8 +4245,8 @@ function openRoleSheet(){
   const cnt = c => parsedLines.filter(l => l.character === c).length;
   const sw = (k, label, sub) => `<button type="button" class="sw" data-k="${k}" aria-pressed="${!!OPTS[k]}"><span><b>${label}</b><small>${sub}</small></span><i></i></button>`;
   const draw = () => {
-    card.innerHTML = `<span class="k">${esc(sceneTitle)}</span><h3>${characters.length === 1 ? 'מוכן?' : 'את מי אתה משחק?'}</h3>
-      <div class="chars">${characters.map(c => `<button type="button" class="char" data-c="${esc(c)}"><span class="nm">${esc(c)}</span><small>${cnt(c)} ${characters.length === 1 ? 'קטעים' : 'שורות'}</small><span class="go">←</span></button>`).join('')}</div>
+    card.innerHTML = `<span class="k">${esc(sceneTitle)}</span><h3>${roleChoices().length === 1 ? 'מוכן?' : 'את מי אתה משחק?'}</h3>
+      <div class="chars">${roleChoices().map(c => `<button type="button" class="char" data-c="${esc(c)}"><span class="nm">${esc(c)}</span><small>${cnt(c)} ${characters.length === 1 ? 'קטעים' : 'שורות'}</small><span class="go">←</span></button>`).join('')}</div>
       ${memBar(sceneTitle, true)}
       <div class="mseg modeseg" role="radiogroup" aria-label="סוג התרגול">
         <button type="button" data-m="run" aria-pressed="${MODE === 'run'}">🎬 חזרה</button>
@@ -4299,6 +4337,41 @@ function monologueLines(raw, who){
   });
   return out.map(t => { const m = t.match(/^\(([^)]*)\)\s*/); return {character: who, text: m ? t.slice(m[0].length) : t, dir: m ? m[1] : ''}; }).filter(l => l.text);
 }
+// paste what was copied (WhatsApp, mail, a site) and go straight to choosing a role
+async function pasteCopied(){
+  const si = document.getElementById('scriptInput');
+  try{
+    if(!navigator.clipboard || !navigator.clipboard.readText) throw new Error('no-clip');
+    const t = (await navigator.clipboard.readText() || '').trim();
+    if(!t){ toast('אין טקסט מועתק. העתיקו את ההודעה ונסו שוב', '📋'); return; }
+    si.value = t; si.dispatchEvent(new Event('input', {bubbles: true}));
+    document.getElementById('analyzeBtn').click();
+  }catch(e){
+    const p = document.querySelector('.srcseg [data-s="paste"]'); if(p) p.click();
+    toast('לחיצה ארוכה בתיבה ← "הדבק"', '📋'); si.focus();
+  }
+}
+// a scene shared into the installed app from WhatsApp (Android share sheet → service worker → here)
+async function pickupShared(){
+  const q = new URLSearchParams(location.search); if(!q.has('shared')) return;
+  q.delete('shared'); history.replaceState(null, '', location.pathname + (q.toString() ? '?' + q : '') + location.hash);
+  try{
+    const c = await caches.open('ap-share'), mr = await c.match('./__share/meta'); if(!mr) return;
+    const m = await mr.json(), fr = m.file ? await c.match('./__share/file') : null;
+    await c.delete('./__share/meta'); await c.delete('./__share/file');
+    show('input'); homeTab('work'); openAdd(true);
+    gcEvent('scene-shared-in', 'סצנה שותפה מאפליקציה אחרת');
+    if(fr){
+      const blob = await fr.blob(), f = new File([blob], m.file, {type: blob.type || m.type || ''});
+      const dt = new DataTransfer(); dt.items.add(f);
+      const fi = document.getElementById('fileInput'); fi.files = dt.files; fi.dispatchEvent(new Event('change'));
+    } else if(m.text){
+      const si = document.getElementById('scriptInput'); si.value = m.text; si.dispatchEvent(new Event('input', {bubbles: true}));
+      document.getElementById('analyzeBtn').click();
+    }
+  }catch(e){}
+}
+document.addEventListener('DOMContentLoaded', () => setTimeout(pickupShared, 400));
 document.getElementById('analyzeBtn').onclick = () => {
   const raw = scriptInput.value;
   const errBox = document.getElementById('inputErr');
@@ -4525,11 +4598,14 @@ document.getElementById('fileInput').addEventListener('change', async (e) => {
   e.target.value = '';
 });
 
+// "כולם", "ביחד": lines said by the whole group are read by the partner, they are not a role to play
+const GROUP_RE = /^(כולם|כולן|ביחד|יחד|כל החבר'?ה|כל הכיתה|כל הנוכחים|הקהל|המקהלה|קולות|all|everyone|together|chorus)$/i;
+function roleChoices(){ const r = characters.filter(c => !GROUP_RE.test(c.trim())); return r.length ? r : characters; }
 function renderRoles(){
   const roleList = document.getElementById('roleList');
   roleList.innerHTML = '';
   myCharacter = null;
-  characters.forEach(name=>{
+  roleChoices().forEach(name=>{
     const count = parsedLines.filter(l=>l.character===name).length;
     const ink = inkOf(name);
     const card = document.createElement('div');
@@ -6140,7 +6216,7 @@ document.getElementById('againBtn').onclick = () => { const b = document.getElem
 document.getElementById('weakBtn').onclick = () => { setMode('weak'); setupRehearsal(); show('rehearse'); };
 document.getElementById('newSceneBtn').onclick = () => { show('input'); };
 if(/[?&]key\b/.test(location.search)){ document.documentElement.classList.add('showkey'); const vb = document.getElementById('voiceBox'); if(vb) vb.open = true; }
-if('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(()=>{});
 
 /* ---- computer: side menu ---- */
 let navSel = 'home';

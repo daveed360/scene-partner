@@ -1,0 +1,29 @@
+{
+  "name": "Audition Partner · שותף לתפקיד",
+  "short_name": "שותף לתפקיד",
+  "description": "פרטנר לחזרות: מקריא את שאר הדמויות ומחכה לך בתור שלך",
+  "lang": "he",
+  "dir": "rtl",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F8F6F0",
+  "theme_color": "#241B2E",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "share_target": {
+    "action": "./share-target",
+    "method": "POST",
+    "enctype": "multipart/form-data",
+    "params": {
+      "title": "title",
+      "text": "text",
+      "url": "url",
+      "files": [{"name": "file", "accept": [".docx", ".pdf", ".txt", ".rtf", "application/pdf", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain", "application/rtf"]}]
+    }
+  }
+}
